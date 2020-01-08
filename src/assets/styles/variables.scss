@@ -1,0 +1,50 @@
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+);
+
+@mixin tablet {
+  @media (min-width: sm) and (max-width: md - 1px) {
+    @content;
+  }
+}
+
+@mixin whiteframe {
+  padding: 15px 5px 0px 5px;
+  background-color: #fff;
+
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 2px 1px -1px rgba(0, 0, 0, 0.12);
+}
+
+@mixin animated_underline($color1, $color2) {
+  background-image: linear-gradient($color1, $color2);
+  background-size: 0 2px, auto;
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  transition: all 0.2s ease-out;
+
+  &:hover {
+    background-size: 100% 2px, auto;
+  }
+}
+
+@mixin no_user_select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@mixin center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

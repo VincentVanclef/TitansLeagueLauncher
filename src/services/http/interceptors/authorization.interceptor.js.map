@@ -1,0 +1,1 @@
+{"version":3,"file":"authorization.interceptor.js","sourceRoot":"","sources":["authorization.interceptor.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,UAAU,EAAE,MAAM,iCAAiC,CAAC;AAG7D,eAAe,CAAC,MAA0B,EAAE,EAAE;IAC5C,MAAM,CAAC,OAAO,CAAC,eAAe,CAAC,GAAG,UAAU,CAAC,KAAK;QAChD,CAAC,CAAC,UAAU,UAAU,CAAC,KAAK,CAAC,KAAK,EAAE;QACpC,CAAC,CAAC,EAAE,CAAC;IAEP,OAAO,MAAM,CAAC;AAChB,CAAC,CAAC"}
