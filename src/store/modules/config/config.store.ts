@@ -78,6 +78,7 @@ class ConfigState extends VuexModule implements IConfigState {
       this.SetConfigSetupProcess(false);
       return JSON.parse(settings) as IConfiguration;
     } catch (e) {
+      console.log(e);
       try {
         const config = JSON.stringify(Baseconfig);
         await FileService.WriteFile(settingsFilePath, config, {

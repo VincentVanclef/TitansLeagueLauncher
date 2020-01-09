@@ -26,7 +26,9 @@ function createWindow() {
     },
     resizable: false,
     darkTheme: true,
-    center: true
+    center: true,
+    autoHideMenuBar: true,
+    maximizable: false
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

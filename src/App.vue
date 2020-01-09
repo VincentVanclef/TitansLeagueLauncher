@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <div class="loading_settings">
+    <div class="loading_settings" v-if="SettingsLoading">
       Loading Settings
       <b-spinner variant="danger"></b-spinner>
     </div>
@@ -22,6 +22,10 @@ import { ConfigModule } from "@/store/modules/config/config.store";
   components: {}
 })
 export default class App extends Vue {
+  get SettingsLoading() {
+    return ConfigModule.configSetupInProcess;
+  }
+
   get Config() {
     return ConfigModule.config;
   }
@@ -33,7 +37,7 @@ export default class App extends Vue {
   async LoadConfig() {
     await ConfigModule.LoadSettingsConfig();
   }
-  
+
   created() {}
 }
 </script>
