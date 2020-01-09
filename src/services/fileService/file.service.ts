@@ -1,33 +1,82 @@
 import fs from "fs";
 import util from "util";
 
+/*
+  flags: https://nodejs.org/api/fs.html#fs_file_system_flags
+
+*/
+
+const existsfile = util.promisify(fs.exists);
 const readfile = util.promisify(fs.readFile);
 const writefile = util.promisify(fs.writeFile);
+const existfolder = util.promisify(fs.exists);
+const createfolder = util.promisify(fs.mkdir);
 
-interface IReadFileOptions {
-  encoding: "utf8";
+export interface IWriteFileOptions {
+  encoding?: FileEncodings | undefined;
+  mode?: FileModes | undefined;
+  flags?: FileFlags | undefined;
 }
 
+export enum FileFlags {
+  Reading = "r",
+  ReadingCheckExistance = "rx",
+  Appending = "a",
+  AppendingCheckExistance = "ax",
+  Writing = "w",
+  WritingCheckExistance = "wx"
+}
+
+export enum FileEncodings {
+  utf8 = "utf8"
+}
+
+export enum FileModes {}
+
+type MakeDirectoryOptions = fs.MakeDirectoryOptions;
+
 class FileService {
-  async ReadFile(
-    path: string,
-    options: IReadFileOptions = {
-      encoding: "utf8"
-    }
-  ): Promise<string> {
+  async ReadFile(path: string, options?: IWriteFileOptions): Promise<string> {
     try {
       const data = await readfile(path, options);
-      return data;
+      return data.toString();
     } catch (err) {
       throw err;
     }
   }
 
-  async CreateFile(path: string, data: string) {
+  async CheckFile(path: string): Promise<boolean> {
     try {
-      await writefile(path, data, {
-        flag: "wx"
-      });
+      const result = await existsfile(path);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async WriteFile(path: string, data: string, options?: IWriteFileOptions) {
+    try {
+      await writefile(path, data, options);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async ExistsFolder(path: string): Promise<boolean> {
+    try {
+      const result = await existfolder(path);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async CreateFolder(path: string, options?: MakeDirectoryOptions) {
+    const exists = await this.ExistsFolder(path);
+    if (exists) return;
+
+    try {
+      await createfolder(path, options);
     } catch (err) {
       throw err;
     }

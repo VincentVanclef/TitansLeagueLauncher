@@ -39,6 +39,13 @@ export interface IConfiguration {
   autoCheckForUpdates: boolean;
 }
 
+export const Baseconfig: IConfiguration = {
+  wowPath: "",
+  autoCheckForUpdates: false,
+  autoClearCache: false
+};
+
 export const ApplicationConfig = {
+  SettingsPath: "Settings",
   SettingsFileName: "settings.json"
 };
