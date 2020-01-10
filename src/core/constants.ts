@@ -49,3 +49,9 @@ export const ApplicationConfig = {
   SettingsPath: "Settings",
   SettingsFileName: "settings.json"
 };
+
+export const RealmlistConfig = {
+  Realmlist: "logon.Titans-League.org",
+  RealmlistFileName: "realmlist.wtf",
+  RealmlistFileLocation: "data"
+};

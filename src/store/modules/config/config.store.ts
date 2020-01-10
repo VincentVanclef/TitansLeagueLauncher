@@ -33,9 +33,8 @@ class ConfigState extends VuexModule implements IConfigState {
   settingsPath?: string | null = null;
 
   @Mutation
-  ApplySettings(settings: string) {
-    this.config = JSON.parse(settings) as IConfiguration;
-    console.log(this.config);
+  ApplySettings(settings: IConfiguration) {
+    this.config = settings;
   }
 
   @Mutation
@@ -51,6 +50,21 @@ class ConfigState extends VuexModule implements IConfigState {
   @Mutation
   SetConfigSetupProcessFailure(state: boolean) {
     this.configSetupFailed = state;
+  }
+
+  @Action
+  async SaveConfig() {
+    if (!this.config) return;
+    if (!this.settingsPath) return;
+
+    try {
+      await FileService.WriteFile(
+        this.settingsPath,
+        JSON.stringify(this.config)
+      );
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @Action
@@ -70,21 +84,25 @@ class ConfigState extends VuexModule implements IConfigState {
     const settingsFilePath =
       settingsFolderPath + "/" + ApplicationConfig.SettingsFileName;
 
+    this.SetPath(settingsFilePath);
+
     try {
-      const settings = await FileService.ReadFile(settingsFilePath, {
-        encoding: FileEncodings.utf8
-      });
+      const settings = await FileService.ReadFileAs<IConfiguration>(
+        settingsFilePath,
+        {
+          encoding: FileEncodings.utf8
+        }
+      );
       this.ApplySettings(settings);
       this.SetConfigSetupProcess(false);
-      return JSON.parse(settings) as IConfiguration;
+      return settings;
     } catch (e) {
       console.log(e);
       try {
-        const config = JSON.stringify(Baseconfig);
-        await FileService.WriteFile(settingsFilePath, config, {
+        await FileService.WriteObjectToFile(settingsFilePath, Baseconfig, {
           flags: FileFlags.Writing
         });
-        this.ApplySettings(config);
+        this.ApplySettings(Baseconfig);
         this.SetConfigSetupProcess(false);
         return Baseconfig;
       } catch (e) {

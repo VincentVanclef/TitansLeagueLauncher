@@ -12,7 +12,7 @@ const writefile = util.promisify(fs.writeFile);
 const existfolder = util.promisify(fs.exists);
 const createfolder = util.promisify(fs.mkdir);
 
-export interface IWriteFileOptions {
+export interface IFileOptions {
   encoding?: FileEncodings | undefined;
   mode?: FileModes | undefined;
   flags?: FileFlags | undefined;
@@ -36,10 +36,19 @@ export enum FileModes {}
 type MakeDirectoryOptions = fs.MakeDirectoryOptions;
 
 class FileService {
-  async ReadFile(path: string, options?: IWriteFileOptions): Promise<string> {
+  async ReadFile(path: string, options?: IFileOptions): Promise<string> {
     try {
       const data = await readfile(path, options);
       return data.toString();
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async ReadFileAs<T>(path: string, options?: IFileOptions) {
+    try {
+      const data = await readfile(path, options);
+      return JSON.parse(data.toString()) as T;
     } catch (err) {
       throw err;
     }
@@ -54,9 +63,17 @@ class FileService {
     }
   }
 
-  async WriteFile(path: string, data: string, options?: IWriteFileOptions) {
+  async WriteFile(path: string, data: string, options?: IFileOptions) {
     try {
       await writefile(path, data, options);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async WriteObjectToFile(path: string, data: object, options?: IFileOptions) {
+    try {
+      await writefile(path, JSON.stringify(data), options);
     } catch (err) {
       throw err;
     }

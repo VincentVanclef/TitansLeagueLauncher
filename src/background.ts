@@ -28,7 +28,9 @@ function createWindow() {
     darkTheme: true,
     center: true,
     autoHideMenuBar: true,
-    maximizable: false
+    maximizable: false,
+    frame: false,
+    backgroundColor: '#FFF',
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {

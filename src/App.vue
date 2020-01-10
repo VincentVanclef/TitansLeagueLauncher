@@ -1,16 +1,13 @@
 <template>
-  <div class="main">
-    <div class="loading_settings" v-if="SettingsLoading">
-      Loading Settings
-      <b-spinner variant="danger"></b-spinner>
+  <div id="background">
+    <TitleBar />
+    <Logo />
+
+    <div id="main">
+      <router-view></router-view>
     </div>
-    <small v-if="Config"
-      ><p>{{ Config }}</p></small
-    >
-    <small v-if="SettingsPath"
-      ><p>{{ SettingsPath }}</p></small
-    >
-    <b-button variant="dark" @click="LoadConfig">Reload Config</b-button>
+
+    <Footer />
   </div>
 </template>
 
@@ -18,8 +15,12 @@
 import { Component, Vue } from "vue-property-decorator";
 import { ConfigModule } from "@/store/modules/config/config.store";
 
+import TitleBar from "@/components/TitleBar.vue";
+import Logo from "@/components/Logo.vue";
+import Footer from "@/components/Footer.vue";
+
 @Component({
-  components: {}
+  components: { TitleBar, Logo, Footer }
 })
 export default class App extends Vue {
   get SettingsLoading() {
@@ -38,6 +39,10 @@ export default class App extends Vue {
     await ConfigModule.LoadSettingsConfig();
   }
 
+  async SaveConfig() {
+    await ConfigModule.SaveConfig();
+  }
+
   created() {}
 }
 </script>
@@ -48,13 +53,17 @@ export default class App extends Vue {
 @import "@/assets/styles/main.scss";
 @import "@/assets/styles/variables.scss";
 
-.main {
+#background {
+  background: url("~@/assets/images/background_tirion.png");
   height: 100%;
   width: 100%;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-.loading_settings {
-  @include center;
-  font-size: 2em;
+#main {
+  height: calc(100% - #{$footerHeight});
+  width: 100%;
 }
 </style>

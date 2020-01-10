@@ -6,6 +6,9 @@ $grid-breakpoints: (
   xl: 1200px
 );
 
+$titlebarHeight: 45px;
+$footerHeight: 80px;
+
 @mixin tablet {
   @media (min-width: sm) and (max-width: md - 1px) {
     @content;
