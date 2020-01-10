@@ -5,10 +5,10 @@
         <span>Titans-League Launcher</span>
       </div>
       <div id="window-controls">
-        <div class="button" id="min-button" @click="Minimize()">
+        <div class="title_button" id="min-button" @click="Minimize()">
           <span>&#xE921;</span>
         </div>
-        <div class="button" id="close-button" @click="Close()">
+        <div class="title_button" id="close-button" @click="Close()">
           <span>&#xE8BB;</span>
         </div>
       </div>
@@ -36,17 +36,25 @@ export default class TitleBar extends Vue {
 <style scoped lang="scss">
 @import "@/assets/styles/variables.scss";
 
+.titlebar::before {
+  content: "";
+  position: absolute;
+  background: linear-gradient(#06213c, #1e5898);
+  opacity: 0.8;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+}
+
 .titlebar {
   display: block;
   position: fixed;
   top: 0;
   height: $titlebarHeight;
   width: 100%;
-  background: linear-gradient(#06213c, #1e5898);
   color: #fff;
 
   box-shadow: -2px 3px 5px 0px rgba(0, 0, 0, 0.5);
-  opacity: 0.85;
 }
 
 #drag-region {
@@ -65,7 +73,6 @@ export default class TitleBar extends Vue {
   align-items: center;
   margin-left: 8px;
   overflow-x: hidden;
-  font-family: "Segoe UI", sans-serif;
   font-size: 15px;
   font-weight: bold;
   user-select: none;
@@ -90,7 +97,7 @@ export default class TitleBar extends Vue {
   -webkit-app-region: no-drag;
 }
 
-#window-controls .button {
+#window-controls .title_button {
   grid-row: 1 / span 1;
   display: flex;
   justify-content: center;
@@ -102,10 +109,10 @@ export default class TitleBar extends Vue {
   cursor: default;
 }
 
-#window-controls .button:hover {
+#window-controls .title_button:hover {
   background: rgba(255, 255, 255, 0.1);
 }
-#window-controls .button:active {
+#window-controls .title_button:active {
   background: rgba(255, 255, 255, 0.2);
 }
 
