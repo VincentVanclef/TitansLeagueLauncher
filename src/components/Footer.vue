@@ -10,8 +10,13 @@
         Settings
       </div>
     </div>
-    <div class="footer_item"></div>
-    <div class="footer_item"></div>
+    <div class="footer_item">
+      <ProgressBar
+        :percentage="percentage"
+        :name="patchName"
+        v-if="AutoCheckUpdates"
+      />
+    </div>
     <div class="footer_item">
       <div
         v-if="!IsWoWDirectoryValid"
@@ -20,7 +25,12 @@
       >
         Select Folder
       </div>
-      <div v-else class="button button-orange play_button" @click="StartGame">
+      <div
+        v-else
+        class="button button-orange play_button"
+        :class="{ disabled: gameStarting }"
+        @click="StartGame"
+      >
         Start Game
       </div>
     </div>
@@ -32,9 +42,19 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { ApplicationConfig, RealmlistConfig } from "@/core/constants";
 import { ConfigModule } from "@/store/modules/config/config.store";
 import FileService from "@/services/fileService/file.service";
+import PatchService from "@/services/patches/patch.service";
 
-@Component
+import ProgressBar from "@/components/ProgressBar.vue";
+
+@Component({
+  components: { ProgressBar }
+})
 export default class Footer extends Vue {
+  patchName: string = "";
+  percentage: number = 0;
+
+  gameStarting: boolean = false;
+
   async SelectFolder(e: Event) {
     e.preventDefault();
     const result = await ConfigModule.SelectWoWPath();
@@ -64,13 +84,34 @@ export default class Footer extends Vue {
     return ConfigModule.isWoWDirectoryValid;
   }
 
+  get AutoCheckUpdates(): boolean {
+    return ConfigModule.config!.autoCheckForUpdates;
+  }
+
   async StartGame() {
+    if (this.gameStarting) return;
+    this.gameStarting = true;
+
+    if (this.AutoCheckUpdates) {
+      this.percentage = 0;
+
+      await PatchService.UpdatePatches(
+        (fileName: string, percentage: number) => {
+          this.patchName = fileName;
+          this.percentage = percentage;
+        }
+      );
+    }
+
     if (ConfigModule.config!.autoResetRealmlist) {
       await ConfigModule.ResetRealmlist();
     }
     if (ConfigModule.config!.autoClearCache) {
       await ConfigModule.ClearCache();
     }
+
+    this.gameStarting = false;
+
     const closed = await FileService.ExecuteFile(
       ConfigModule.config!.wowPath + "\\Wow.exe"
     );
@@ -91,7 +132,7 @@ export default class Footer extends Vue {
   border-top: 2px solid rgba(0, 0, 0, 0.75);
 
   display: grid;
-  grid-template-columns: repeat(5, 20%);
+  grid-template-columns: 20% 20% 40% 20%;
 
   color: #fff;
   filter: drop-shadow(0 -2mm 2mm #1e5898);

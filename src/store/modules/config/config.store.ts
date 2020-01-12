@@ -19,7 +19,7 @@ import FileService, {
   FileFlags,
   FileEncodings
 } from "@/services/fileService/file.service";
-import { IUserLoginResponse } from "@/models/user/responses/UserLoginResponse";
+import PatchService from "@/services/patches/patch.service";
 
 interface IConfigState {
   configSetupInProcess: boolean;
@@ -198,14 +198,22 @@ class ConfigState extends VuexModule implements IConfigState {
       this.SetConfigSetupProcess(false);
       return settings;
     } catch (e) {
-      console.log(e);
       try {
-        await FileService.WriteObjectToFile(settingsFilePath, Baseconfig, {
+        const baseConfig = Baseconfig;
+        baseConfig.patchConfig = await PatchService.GetPatchConfig();
+
+        for (const config of baseConfig.patchConfig) {
+          const number = config.keepUpdated as any;
+          config.keepUpdated = number === 1 ? true : false;
+        }
+
+        await FileService.WriteObjectToFile(settingsFilePath, baseConfig, {
           flags: FileFlags.Writing
         });
-        this.ApplySettings(Baseconfig);
+        this.ApplySettings(baseConfig);
         this.SetConfigSetupProcess(false);
-        return Baseconfig;
+
+        return baseConfig;
       } catch (e) {
         console.log(e);
         this.SetConfigSetupProcessFailure(true);

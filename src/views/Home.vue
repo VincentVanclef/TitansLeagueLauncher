@@ -4,6 +4,9 @@
       <div class="news-section" v-for="news in serverNews" :key="news.id">
         <div class="news-section-title">
           <h5 v-html="news.title"></h5>
+          <div class="news-section-author">
+            <i class="fa fa-user"></i> {{ news.authorName }}
+          </div>
           <div class="news-section-date">{{ GetDate(news.date) }}</div>
         </div>
         <div class="news-section-content" v-html="news.content"></div>
@@ -64,18 +67,25 @@ export default class HomeView extends Vue {
 .news-section-title {
   margin-top: 25px;
   box-shadow: 0px 0px 3px 2px black;
-  padding: 5px 0px 1px 15px;
+  padding: 10px 0px 1px 15px;
 }
 
 .news-section-date {
   position: absolute;
   top: 5px;
-  right: 5px;
+  right: 15px;
+}
+
+.news-section-author {
+  position: absolute;
+  top: 5px;
+  left: 15px;
+  text-transform: capitalize;
 }
 
 .news-section-content {
   margin-top: 20px;
   box-shadow: 0px 0px 3px 2px black;
-  padding: 5px 0px 1px 15px;
+  padding: 15px;
 }
 </style>

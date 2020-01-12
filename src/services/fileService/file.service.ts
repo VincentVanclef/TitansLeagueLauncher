@@ -10,6 +10,7 @@ import { lstatSync } from "original-fs";
 const existsfile = util.promisify(fs.exists);
 const readfile = util.promisify(fs.readFile);
 const readdir = util.promisify(fs.readdir);
+const filestats = util.promisify(fs.stat);
 const writefile = util.promisify(fs.writeFile);
 const existfolder = util.promisify(fs.exists);
 const createfolder = util.promisify(fs.mkdir);
@@ -106,6 +107,18 @@ class FileService {
     try {
       const result = await existsfile(path);
       return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async GetFileStats(path: string): Promise<fs.Stats | null> {
+    const exists = await this.CheckFile(path);
+    if (!exists) return null;
+
+    try {
+      const stats = await filestats(path);
+      return stats;
     } catch (err) {
       throw err;
     }

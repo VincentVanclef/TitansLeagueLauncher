@@ -60,9 +60,10 @@ export default class App extends Vue {
     await ConfigModule.SaveConfig();
   }
 
-  ToggleContent() {
-    const mainContent = document.getElementById("main_content") as HTMLElement;
-    mainContent.classList.toggle("hidden");
+  async ToggleContent() {
+    // const mainContent = document.getElementById("main_content") as HTMLElement;
+    // mainContent.classList.toggle("hidden");
+
   }
 
   created() {}

@@ -33,27 +33,37 @@ export const MapGameRole = (role: GameRoles): string => {
   }
 };
 
+export interface IPatchConfig {
+  patch: string;
+  modified: Date;
+  keepUpdated: boolean;
+  details: string;
+}
+
 export interface IConfiguration {
   wowPath: string;
   realmlistPath: string;
   autoClearCache: boolean;
   autoCheckForUpdates: boolean;
   autoResetRealmlist: boolean;
+  patchConfig: IPatchConfig[];
 }
 
 export const Baseconfig: IConfiguration = {
   wowPath: "",
   realmlistPath: "",
-  autoCheckForUpdates: false,
+  autoCheckForUpdates: true,
   autoClearCache: false,
-  autoResetRealmlist: true
+  autoResetRealmlist: true,
+  patchConfig: []
 };
 
 export const ApplicationConfig = {
   SettingsPath: "Settings",
   SettingsFileName: "settings.json",
   UserFileName: "user.json",
-  WebsiteURL: "https://titans-league.org"
+  WebsiteURL: "https://titans-league.org",
+  PatchPath: "Data"
 };
 
 export const RealmlistConfig = {

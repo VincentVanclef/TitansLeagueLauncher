@@ -1,6 +1,6 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, Menu } from "electron";
+import { app, protocol, BrowserWindow, Menu, ipcMain } from "electron";
 import {
   createProtocol,
   installVueDevtools
@@ -16,6 +16,7 @@ protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } }
 ]);
 
+
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
@@ -30,8 +31,15 @@ function createWindow() {
     autoHideMenuBar: true,
     maximizable: false,
     frame: false,
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF"
   });
+
+  const handleRedirect = function(e: Event, url: string) {
+    e.preventDefault();
+    require("electron").shell.openExternal(url);
+  };
+
+  win.webContents.on("new-window", handleRedirect);
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
