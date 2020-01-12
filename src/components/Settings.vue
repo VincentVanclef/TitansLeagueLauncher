@@ -178,6 +178,7 @@ export default class SettingsComponent extends Vue {
     }
     if (patches.length === 0) {
       this.settings!.patchConfig = [];
+      await ConfigModule.SaveConfig(this.settings);
       return;
     }
 
@@ -207,6 +208,8 @@ export default class SettingsComponent extends Vue {
         this.settings!.patchConfig.splice(index, 1);
       }
     }
+    
+    await ConfigModule.SaveConfig(this.settings);
   }
 }
 </script>
