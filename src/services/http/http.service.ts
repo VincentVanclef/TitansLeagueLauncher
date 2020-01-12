@@ -8,13 +8,13 @@ import authorizationIntercptor from "./interceptors/authorization.interceptor";
 import validationErrrorsInterceptor, {
   IValidationErrorData
 } from "./interceptors/validationErrors.interceptor";
-import { BusConstants } from "@/core/Constants";
-import bus from '@/core/bus';
+import { BusConstants } from "@/core/constants";
+import bus from "@/core/bus";
 
 const API_URL =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:5000/api"
-    : "https://localhost:5001/api";
+    ? "https://localhost:44342"
+    : "https://titans-league.org/api";
 
 export class HttpService {
   private responseInterceptors: Array<

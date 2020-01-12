@@ -3,11 +3,21 @@
     <TitleBar />
     <Logo />
 
-    <div id="main">
-      <router-view></router-view>
+    <div class="main">
+      <div class="content_toggle" @click="ToggleContent">
+        <img src="@/assets/images/gear_white.png" />
+      </div>
+
+      <div id="main_content">
+        <Navigation :IsLoggedIn="IsLoggedIn" />
+        <router-view :IsLoggedIn="IsLoggedIn"></router-view>
+      </div>
     </div>
 
     <Footer />
+
+    <!-- modals -->
+    <Settings />
   </div>
 </template>
 
@@ -18,11 +28,18 @@ import { ConfigModule } from "@/store/modules/config/config.store";
 import TitleBar from "@/components/TitleBar.vue";
 import Logo from "@/components/Logo.vue";
 import Footer from "@/components/Footer.vue";
+import Settings from "@/components/Settings.vue";
+import Navigation from "@/components/Navigation.vue";
+import { UserModule } from "./store/modules/user/user.store";
 
 @Component({
-  components: { TitleBar, Logo, Footer }
+  components: { TitleBar, Logo, Footer, Settings, Navigation }
 })
 export default class App extends Vue {
+  get IsLoggedIn() {
+    return UserModule.IsLoggedIn;
+  }
+
   get SettingsLoading() {
     return ConfigModule.configSetupInProcess;
   }
@@ -43,6 +60,11 @@ export default class App extends Vue {
     await ConfigModule.SaveConfig();
   }
 
+  ToggleContent() {
+    const mainContent = document.getElementById("main_content") as HTMLElement;
+    mainContent.classList.toggle("hidden");
+  }
+
   created() {}
 }
 </script>
@@ -52,6 +74,7 @@ export default class App extends Vue {
 @import "node_modules/bootstrap-vue/src/index.scss";
 @import "@/assets/styles/main.scss";
 @import "@/assets/styles/variables.scss";
+@import "@/assets/styles/buttons.scss";
 
 #background {
   background: url("~@/assets/images/background_tirion.png");
@@ -62,8 +85,36 @@ export default class App extends Vue {
   background-size: cover;
 }
 
-#main {
+.main {
   height: calc(100% - #{$footerHeight});
   width: 100%;
+  padding: 115px 30px 35px 30px;
+}
+
+#main_content {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  height: 100%;
+  width: 100%;
+  padding: 10px 15px 10px 15px;
+  color: #fff;
+
+  display: grid;
+  grid-template-columns: 25% 75%;
+  grid-gap: 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.content_toggle {
+  position: fixed;
+  top: 30px;
+  right: 50px;
+  img {
+    height: 20px;
+    width: 20px;
+  }
 }
 </style>

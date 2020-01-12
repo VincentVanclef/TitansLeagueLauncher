@@ -1,6 +1,7 @@
-import fs from "fs";
+import fs, { RmDirAsyncOptions } from "fs";
 import util from "util";
-
+import path from "path";
+import { lstatSync } from "original-fs";
 /*
   flags: https://nodejs.org/api/fs.html#fs_file_system_flags
 
@@ -8,9 +9,14 @@ import util from "util";
 
 const existsfile = util.promisify(fs.exists);
 const readfile = util.promisify(fs.readFile);
+const readdir = util.promisify(fs.readdir);
 const writefile = util.promisify(fs.writeFile);
 const existfolder = util.promisify(fs.exists);
 const createfolder = util.promisify(fs.mkdir);
+const removefolder = util.promisify(fs.rmdir);
+const execFile = util.promisify(require("child_process").execFile);
+
+export const isDirectory = (source: any) => lstatSync(source).isDirectory();
 
 export interface IFileOptions {
   encoding?: FileEncodings | undefined;
@@ -35,6 +41,28 @@ export enum FileModes {}
 
 type MakeDirectoryOptions = fs.MakeDirectoryOptions;
 
+const removeDir = function(dirPath: string) {
+  if (!fs.existsSync(dirPath)) {
+    return;
+  }
+
+  const list = fs.readdirSync(dirPath);
+  for (var i = 0; i < list.length; i++) {
+    const filename = path.join(dirPath, list[i]);
+    const stat = fs.statSync(filename);
+
+    if (filename == "." || filename == "..") {
+      // do nothing for current and parent dir
+    } else if (stat.isDirectory()) {
+      removeDir(filename);
+    } else {
+      fs.unlinkSync(filename);
+    }
+  }
+
+  fs.rmdirSync(dirPath);
+};
+
 class FileService {
   async ReadFile(path: string, options?: IFileOptions): Promise<string> {
     try {
@@ -49,6 +77,26 @@ class FileService {
     try {
       const data = await readfile(path, options);
       return JSON.parse(data.toString()) as T;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async ReadDirectory(path: string, options?: IFileOptions) {
+    try {
+      const data = await readdir(path, options);
+      return data;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async GetDirectories(path: string): Promise<string[]> {
+    try {
+      const result = await readdir(path, { withFileTypes: true });
+      return result
+        .filter((dirent: any) => dirent.isDirectory())
+        .map((dirent: any) => dirent.name) as string[];
     } catch (err) {
       throw err;
     }
@@ -96,6 +144,30 @@ class FileService {
       await createfolder(path, options);
     } catch (err) {
       throw err;
+    }
+  }
+
+  async RemoveFolder(
+    path: string,
+    options?: RmDirAsyncOptions
+  ): Promise<boolean> {
+    const exists = await this.ExistsFolder(path);
+    if (!exists) return false;
+
+    try {
+      removeDir(path);
+      return true;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async ExecuteFile(path: string, params?: string[]): Promise<any> {
+    try {
+      const { stdout } = await execFile(path, params);
+      return stdout;
+    } catch (e) {
+      throw e;
     }
   }
 }

@@ -4,14 +4,16 @@ html,
 body {
   font-family: "Orbitron", sans-serif;
   height: 100%;
-  border: 1px solid #48545c;
-  overflow-y: hidden;
 }
 
 ::-webkit-scrollbar,
 ::-webkit-scrollbar {
-  width: 0 !important;
-  background-color: transparent;
+  width: 5px !important;
+  background: linear-gradient(#06213c, #1e5898);
+}
+
+::-webkit-scrollbar-thumb {
+  background: orange;
 }
 
 * {
@@ -31,4 +33,12 @@ a:hover {
 
 .clickable {
   cursor: pointer;
+}
+
+.disabled {
+  filter: grayscale(30);
+}
+
+::placeholder {
+  color: #000;
 }

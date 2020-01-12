@@ -1,7 +1,7 @@
 import allModules from "@/store/modules";
 import store from "@/store";
 
-export default function dispatchActionForAllModules(
+export default async function dispatchActionForAllModules(
   actionName: string,
   config: any = {}
 ) {
@@ -11,13 +11,13 @@ export default function dispatchActionForAllModules(
   for (const moduleName in modules) {
     const moduleDefinition: any = modules[moduleName];
     if (moduleDefinition && moduleDefinition.Init) {
-      store.dispatch(`${modulePrefix}${moduleName}/${actionName}`);
+      await store.dispatch(`${modulePrefix}${moduleName}/${actionName}`);
     }
 
     // If there are any nested sub-modules...
     if (moduleDefinition.modules) {
       // Also dispatch the action for these sub-modules.
-      dispatchActionForAllModules(actionName, {
+      await dispatchActionForAllModules(actionName, {
         modules: moduleDefinition.modules,
         modulePrefix: modulePrefix + moduleName + "/"
       });

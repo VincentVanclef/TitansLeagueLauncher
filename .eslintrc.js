@@ -7,6 +7,7 @@ module.exports = {
   rules: {
     "no-console": "off",
     "no-debugger": "off",
+    "no-empty": "off",
     "prettier/prettier": ["warn"]
   },
   parserOptions: {

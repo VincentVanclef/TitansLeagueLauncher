@@ -3,12 +3,21 @@ import { Component, Vue } from "vue-property-decorator";
 import { BusConstants } from "@/core/constants";
 import HttpStatus from "http-status-codes";
 import { IValidationErrorData } from "@/services/http/interceptors/validationErrors.interceptor";
+import dispatchActionForAllModules from "@/store/initialize.stores";
+import { ConfigModule } from "@/store/modules/config/config.store";
+import { IUserLoginResponse } from "@/models/user/responses/UserLoginResponse";
 
 @Component
 export default class BusHandler extends Vue {
-  private OnLogin() {}
+  private OnLogin(data: IUserLoginResponse) {}
 
-  private OnLogout() {}
+  private OnLogout() {
+    dispatchActionForAllModules("Clear");
+
+    try {
+      this.$router.push("/");
+    } catch (e) {}
+  }
 
   private OnValidationErrors(data: IValidationErrorData) {
     if (data.httpStatus === HttpStatus.UNAUTHORIZED) {
@@ -18,7 +27,7 @@ export default class BusHandler extends Vue {
     }
 
     this.$bvToast.toast(data.message || "Error", {
-      title: `${data.httpStatusText} (${data.httpStatus})`,
+      title: `${data.httpStatusText}`,
       variant: "danger",
       solid: true
     });

@@ -1,7 +1,7 @@
 <template>
   <div id="window-logo">
     <img
-      src="https://i.pinimg.com/originals/37/eb/8a/37eb8a771ceb2abb5d3f6efff312d4cf.png"
+      src="@/assets/images/logo.png"
     />
   </div>
 </template>
@@ -18,7 +18,7 @@ export default class Logo extends Vue {}
   position: fixed;
   top: 5px;
   left: 45%;
-  z-index: 2;
+  z-index: 1;
   opacity: 0.8;
 
   -webkit-app-region: drag;

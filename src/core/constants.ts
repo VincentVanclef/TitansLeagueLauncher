@@ -35,23 +35,48 @@ export const MapGameRole = (role: GameRoles): string => {
 
 export interface IConfiguration {
   wowPath: string;
+  realmlistPath: string;
   autoClearCache: boolean;
   autoCheckForUpdates: boolean;
+  autoResetRealmlist: boolean;
 }
 
 export const Baseconfig: IConfiguration = {
   wowPath: "",
+  realmlistPath: "",
   autoCheckForUpdates: false,
-  autoClearCache: false
+  autoClearCache: false,
+  autoResetRealmlist: true
 };
 
 export const ApplicationConfig = {
   SettingsPath: "Settings",
-  SettingsFileName: "settings.json"
+  SettingsFileName: "settings.json",
+  UserFileName: "user.json",
+  WebsiteURL: "https://titans-league.org"
 };
 
 export const RealmlistConfig = {
   Realmlist: "logon.Titans-League.org",
   RealmlistFileName: "realmlist.wtf",
   RealmlistFileLocation: "data"
+};
+
+export enum WowLocales {
+  frFR = "frFR", // French (France)
+  deDE = "deDE", // German (Germany)
+  enGB = "enGB", // English (Great Britain) if returned, can substitute 'enUS' for consistancy
+  enUS = "enUS", // English (America)
+  itIT = "itIT", // Italian (Italy)
+  koKR = "koKR", // Korean (Korea) RTL - right-to-left
+  zhCN = "zhCN", // Chinese (China) (simplified) implemented LTR left-to-right in WoW
+  zhTW = "zhTW", // Chinese (Taiwan) (traditional) implemented LTR left-to-right in WoW
+  ruRU = "ruRU", // Russian (Russia)
+  esES = "esES", // Spanish (Spain)
+  esMX = "esMX", // Spanish (Mexico)
+  ptBR = "ptBR" // Portuguese (Brazil)
+}
+
+export const WoWLocalesArray = () => {
+  return Object.keys(WowLocales);
 };
