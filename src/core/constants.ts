@@ -46,6 +46,7 @@ export interface IConfiguration {
   autoClearCache: boolean;
   autoCheckForUpdates: boolean;
   autoResetRealmlist: boolean;
+  enableLogs: boolean;
   patchConfig: IPatchConfig[];
 }
 
@@ -53,8 +54,9 @@ export const Baseconfig: IConfiguration = {
   wowPath: "",
   realmlistPath: "",
   autoCheckForUpdates: true,
-  autoClearCache: false,
+  autoClearCache: true,
   autoResetRealmlist: true,
+  enableLogs: false,
   patchConfig: []
 };
 

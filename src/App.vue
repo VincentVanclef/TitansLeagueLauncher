@@ -4,12 +4,12 @@
     <Logo />
 
     <div class="main">
-      <div class="content_toggle" @click="ToggleContent">
+      <!-- <div class="content_toggle" @click="ToggleContent">
         <img src="@/assets/images/gear_white.png" />
-      </div>
+      </div> -->
 
       <div id="main_content">
-        <Navigation :IsLoggedIn="IsLoggedIn" />
+        <Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;"/>
         <router-view :IsLoggedIn="IsLoggedIn"></router-view>
       </div>
     </div>
@@ -102,7 +102,6 @@ export default class App extends Vue {
 
   display: grid;
   grid-template-columns: 25% 75%;
-  grid-gap: 20px;
 }
 
 .hidden {

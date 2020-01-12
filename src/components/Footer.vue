@@ -45,6 +45,7 @@ import FileService from "@/services/fileService/file.service";
 import PatchService from "@/services/patches/patch.service";
 
 import ProgressBar from "@/components/ProgressBar.vue";
+import LogService from "../services/logs/log.service";
 
 @Component({
   components: { ProgressBar }
@@ -85,7 +86,9 @@ export default class Footer extends Vue {
   }
 
   get AutoCheckUpdates(): boolean {
-    return ConfigModule.config!.autoCheckForUpdates;
+    return (
+      ConfigModule.config != null && ConfigModule.config.autoCheckForUpdates
+    );
   }
 
   async StartGame() {
@@ -93,28 +96,45 @@ export default class Footer extends Vue {
     this.gameStarting = true;
 
     if (this.AutoCheckUpdates) {
-      this.percentage = 0;
-
-      await PatchService.UpdatePatches(
-        (fileName: string, percentage: number) => {
-          this.patchName = fileName;
-          this.percentage = percentage;
-        }
-      );
+      try {
+        await PatchService.UpdatePatches(
+          (fileName: string, percentage: number) => {
+            this.patchName = fileName;
+            this.percentage = percentage;
+          }
+        );
+      } catch (e) {
+        LogService.Log("StartGame: UpdatePatches", e);
+      }
     }
 
     if (ConfigModule.config!.autoResetRealmlist) {
-      await ConfigModule.ResetRealmlist();
+      try {
+        await ConfigModule.ResetRealmlist();
+      } catch (e) {
+        LogService.Log("StartGame: ResetRealmlist", e);
+      }
     }
     if (ConfigModule.config!.autoClearCache) {
-      await ConfigModule.ClearCache();
+      try {
+        await ConfigModule.ClearCache();
+      } catch (e) {
+        LogService.Log("StartGame: ClearCache", e);
+      }
     }
 
     this.gameStarting = false;
 
-    const closed = await FileService.ExecuteFile(
-      ConfigModule.config!.wowPath + "\\Wow.exe"
-    );
+    try {
+      const closed = await FileService.ExecuteFile(
+        ConfigModule.config!.wowPath + "\\Wow.exe"
+      );
+    } catch (e) {
+      LogService.Log("StartGame: ExecuteFile", e);
+    }
+
+    this.percentage = 0;
+    this.patchName = "";
   }
 }
 </script>

@@ -20,6 +20,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { NewsApi } from "@/services/api/api.news";
 import { INews } from "@/models/news/news.model";
 import moment from "moment";
+import LogService from "../services/logs/log.service";
 
 @Component({
   components: {}

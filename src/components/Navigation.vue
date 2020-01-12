@@ -130,6 +130,7 @@ export default class Navigation extends Vue {
 }
 
 .active {
-  background: $backgroundColor;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
 }
 </style>

@@ -4,6 +4,7 @@ import { BusConstants } from "@/core/constants";
 
 import HttpStatus from "http-status-codes";
 import { UserModule } from "@/store/modules/user/user.store";
+import LogService from "@/services/logs/log.service";
 
 export default async (response: AxiosResponse) => {
   const responseStatus = response.status;
@@ -19,7 +20,8 @@ export default async (response: AxiosResponse) => {
     }
   }
 
-  const httpStatusText = response.data.title || response.statusText || "Error";
+  const httpStatusText = response.data.title || response.statusText || "";
+  if (httpStatusText.length === 0) return response;
   const data = response.data;
 
   let message = data.message || data.title;
@@ -36,6 +38,8 @@ export default async (response: AxiosResponse) => {
     httpStatusText,
     message: message
   };
+
+  LogService.Log("ValidationErrorInterceptor", message);
 
   bus.emit(BusConstants.ValidationError, validationErrorData);
   return response;

@@ -4,6 +4,7 @@ import DownloadService from "@/services/download/download.service";
 
 import { ApplicationConfig, IPatchConfig } from "@/core/constants";
 import { ConfigModule } from "@/store/modules/config/config.store";
+import LogService from "../logs/log.service";
 
 const patchURL = "https://titans-league.org/static/downloads/";
 
@@ -34,18 +35,22 @@ class PatchService {
       const setting = patchSettings.find(x => x.patch === config.patch);
       if (!setting || !setting.keepUpdated) continue;
 
-      const patch = await FileService.GetFileStats(
-        this.getPatchLocation(config.patch)
-      );
-      if (!patch) {
-        requiresUpdate.push(config.patch);
-        continue;
-      }
+      try {
+        const patch = await FileService.GetFileStats(
+          this.getPatchLocation(config.patch)
+        );
+        if (!patch) {
+          requiresUpdate.push(config.patch);
+          continue;
+        }
 
-      const pTime = new Date(patch.mtime);
-      const sTime = new Date(config.modified);
-      if (pTime < sTime) {
-        requiresUpdate.push(config.patch);
+        const pTime = new Date(patch.mtime);
+        const sTime = new Date(config.modified);
+        if (pTime < sTime) {
+          requiresUpdate.push(config.patch);
+        }
+      } catch (e) {
+        LogService.Log("GetPatchesThatNeedsToBeUpdated", e);
       }
     }
 
@@ -59,13 +64,17 @@ class PatchService {
     if (patchesThatNeedsToBeUpdated.length === 0) return;
 
     for (const patch of patchesThatNeedsToBeUpdated) {
-      await DownloadService.downloadFileAsync(
-        patchURL + patch,
-        this.getPatchLocation(patch),
-        (pct: number) => {
-          callback(patch, pct);
-        }
-      );
+      try {
+        await DownloadService.downloadFileAsync(
+          patchURL + patch,
+          this.getPatchLocation(patch),
+          (pct: number) => {
+            callback(patch, pct);
+          }
+        );
+      } catch (e) {
+        LogService.Log("UpdatePatches", e);
+      }
     }
   }
 }

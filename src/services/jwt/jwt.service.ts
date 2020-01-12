@@ -1,10 +1,12 @@
-import { Jwt } from '@/models/jwt/jwt.model';
+import { Jwt } from "@/models/jwt/jwt.model";
+import LogService from "@/services/logs/log.service";
 
 export default class JwtService {
   public static DecodeToken(token: string): any {
     try {
       return JSON.parse(atob(token.split(".")[1]));
     } catch (e) {
+      LogService.Log("DecodeToken", e);
       return null;
     }
   }
@@ -13,6 +15,7 @@ export default class JwtService {
     try {
       return token !== null ? (JSON.parse(token) as T) : null;
     } catch (err) {
+      LogService.Log("DecodeTokenAs", err);
       return null;
     }
   }

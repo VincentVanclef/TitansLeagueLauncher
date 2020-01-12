@@ -20,6 +20,7 @@ import FileService, {
   FileEncodings
 } from "@/services/fileService/file.service";
 import PatchService from "@/services/patches/patch.service";
+import LogService from "@/services/logs/log.service";
 
 interface IConfigState {
   configSetupInProcess: boolean;
@@ -103,13 +104,12 @@ class ConfigState extends VuexModule implements IConfigState {
 
   @Action
   async ClearCache() {
-    console.log(this.config!.wowPath + "\\Cache\\WDB");
     try {
       await FileService.RemoveFolder(this.config!.wowPath + "\\Cache\\WDB", {
         recursive: true
       });
     } catch (e) {
-      console.log(e);
+      LogService.Log("ClearCache", e);
     }
   }
 
@@ -167,7 +167,7 @@ class ConfigState extends VuexModule implements IConfigState {
         JSON.stringify(this.config)
       );
     } catch (e) {
-      console.log(e);
+      LogService.Log("SaveConfig", e);
     }
   }
 
@@ -194,17 +194,26 @@ class ConfigState extends VuexModule implements IConfigState {
         settingsFilePath
       );
       this.ApplySettings(settings);
-      await this.ValidateWoWDirectory(settings.wowPath);
+      try {
+        await this.ValidateWoWDirectory(settings.wowPath);
+      } catch (e) {
+        LogService.Log("ValidateWoWDirectory", e);
+      }
       this.SetConfigSetupProcess(false);
       return settings;
     } catch (e) {
+      LogService.Log("LoadSettingsConfig 1", e);
       try {
         const baseConfig = Baseconfig;
-        baseConfig.patchConfig = await PatchService.GetPatchConfig();
-
-        for (const config of baseConfig.patchConfig) {
-          const number = config.keepUpdated as any;
-          config.keepUpdated = number === 1 ? true : false;
+        try {
+          baseConfig.patchConfig = await PatchService.GetPatchConfig();
+          for (const config of baseConfig.patchConfig) {
+            const number = config.keepUpdated as any;
+            config.keepUpdated = number === 1 ? true : false;
+          }
+        } catch (e) {
+          baseConfig.patchConfig = [];
+          LogService.Log("GetPatchConfig", e);
         }
 
         await FileService.WriteObjectToFile(settingsFilePath, baseConfig, {
@@ -215,7 +224,7 @@ class ConfigState extends VuexModule implements IConfigState {
 
         return baseConfig;
       } catch (e) {
-        console.log(e);
+        LogService.Log("LoadSettingsConfig 2", e);
         this.SetConfigSetupProcessFailure(true);
         return null;
       }

@@ -13,7 +13,7 @@
     ></div>
     <span class="progress-bar-percent">
       {{ name.length > 0 ? "(" + name + ")" : "" }}
-      {{ parseInt(percentage) }} %</span
+      {{ percentage > 0 ? parseInt(percentage) + "%" : "" }}</span
     >
   </div>
 </template>
@@ -43,21 +43,6 @@ export default class ProgressBar extends Vue {
 .progress-bar {
   height: 100%;
   border-radius: 4px;
-  background-image: -webkit-linear-gradient(
-    top,
-    rgba(255, 255, 255, 0.3),
-    rgba(255, 255, 255, 0.05)
-  );
-  background-image: -moz-linear-gradient(
-    top,
-    rgba(255, 255, 255, 0.3),
-    rgba(255, 255, 255, 0.05)
-  );
-  background-image: -o-linear-gradient(
-    top,
-    rgba(255, 255, 255, 0.3),
-    rgba(255, 255, 255, 0.05)
-  );
   background-image: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0.3),

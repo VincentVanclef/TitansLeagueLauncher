@@ -8,6 +8,25 @@
     @ok="SaveSettings()"
     @show="SyncSettings()"
   >
+    <template v-slot:modal-footer="{ ok }">
+      <div class="w-100">
+        <div
+          class="float-left button button-orange"
+          style="height: 40px; width: 200px; font-size: 1em;"
+          @click="SelectFolder"
+        >
+          Select WoW Folder
+        </div>
+        <div
+          class="float-right button button-green"
+          style="height: 40px; width: 90px; font-size: 1em;"
+          @click="ok()"
+        >
+          Save
+        </div>
+      </div>
+    </template>
+
     <b-row v-if="settings">
       <b-col cols="9">
         <div class="settings_item">
@@ -19,8 +38,14 @@
         <div class="settings_item">
           Automatically detect updates
         </div>
+        <div class="settings_item">
+          Enable Logging (Debug)
+        </div>
       </b-col>
       <b-col cols="1">
+        <div class="settings_item">
+          |
+        </div>
         <div class="settings_item">
           |
         </div>
@@ -50,6 +75,10 @@
             switch
             size="lg"
           >
+          </b-form-checkbox>
+        </div>
+        <div class="settings_entry">
+          <b-form-checkbox v-model="settings.enableLogs" switch size="lg">
           </b-form-checkbox>
         </div>
       </b-col>
@@ -96,6 +125,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { ConfigModule } from "@/store/modules/config/config.store";
 import { IConfiguration, IPatchConfig } from "@/core/constants";
 import PatchService from "@/services/patches/patch.service";
+import LogService from "../services/logs/log.service";
 
 @Component({
   components: {}
@@ -103,10 +133,26 @@ import PatchService from "@/services/patches/patch.service";
 export default class SettingsComponent extends Vue {
   settings: IConfiguration | null = null;
 
+  async SelectFolder(e: Event) {
+    e.preventDefault();
+    const result = await ConfigModule.SelectWoWPath();
+    if (!result) {
+      this.$bvModal.msgBoxOk(
+        "Please select your World of Warcraft directory.",
+        {
+          centered: true,
+          noCloseOnBackdrop: true,
+          noCloseOnEsc: true
+        }
+      );
+    }
+  }
+
   async SaveSettings() {
     try {
       await ConfigModule.SaveConfig(this.settings);
     } catch (e) {
+      LogService.Log("SaveSettings", e);
       this.$bvToast.toast(e, {
         title: "Error",
         variant: "danger"
@@ -124,18 +170,35 @@ export default class SettingsComponent extends Vue {
     if (ConfigModule.config) this.settings = ConfigModule.config;
 
     // Check for new stuff
-    const patches = await PatchService.GetPatchConfig();
+    let patches: IPatchConfig[] = [];
+    try {
+      patches = await PatchService.GetPatchConfig();
+    } catch (e) {
+      LogService.Log("GetPatchConfig", e);
+    }
+    if (patches.length === 0) {
+      this.settings!.patchConfig = [];
+      return;
+    }
+
     for (const patch of patches) {
       const exists = this.settings!.patchConfig.find(
         x => x.patch === patch.patch
       );
       if (!exists) {
         this.settings!.patchConfig.push(patch);
+      } else {
+        exists.details = patch.details;
       }
     }
 
     // Check for deleted stuff
     for (const patch of this.settings!.patchConfig) {
+      const val = patch.keepUpdated as any;
+      if (val === 1 || val === 0) {
+        patch.keepUpdated = val === 1 ? true : false;
+      }
+
       let index = patches.findIndex(x => x.patch === patch.patch);
       if (index < 0) {
         index = this.settings!.patchConfig.findIndex(

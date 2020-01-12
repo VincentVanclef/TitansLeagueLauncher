@@ -16,14 +16,14 @@ protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } }
 ]);
 
-
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     width: 920,
     height: 600,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      webSecurity: false
     },
     resizable: false,
     darkTheme: true,

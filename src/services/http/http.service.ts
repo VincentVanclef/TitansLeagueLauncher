@@ -10,6 +10,7 @@ import validationErrrorsInterceptor, {
 } from "./interceptors/validationErrors.interceptor";
 import { BusConstants } from "@/core/constants";
 import bus from "@/core/bus";
+import LogService from "@/services/logs/log.service";
 
 const API_URL =
   process.env.NODE_ENV === "development"
@@ -73,6 +74,7 @@ export class HttpService {
     ) {
       // Validatestatus above is set to include these ones so it will trigger 'then'.
       // Reason is that interceptors will then be run automatically on this as well.
+      LogService.Log("handlePotentialErrorResponse", JSON.stringify(res));
       throw res;
     } else if (res.status === HttpStatus.UNAUTHORIZED) {
       console.log("Not logged in, status:", res.status, res.data);
@@ -82,11 +84,15 @@ export class HttpService {
 
   private handleErrorResponse(error: any): void {
     const errors = JSON.parse(JSON.stringify(error));
-    const status = error.response.status;
+    const status =
+      errors && errors.response ? errors.response.status : errors.status;
 
-    let validationErrorData: IValidationErrorData = {
+    const validationErrorData: IValidationErrorData = {
       httpStatus: status,
-      httpStatusText: error.response.statusText,
+      httpStatusText:
+        errors && errors.response
+          ? errors.response.statusText
+          : errors.statusText,
       message: errors.message
     };
 
@@ -97,10 +103,25 @@ export class HttpService {
     //     break;
     // }
 
-    if (error.response && error.response.data && error.response.data.message) {
-      validationErrorData.httpStatusText = error.response.data.message;
+    if (errors && errors.data && errors.data.message) {
+      validationErrorData.message = error.data.message;
     }
 
+    if (
+      errors.response &&
+      errors.response.data &&
+      errors.response.data.message
+    ) {
+      validationErrorData.message = errors.response.data.message;
+    }
+
+    if (validationErrorData.httpStatusText.length === 0) {
+      validationErrorData.httpStatusText = "Error";
+    }
+
+    if (!validationErrorData.message) return;
+
+    LogService.Log("handleErrorResponse", JSON.stringify(error));
     bus.emit(BusConstants.ValidationError, validationErrorData);
   }
 
