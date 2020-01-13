@@ -52,13 +52,7 @@ function createWindow() {
     createProtocol("app");
     // Load the index.html when not in development
     win.loadURL("app://./index.html");
-    autoUpdater
-      .checkForUpdatesAndNotify()
-      .then((e: UpdateCheckResult | null) => {
-        if (e) {
-          console.log(e);
-        }
-      });
+    const result = autoUpdater.checkForUpdates();
   }
 
   win.on("closed", () => {
@@ -120,21 +114,40 @@ autoUpdater.on("error", error => {
   );
 });
 
-// autoUpdater.on("update-available", () => {
-//   dialog.showMessageBox(
-//     {
-//       type: "info",
-//       title: "Found Updates",
-//       message: "Found updates, do you want update now?",
-//       buttons: ["Sure", "No"]
-//     },
-//     buttonIndex => {
-//       if (buttonIndex === 0) {
-//         autoUpdater.downloadUpdate();
-//       }
-//     }
-//   );
-// });
+autoUpdater.on("update-available", () => {
+  dialog.showMessageBox(
+    {
+      type: "info",
+      title: "Update Available",
+      message: "Do you want to update now?",
+      buttons: ["Yes", "No"]
+    },
+    buttonIndex => {
+      if (buttonIndex === 0) {
+        autoUpdater.downloadUpdate();
+      }
+    }
+  );
+
+  autoUpdater.on("update-downloaded", function(event, releaseName) {
+    // # confirm install or not to user
+    const index = dialog.showMessageBox({
+      type: "info",
+      buttons: ["Restart", "Later"],
+      title: "Company Tech Solution",
+      message:
+        "New version has been downloaded. Please restart the application to apply the updates.",
+      detail: releaseName
+    });
+
+    if (index === 1) {
+      return;
+    }
+
+    // # restart app, then update will be applied
+    autoUpdater.quitAndInstall();
+  });
+});
 
 // autoUpdater.on("update-not-available", () => {
 //   dialog.showMessageBox({

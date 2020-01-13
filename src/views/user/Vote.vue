@@ -1,7 +1,7 @@
 <template>
   <div class="vote">
     <div class="vote-site-header">
-      <div class="vote-site-entry value">Site {{ User.vp }}</div>
+      <div class="vote-site-entry value">Site</div>
       <div class="vote-site-entry title">Value</div>
       <div class="vote-site-entry action">Time Left</div>
     </div>
@@ -46,15 +46,15 @@ export default class Vote extends Vue {
   }
 
   async Vote(site: IVoteSite) {
-    window.open(site.link, "_blank");
-
     const result = await UserApi.Vote(site);
+    
+    window.open(site.link, "_blank");
 
     this.voteTimers.push({
       site: site.id,
       unsetTimer: result.unsetTime
     });
-    
+
     UserModule.user!.vp = result.vp;
 
     this.$bvToast.toast(
