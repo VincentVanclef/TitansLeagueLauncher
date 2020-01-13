@@ -214,11 +214,13 @@ export default class Footer extends Vue {
 }
 
 .menu {
+  $menuSize: 35px;
+
   position: absolute;
   bottom: 70px;
-  left: 50%;
-  width: 35px;
-  height: 35px;
+  left: calc(50% - #{$menuSize} / 2);
+  width: $menuSize;
+  height: $menuSize;
   cursor: pointer;
   z-index: 2;
   border: 2px solid rgba(0, 0, 0, 0.75);
