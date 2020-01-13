@@ -62,7 +62,6 @@ class PatchService {
     if (patchesThatNeedsToBeUpdated.length === 0) return;
 
     for (const patch of patchesThatNeedsToBeUpdated) {
-      console.log(patch);
       try {
         await DownloadService.downloadFileAsync(
           patch.downloadLink,

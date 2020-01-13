@@ -37,7 +37,6 @@ function createWindow() {
     backgroundColor: "#1e5898"
   });
 
-  
   const handleRedirect = function(e: Event, url: string) {
     e.preventDefault();
     require("electron").shell.openExternal(url);
