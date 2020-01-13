@@ -117,7 +117,6 @@ autoUpdater.on("error", error => {
 autoUpdater.on("update-available", () => {
   dialog.showMessageBox(
     {
-      type: "info",
       title: "Update Available",
       message: "Do you want to update now?",
       buttons: ["Yes", "No"]
@@ -128,25 +127,25 @@ autoUpdater.on("update-available", () => {
       }
     }
   );
+});
 
-  autoUpdater.on("update-downloaded", function(event, releaseName) {
-    // # confirm install or not to user
-    const index = dialog.showMessageBox({
-      type: "info",
-      buttons: ["Restart", "Later"],
-      title: "Company Tech Solution",
+autoUpdater.on("update-downloaded", function(event, releaseName) {
+  // # confirm install or not to user
+  dialog.showMessageBox(
+    {
+      title: "Update Downloaded",
       message:
         "New version has been downloaded. Please restart the application to apply the updates.",
+      buttons: ["Restart", "Later"],
       detail: releaseName
-    });
-
-    if (index === 1) {
-      return;
+    },
+    buttonIndex => {
+      if (buttonIndex === 0) {
+        // # restart app, then update will be applied
+        autoUpdater.quitAndInstall();
+      }
     }
-
-    // # restart app, then update will be applied
-    autoUpdater.quitAndInstall();
-  });
+  );
 });
 
 // autoUpdater.on("update-not-available", () => {
