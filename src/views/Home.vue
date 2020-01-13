@@ -48,13 +48,12 @@ export default class HomeView extends Vue {
 
 .home {
   @include pageBackground;
-  padding: 1em;
 }
 
 .news {
-  overflow-x: hidden;
-  overflow-y: auto;
-  height: 310px;
+  position: relative;
+  max-height: $maxPageHeight;
+  overflow: auto;
 }
 
 .news-section {

@@ -18,6 +18,14 @@
       </div>
       <div
         class="navigation_link"
+        @click="Navigate('/user/vote')"
+        v-if="IsLoggedIn"
+        :class="{ active: IsActive('Vote') }"
+      >
+        <div class="text">Vote</div>
+      </div>
+      <div
+        class="navigation_link"
         @click="Navigate('/user/login')"
         v-if="!IsLoggedIn"
         :class="{ active: IsActive('Login') }"

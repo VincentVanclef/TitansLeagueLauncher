@@ -1,7 +1,7 @@
 "use strict";
 
 import { app, protocol, BrowserWindow, dialog } from "electron";
-import { autoUpdater } from "electron-updater";
+import { autoUpdater, UpdateCheckResult } from "electron-updater";
 
 import {
   createProtocol,
@@ -52,7 +52,13 @@ function createWindow() {
     createProtocol("app");
     // Load the index.html when not in development
     win.loadURL("app://./index.html");
-    const result = autoUpdater.checkForUpdatesAndNotify();
+    autoUpdater
+      .checkForUpdatesAndNotify()
+      .then((e: UpdateCheckResult | null) => {
+        if (e) {
+          console.log(e);
+        }
+      });
   }
 
   win.on("closed", () => {

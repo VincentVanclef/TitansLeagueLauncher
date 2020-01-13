@@ -42,3 +42,7 @@ a:hover {
 ::placeholder {
   color: #000;
 }
+
+img {
+  user-select: none;
+}

@@ -3,6 +3,7 @@ import Index from "@/views/user/Index.vue";
 import Login from "@/views/user/Login.vue";
 import Profile from "@/views/user/Profile.vue";
 import Register from "@/views/user/Register.vue";
+import Vote from "@/views/user/Vote.vue";
 
 export const UserRoutes: RouteConfig = {
   path: "/user",
@@ -34,6 +35,14 @@ export const UserRoutes: RouteConfig = {
       component: Register,
       meta: {
         requiresAuth: false
+      }
+    },
+    {
+      path: "/user/vote",
+      name: "Vote",
+      component: Vote,
+      meta: {
+        requiresAuth: true
       }
     }
   ]
