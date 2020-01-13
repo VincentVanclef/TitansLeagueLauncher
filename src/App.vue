@@ -5,6 +5,7 @@
 
     <div class="main">
       <div class="content_toggle" @click="ToggleContent">
+        testtesttest
         <img src="@/assets/images/gear_white.png" />
       </div>
 

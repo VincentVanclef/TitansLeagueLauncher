@@ -1,16 +1,15 @@
 {
   "name": "titansleaguelauncher",
-  "version": "1.0.2",
-  "private": true,
+  "version": "1.0.3",
+  "private": false,
   "description": "A Launcher used to automatically download patches required to play on the titans-league server.",
   "author": "VincentVanclef",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "electron-builder build --win --publish never",
+    "build": "vue-cli-service serve build",
     "lint": "vue-cli-service lint",
-    "deploy": "electron-builder build --win --publish always",
     "electron:build": "vue-cli-service electron:build",
-    "electron:deploy": "vue-cli-service electron:build --win --publish always",
+    "electron:deploy": "vue-cli-service electron:build -p always",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
@@ -42,7 +41,6 @@
     "@vue/eslint-config-prettier": "^5.0.0",
     "@vue/eslint-config-typescript": "^4.0.0",
     "electron": "^5.0.0",
-    "electron-builder": "^21.2.0",
     "eslint": "^5.16.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.0.0",
