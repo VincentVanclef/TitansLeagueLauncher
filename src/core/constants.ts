@@ -1,7 +1,8 @@
 export const BusConstants = {
   OnLogin: "OnLogin",
   OnLogout: "OnLogout",
-  ValidationError: "ValidationError"
+  ValidationError: "ValidationError",
+  UpdateAvailable: "UpdateAvailable"
 };
 
 export enum WebsiteRoles {

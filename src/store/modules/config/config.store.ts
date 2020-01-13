@@ -122,12 +122,12 @@ class ConfigState extends VuexModule implements IConfigState {
   async ValidateWoWDirectory(path: string): Promise<boolean> {
     let directory = await FileService.ReadDirectory(path);
 
-    const requiredDirectoryItems: string[] = ["Data", "Wow.exe"];
+    const requiredDirectoryItems: string[] = ["DATA", "WOW.EXE"];
     const directoryItems: string[] = [];
 
     for (const file of directory) {
       const fileName = file as string;
-      if (requiredDirectoryItems.includes(fileName)) {
+      if (requiredDirectoryItems.includes(fileName.toUpperCase())) {
         directoryItems.push(fileName);
       }
     }

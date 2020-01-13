@@ -2,7 +2,6 @@
 
 import { app, protocol, BrowserWindow, dialog } from "electron";
 import { autoUpdater, UpdateCheckResult } from "electron-updater";
-
 import {
   createProtocol,
   installVueDevtools
@@ -115,28 +114,22 @@ autoUpdater.on("error", error => {
 });
 
 autoUpdater.on("update-available", () => {
-  dialog.showMessageBox(
-    {
-      title: "Update Available",
-      message: "Do you want to update now?",
-      buttons: ["Yes", "No"]
-    },
-    buttonIndex => {
-      if (buttonIndex === 0) {
-        autoUpdater.downloadUpdate();
-      }
-    }
-  );
+  dialog.showMessageBox(win!, {
+    title: "Update Available",
+    message: "A new update is being downloaded.",
+    buttons: ["Ok"]
+  });
 });
 
 autoUpdater.on("update-downloaded", function(event, releaseName) {
   // # confirm install or not to user
   dialog.showMessageBox(
+    win!,
     {
       title: "Update Downloaded",
       message:
         "New version has been downloaded. Please restart the application to apply the updates.",
-      buttons: ["Restart", "Later"],
+      buttons: ["Restart now", "Maybe later"],
       detail: releaseName
     },
     buttonIndex => {

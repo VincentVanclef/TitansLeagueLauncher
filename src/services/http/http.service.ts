@@ -74,7 +74,6 @@ export class HttpService {
     ) {
       // Validatestatus above is set to include these ones so it will trigger 'then'.
       // Reason is that interceptors will then be run automatically on this as well.
-      LogService.Log("handlePotentialErrorResponse", JSON.stringify(res));
       throw res;
     } else if (res.status === HttpStatus.UNAUTHORIZED) {
       console.log("Not logged in, status:", res.status, res.data);
@@ -128,29 +127,25 @@ export class HttpService {
   public async Get<T>(url: string, params?: any): Promise<T> {
     return axios
       .get(this.getUrl(url), params)
-      .then(res => this.handlePotentialErrorResponse(res))
-      .catch(err => this.handleErrorResponse(err));
+      .then(res => this.handlePotentialErrorResponse(res));
   }
 
   public async Post<T>(relativeUrl: string, payload?: any): Promise<T> {
     return axios
       .post(this.getUrl(relativeUrl), payload)
-      .then(res => this.handlePotentialErrorResponse(res))
-      .catch(err => this.handleErrorResponse(err));
+      .then(res => this.handlePotentialErrorResponse(res));
   }
 
   public Delete<T>(url: string, params?: any): Promise<T> {
     return axios
       .delete(this.getUrl(url), params)
-      .then(res => this.handlePotentialErrorResponse(res))
-      .catch(err => this.handleErrorResponse(err));
+      .then(res => this.handlePotentialErrorResponse(res));
   }
 
   public Put<T>(url: string, params?: any): Promise<T> {
     return axios
       .put(this.getUrl(url), params)
-      .then(res => this.handlePotentialErrorResponse(res))
-      .catch(err => this.handleErrorResponse(err));
+      .then(res => this.handlePotentialErrorResponse(res));
   }
 }
 

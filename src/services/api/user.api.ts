@@ -5,6 +5,7 @@ import { IUserRegisterRequest } from "@/models/user/requests/UserRegisterRequest
 import { IVoteSite } from "@/models/user/vote/VoteSite";
 import { IVoteTimer } from "@/models/user/vote/VoteTimer";
 import { IVoteResponse } from "@/models/user/vote/VoteResponse";
+import { IUpdateAccountRequest } from "@/models/user/requests/UpdateAccountRequest";
 
 export class UserApi {
   public static async Login(
@@ -38,7 +39,15 @@ export class UserApi {
   }
 
   public static async Vote(site: IVoteSite): Promise<IVoteResponse> {
-    const result = await HttpService.Post<IVoteResponse>("/vote/vote/" + site.id);
+    const result = await HttpService.Post<IVoteResponse>(
+      "/vote/vote/" + site.id
+    );
     return result;
+  }
+
+  public static async UpdateAccount(
+    request: IUpdateAccountRequest
+  ): Promise<void> {
+    const result = await HttpService.Post("/auth/UpdateAccount/", request);
   }
 }

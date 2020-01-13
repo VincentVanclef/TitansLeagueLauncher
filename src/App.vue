@@ -6,7 +6,7 @@
     <div class="main">
       <div id="main_content" class="open" ref="mainContent">
         <Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;" />
-        <router-view :IsLoggedIn="IsLoggedIn"></router-view>
+        <router-view :IsLoggedIn="IsLoggedIn" :realms="Realms"></router-view>
       </div>
     </div>
 
@@ -27,11 +27,17 @@ import Footer from "@/components/Footer.vue";
 import Settings from "@/components/Settings.vue";
 import Navigation from "@/components/Navigation.vue";
 import { UserModule } from "./store/modules/user/user.store";
+import { IRealmModel } from "./models/realms/RealmModel";
+import { RealmsModule } from "./store/modules/realms/realms.store";
 
 @Component({
   components: { TitleBar, Logo, Footer, Settings, Navigation }
 })
 export default class App extends Vue {
+  get Realms(): IRealmModel[] {
+    return RealmsModule.realms;
+  }
+
   get IsLoggedIn() {
     return UserModule.IsLoggedIn;
   }

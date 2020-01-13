@@ -20,8 +20,7 @@ export default async (response: AxiosResponse) => {
     }
   }
 
-  const httpStatusText = response.data.title || response.statusText || "";
-  if (httpStatusText.length === 0) return response;
+  const httpStatusText = response.data.title || response.statusText || "Error";
   const data = response.data;
 
   let message = data.message || data.title;
