@@ -53,9 +53,6 @@ function createWindow() {
     // Load the index.html when not in development
     win.loadURL("app://./index.html");
     const result = autoUpdater.checkForUpdatesAndNotify();
-    setTimeout(() => {
-      autoUpdater.checkForUpdatesAndNotify();
-    }, 60000);
   }
 
   win.on("closed", () => {
