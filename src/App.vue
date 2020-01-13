@@ -4,11 +4,7 @@
     <Logo />
 
     <div class="main">
-      <div class="content_toggle" @click="ToggleContent">
-        <img src="@/assets/images/gear_white.png" />
-      </div>
-
-      <div id="main_content">
+      <div id="main_content" class="open" ref="mainContent">
         <Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;" />
         <router-view :IsLoggedIn="IsLoggedIn"></router-view>
       </div>
@@ -31,8 +27,6 @@ import Footer from "@/components/Footer.vue";
 import Settings from "@/components/Settings.vue";
 import Navigation from "@/components/Navigation.vue";
 import { UserModule } from "./store/modules/user/user.store";
-import { ipcRenderer, dialog } from "electron";
-import { autoUpdater } from 'electron-updater';
 
 @Component({
   components: { TitleBar, Logo, Footer, Settings, Navigation }
@@ -62,23 +56,7 @@ export default class App extends Vue {
     await ConfigModule.SaveConfig();
   }
 
-  async ToggleContent() {
-    // const mainContent = document.getElementById("main_content") as HTMLElement;
-    // mainContent.classList.toggle("hidden");
-    autoUpdater.checkForUpdatesAndNotify();
-  }
-
-  created() {
-    ipcRenderer.on("update_available", () => {
-      ipcRenderer.removeAllListeners("update_available");
-      alert("A new update is available. Downloading now...");
-    });
-    ipcRenderer.on("update_downloaded", () => {
-      ipcRenderer.removeAllListeners("update_downloaded");
-      alert("Update Downloaded. It will be installed on restart. Restart now?");
-      ipcRenderer.send("restart_app");
-    });
-  }
+  created() {}
 }
 </script>
 
@@ -104,29 +82,26 @@ export default class App extends Vue {
   padding: 115px 30px 35px 30px;
 }
 
+.open {
+  opacity: 1 !important;
+  max-height: 100% !important;
+  transform: scale(1) !important;
+}
+
 #main_content {
   background: rgba(0, 0, 0, 0.5);
   border-radius: 6px;
-  height: 100%;
   width: 100%;
+  height: 100%;
   padding: 10px 15px 10px 15px;
   color: #fff;
 
   display: grid;
   grid-template-columns: 25% 75%;
-}
 
-.hidden {
-  display: none !important;
-}
-
-.content_toggle {
-  position: fixed;
-  top: 30px;
-  right: 50px;
-  img {
-    height: 20px;
-    width: 20px;
-  }
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: top;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 </style>

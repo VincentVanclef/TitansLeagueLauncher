@@ -37,6 +37,7 @@ function createWindow() {
     backgroundColor: "#1e5898"
   });
 
+  
   const handleRedirect = function(e: Event, url: string) {
     e.preventDefault();
     require("electron").shell.openExternal(url);
@@ -53,6 +54,9 @@ function createWindow() {
     // Load the index.html when not in development
     win.loadURL("app://./index.html");
     const result = autoUpdater.checkForUpdatesAndNotify();
+    setTimeout(() => {
+      autoUpdater.checkForUpdatesAndNotify();
+    }, 60000);
   }
 
   win.on("closed", () => {
@@ -114,37 +118,25 @@ autoUpdater.on("error", error => {
   );
 });
 
-autoUpdater.on("update-available", () => {
-  dialog.showMessageBox(
-    {
-      type: "info",
-      title: "Found Updates",
-      message: "Found updates, do you want update now?",
-      buttons: ["Sure", "No"]
-    },
-    buttonIndex => {
-      if (buttonIndex === 0) {
-        autoUpdater.downloadUpdate();
-      }
-    }
-  );
-});
+// autoUpdater.on("update-available", () => {
+//   dialog.showMessageBox(
+//     {
+//       type: "info",
+//       title: "Found Updates",
+//       message: "Found updates, do you want update now?",
+//       buttons: ["Sure", "No"]
+//     },
+//     buttonIndex => {
+//       if (buttonIndex === 0) {
+//         autoUpdater.downloadUpdate();
+//       }
+//     }
+//   );
+// });
 
-autoUpdater.on("update-not-available", () => {
-  dialog.showMessageBox({
-    title: "No Updates",
-    message: "Current version is up-to-date."
-  });
-});
-
-autoUpdater.on("update-downloaded", () => {
-  dialog.showMessageBox(
-    {
-      title: "Install Updates",
-      message: "Updates downloaded, application will be quit for update..."
-    },
-    () => {
-      setImmediate(() => autoUpdater.quitAndInstall());
-    }
-  );
-});
+// autoUpdater.on("update-not-available", () => {
+//   dialog.showMessageBox({
+//     title: "No Updates",
+//     message: "Current version is up-to-date."
+//   });
+// });

@@ -15,7 +15,7 @@ export default class Logo extends Vue {}
 #window-logo {
   position: fixed;
   top: 5px;
-  left: 45%;
+  left: 46%;
   z-index: 1;
   opacity: 0.8;
 

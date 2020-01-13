@@ -34,6 +34,17 @@
         Start Game
       </div>
     </div>
+
+    <div class="menu open" @click="ToggleContent" ref="menu">
+      <span class="menu-circle"></span>
+      <a href="#" class="menu-link">
+        <span class="menu-icon">
+          <span class="menu-line menu-line-1"></span>
+          <span class="menu-line menu-line-2"></span>
+          <span class="menu-line menu-line-3"></span>
+        </span>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -55,6 +66,14 @@ export default class Footer extends Vue {
   percentage: number = 0;
 
   gameStarting: boolean = false;
+
+  ToggleContent(e: Event) {
+    const content = document.getElementById("main_content") as HTMLElement;
+    content.classList.toggle("open");
+
+    const menu = this.$refs.menu as HTMLElement;
+    menu.classList.toggle("open");
+  }
 
   async SelectFolder(e: Event) {
     e.preventDefault();
@@ -147,6 +166,7 @@ export default class Footer extends Vue {
 }
 
 .footer {
+  position: relative;
   height: $footerHeight;
 
   border-top: 2px solid rgba(0, 0, 0, 0.75);
@@ -191,5 +211,88 @@ export default class Footer extends Vue {
   padding: 8px;
   border-style: solid;
   border-color: #282828 transparent transparent transparent;
+}
+
+.menu {
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  z-index: 2;
+  border: 2px solid rgba(0, 0, 0, 0.75);
+  border-radius: 60px;
+  filter: drop-shadow(0 1mm 2mm #1e5898);
+}
+
+.menu-circle {
+  background: $backgroundColor;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 50%;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 1000;
+}
+
+.menu:hover .menu-circle {
+  transform: scale(1.1);
+}
+
+.menu.open .menu-line-1 {
+  transform: rotate(-45deg);
+  transform: translateY(7px) translateY(-50%) rotate(-45deg);
+}
+
+.menu.open .menu-line-2 {
+  opacity: 0;
+}
+
+.menu.open .menu-line-3 {
+  transform: rotate(45deg);
+  transform: translateY(-7px) translateY(50%) rotate(45deg);
+}
+
+.menu-link {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1002;
+}
+
+.menu-icon {
+  position: absolute;
+  width: 20px;
+  height: 14px;
+  margin: auto;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 1px;
+}
+
+.menu-line {
+  background-color: rgba(255, 255, 255, 0.7);
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  position: absolute;
+  left: 0;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.menu-line-1 {
+  top: 0;
+}
+
+.menu-line-2 {
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.menu-line-3 {
+  bottom: 0;
 }
 </style>
