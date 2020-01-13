@@ -1,8 +1,6 @@
 <template>
   <div id="window-logo">
-    <img
-      src="@/assets/images/logo.png"
-    />
+    <img src="@/assets/images/logo.png" />
   </div>
 </template>
 

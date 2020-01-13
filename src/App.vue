@@ -6,7 +6,7 @@
     <div class="main">
       <div class="content_toggle" @click="ToggleContent">
         <img src="@/assets/images/gear_white.png" />
-      </div> 
+      </div>
 
       <div id="main_content">
         <Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;" />
@@ -64,7 +64,7 @@ export default class App extends Vue {
   async ToggleContent() {
     // const mainContent = document.getElementById("main_content") as HTMLElement;
     // mainContent.classList.toggle("hidden");
-    ipcRenderer.send('restart_app');
+    ipcRenderer.send("restart_app");
   }
 
   created() {
