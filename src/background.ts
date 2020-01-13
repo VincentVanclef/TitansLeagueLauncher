@@ -22,7 +22,7 @@ function createWindow() {
   win = new BrowserWindow({
     width: 920,
     height: 600,
-    icon: "logo.ico",
+    icon: "icon.ico",
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false
