@@ -4,10 +4,9 @@
     <Logo />
 
     <div class="main">
-      <div class="content_toggle" @click="ToggleContent">
-        testtesttest
+      <!-- <div class="content_toggle" @click="ToggleContent">
         <img src="@/assets/images/gear_white.png" />
-      </div>
+      </div> -->
 
       <div id="main_content">
         <Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;" />
@@ -65,22 +64,9 @@ export default class App extends Vue {
   async ToggleContent() {
     // const mainContent = document.getElementById("main_content") as HTMLElement;
     // mainContent.classList.toggle("hidden");
-    ipcRenderer.send("restart_app");
   }
 
-  created() {
-    ipcRenderer.on("update_available", () => {
-      ipcRenderer.removeAllListeners("update_available");
-      console.log("A new update is available. Downloading now...");
-    });
-    ipcRenderer.on("update_downloaded", () => {
-      ipcRenderer.removeAllListeners("update_downloaded");
-      console.log(
-        "Update Downloaded. It will be installed on restart. Restart now?"
-      );
-      ipcRenderer.send("restart_app");
-    });
-  }
+  created() {}
 }
 </script>
 

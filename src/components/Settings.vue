@@ -9,17 +9,24 @@
     @show="SyncSettings()"
   >
     <template v-slot:modal-footer="{ ok }">
-      <div class="w-100">
+      <div class="settings_footer">
         <div
-          class="float-left button button-orange"
+          class="text-center button button-orange"
           style="height: 40px; width: 200px; font-size: 1em;"
           @click="SelectFolder"
         >
           Select WoW Folder
         </div>
         <div
-          class="float-right button button-green"
-          style="height: 40px; width: 90px; font-size: 1em;"
+          class="text-center button button-blue"
+          style="height: 40px; width: 100px; font-size: 1em;"
+          @click="AppInfo()"
+        >
+          App Info
+        </div>
+        <div
+          class="text-center button button-green"
+          style="height: 40px; width: 100px; font-size: 1em;"
           @click="ok()"
         >
           Save
@@ -117,6 +124,7 @@
         </b-col>
       </template>
     </b-row>
+    <AppInfoComponent />
   </b-modal>
 </template>
 
@@ -127,11 +135,17 @@ import { IConfiguration, IPatchConfig } from "@/core/constants";
 import PatchService from "@/services/patches/patch.service";
 import LogService from "../services/logs/log.service";
 
+import AppInfoComponent from "./AppInfo.vue";
+
 @Component({
-  components: {}
+  components: { AppInfoComponent }
 })
 export default class SettingsComponent extends Vue {
   settings: IConfiguration | null = null;
+
+  AppInfo() {
+    this.$bvModal.show("app-info-component");
+  }
 
   async SelectFolder(e: Event) {
     e.preventDefault();
@@ -183,5 +197,12 @@ export default class SettingsComponent extends Vue {
   display: block;
   margin-bottom: 0.5em;
   padding-left: 15px;
+}
+
+.settings_footer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 </style>
