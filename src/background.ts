@@ -1,7 +1,8 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, ipcMain } from "electron";
+import { app, protocol, BrowserWindow, dialog } from "electron";
 import { autoUpdater } from "electron-updater";
+
 import {
   createProtocol,
   installVueDevtools
@@ -106,16 +107,44 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on("app_version", (event: any) => {
-  event.sender.send("app_version", { version: app.getVersion() });
+autoUpdater.on("error", error => {
+  dialog.showErrorBox(
+    "Error: ",
+    error == null ? "unknown" : (error.stack || error).toString()
+  );
 });
 
 autoUpdater.on("update-available", () => {
-  win!.webContents.send("update_available");
+  dialog.showMessageBox(
+    {
+      type: "info",
+      title: "Found Updates",
+      message: "Found updates, do you want update now?",
+      buttons: ["Sure", "No"]
+    },
+    buttonIndex => {
+      if (buttonIndex === 0) {
+        autoUpdater.downloadUpdate();
+      }
+    }
+  );
 });
+
+autoUpdater.on("update-not-available", () => {
+  dialog.showMessageBox({
+    title: "No Updates",
+    message: "Current version is up-to-date."
+  });
+});
+
 autoUpdater.on("update-downloaded", () => {
-  win!.webContents.send("update_downloaded");
-});
-ipcMain.on("restart_app", () => {
-  autoUpdater.quitAndInstall();
+  dialog.showMessageBox(
+    {
+      title: "Install Updates",
+      message: "Updates downloaded, application will be quit for update..."
+    },
+    () => {
+      setImmediate(() => autoUpdater.quitAndInstall());
+    }
+  );
 });

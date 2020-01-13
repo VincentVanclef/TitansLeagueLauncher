@@ -4,9 +4,9 @@
     <Logo />
 
     <div class="main">
-      <!-- <div class="content_toggle" @click="ToggleContent">
+      <div class="content_toggle" @click="ToggleContent">
         <img src="@/assets/images/gear_white.png" />
-      </div> -->
+      </div>
 
       <div id="main_content">
         <Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;" />
@@ -31,7 +31,8 @@ import Footer from "@/components/Footer.vue";
 import Settings from "@/components/Settings.vue";
 import Navigation from "@/components/Navigation.vue";
 import { UserModule } from "./store/modules/user/user.store";
-import { ipcRenderer } from "electron";
+import { ipcRenderer, dialog } from "electron";
+import { autoUpdater } from 'electron-updater';
 
 @Component({
   components: { TitleBar, Logo, Footer, Settings, Navigation }
@@ -64,9 +65,20 @@ export default class App extends Vue {
   async ToggleContent() {
     // const mainContent = document.getElementById("main_content") as HTMLElement;
     // mainContent.classList.toggle("hidden");
+    autoUpdater.checkForUpdatesAndNotify();
   }
 
-  created() {}
+  created() {
+    ipcRenderer.on("update_available", () => {
+      ipcRenderer.removeAllListeners("update_available");
+      alert("A new update is available. Downloading now...");
+    });
+    ipcRenderer.on("update_downloaded", () => {
+      ipcRenderer.removeAllListeners("update_downloaded");
+      alert("Update Downloaded. It will be installed on restart. Restart now?");
+      ipcRenderer.send("restart_app");
+    });
+  }
 }
 </script>
 
