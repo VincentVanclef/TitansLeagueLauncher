@@ -167,49 +167,8 @@ export default class SettingsComponent extends Vue {
   }
 
   async SyncSettings() {
+    await ConfigModule.SynchronizePatchSettings();
     if (ConfigModule.config) this.settings = ConfigModule.config;
-
-    // Check for new stuff
-    let patches: IPatchConfig[] = [];
-    try {
-      patches = await PatchService.GetPatchConfig();
-    } catch (e) {
-      LogService.Log("GetPatchConfig", e);
-    }
-    if (patches.length === 0) {
-      this.settings!.patchConfig = [];
-      await ConfigModule.SaveConfig(this.settings);
-      return;
-    }
-
-    for (const patch of patches) {
-      const exists = this.settings!.patchConfig.find(
-        x => x.patch === patch.patch
-      );
-      if (!exists) {
-        this.settings!.patchConfig.push(patch);
-      } else {
-        exists.details = patch.details;
-      }
-    }
-
-    // Check for deleted stuff
-    for (const patch of this.settings!.patchConfig) {
-      const val = patch.keepUpdated as any;
-      if (val === 1 || val === 0) {
-        patch.keepUpdated = val === 1 ? true : false;
-      }
-
-      let index = patches.findIndex(x => x.patch === patch.patch);
-      if (index < 0) {
-        index = this.settings!.patchConfig.findIndex(
-          x => x.patch === patch.patch
-        );
-        this.settings!.patchConfig.splice(index, 1);
-      }
-    }
-    
-    await ConfigModule.SaveConfig(this.settings);
   }
 }
 </script>

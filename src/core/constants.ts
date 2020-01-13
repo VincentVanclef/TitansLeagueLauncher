@@ -38,6 +38,7 @@ export interface IPatchConfig {
   modified: Date;
   keepUpdated: boolean;
   details: string;
+  downloadLink: string;
 }
 
 export interface IConfiguration {

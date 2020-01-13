@@ -1,6 +1,7 @@
 "use strict";
 
-import { app, protocol, BrowserWindow, Menu, ipcMain } from "electron";
+import { app, protocol, BrowserWindow, ipcMain } from "electron";
+import { autoUpdater } from "electron-updater";
 import {
   createProtocol,
   installVueDevtools
@@ -21,6 +22,7 @@ function createWindow() {
   win = new BrowserWindow({
     width: 920,
     height: 600,
+    icon: "logo.ico",
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false
@@ -31,7 +33,7 @@ function createWindow() {
     autoHideMenuBar: true,
     maximizable: false,
     frame: false,
-    backgroundColor: "#FFF"
+    backgroundColor: "#1e5898"
   });
 
   const handleRedirect = function(e: Event, url: string) {
@@ -86,6 +88,7 @@ app.on("ready", async () => {
     }
   }
   createWindow();
+  autoUpdater.checkForUpdatesAndNotify();
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -102,3 +105,17 @@ if (isDevelopment) {
     });
   }
 }
+
+ipcMain.on("app_version", (event: any) => {
+  event.sender.send("app_version", { version: app.getVersion() });
+});
+
+autoUpdater.on("update-available", () => {
+  win!.webContents.send("update_available");
+});
+autoUpdater.on("update-downloaded", () => {
+  win!.webContents.send("update_downloaded");
+});
+ipcMain.on("restart_app", () => {
+  autoUpdater.quitAndInstall();
+});

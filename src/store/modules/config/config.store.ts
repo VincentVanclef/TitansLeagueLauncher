@@ -12,7 +12,8 @@ import {
   ApplicationConfig,
   Baseconfig,
   WoWLocalesArray,
-  RealmlistConfig
+  RealmlistConfig,
+  IPatchConfig
 } from "@/core/constants";
 
 import FileService, {
@@ -96,10 +97,14 @@ class ConfigState extends VuexModule implements IConfigState {
 
   @Action
   async ResetRealmlist() {
-    await FileService.WriteFile(
-      this.config!.realmlistPath,
-      `set realmlist ${RealmlistConfig.Realmlist}`
-    );
+    try {
+      await FileService.WriteFile(
+        this.config!.realmlistPath,
+        `set realmlist ${RealmlistConfig.Realmlist}`
+      );
+    } catch (e) {
+      LogService.Log("ResetRealmlist", e);
+    }
   }
 
   @Action
@@ -232,8 +237,54 @@ class ConfigState extends VuexModule implements IConfigState {
   }
 
   @Action
+  async SynchronizePatchSettings() {
+    if (!this.config) return;
+
+    // Check for new stuff
+    let patches: IPatchConfig[] = [];
+    try {
+      patches = await PatchService.GetPatchConfig();
+    } catch (e) {
+      LogService.Log("GetPatchConfig", e);
+    }
+    if (patches.length === 0) {
+      this.config.patchConfig = [];
+      await ConfigModule.SaveConfig(this.config);
+      return;
+    }
+
+    for (const patch of patches) {
+      const exists = this.config.patchConfig.find(x => x.patch === patch.patch);
+      if (!exists) {
+        this.config.patchConfig.push(patch);
+      } else {
+        exists.details = patch.details;
+        exists.downloadLink = patch.downloadLink;
+      }
+    }
+
+    // Check for deleted stuff
+    for (const patch of this.config.patchConfig) {
+      const val = patch.keepUpdated as any;
+      if (val === 1 || val === 0) {
+        patch.keepUpdated = val === 1 ? true : false;
+      }
+
+      let index = patches.findIndex(x => x.patch === patch.patch);
+      if (index < 0) {
+        index = this.config.patchConfig.findIndex(x => x.patch === patch.patch);
+        this.config.patchConfig.splice(index, 1);
+      }
+    }
+  }
+
+  @Action
   async Init() {
     const result = await this.LoadSettingsConfig();
+    if (result) {
+      await this.SynchronizePatchSettings();
+      await this.SaveConfig();
+    }
   }
 
   @Action

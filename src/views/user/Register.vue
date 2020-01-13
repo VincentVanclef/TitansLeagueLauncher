@@ -1,6 +1,6 @@
 <template>
   <div class="register">
-    <form class="login-form" @submit="Register">
+    <form class="login-form" @submit.prevent="Register">
       <div class="row">
         <div class="col-6 login-input">
           <label class="lf--label" for="firstname">
@@ -12,6 +12,7 @@
             placeholder="First name"
             type="text"
             v-model="firstname"
+            :disabled="loading"
           />
         </div>
         <div class="col-6 login-input">
@@ -24,6 +25,7 @@
             placeholder="Last name"
             type="text"
             v-model="lastname"
+            :disabled="loading"
           />
         </div>
       </div>
@@ -38,6 +40,7 @@
             placeholder="Email"
             type="text"
             v-model="email"
+            :disabled="loading"
           />
         </div>
         <div class="col-6 login-input">
@@ -50,6 +53,7 @@
             placeholder="Username"
             type="text"
             v-model="username"
+            :disabled="loading"
           />
         </div>
       </div>
@@ -64,6 +68,7 @@
             placeholder="Password"
             type="password"
             v-model="password"
+            :disabled="loading"
           />
         </div>
         <div class="col-6 login-input">
@@ -76,11 +81,16 @@
             placeholder="Confirm password"
             type="password"
             v-model="passwordConfirm"
+            :disabled="loading"
           />
         </div>
       </div>
 
-      <button type="submit" class="button button-orange lf--submit">
+      <button
+        type="submit"
+        class="button button-orange lf--submit"
+        :disabled="loading"
+      >
         REGISTER
       </button>
     </form>
@@ -93,6 +103,7 @@ import { UserModule } from "@/store/modules/user/user.store";
 import { IUserLoginRequest } from "@/models/user/requests/UserLoginRequest";
 import { Route } from "vue-router";
 import { IUserRegisterRequest } from "@/models/user/requests/UserRegisterRequest";
+import LogService from "@/services/logs/log.service";
 
 @Component({
   components: {}
@@ -104,6 +115,7 @@ export default class Register extends Vue {
   username: string = "";
   password: string = "";
   passwordConfirm: string = "";
+  loading: boolean = false;
 
   async Register() {
     const request: IUserRegisterRequest = {
@@ -113,15 +125,23 @@ export default class Register extends Vue {
       email: this.email,
       password: this.password
     };
-    await UserModule.Register(request);
+
+    try {
+      this.loading = true;
+      await UserModule.Register(request);
+    } finally {
+      this.loading = false;
+    }
 
     if (UserModule.IsLoggedIn) {
       try {
         await this.$router.push("/user/profile");
-      } catch (e) {}
+      } catch (e) {
+        LogService.Log("RegisterRoute", e);
+      }
     } else {
-      this.$bvToast.toast("Error", {
-        title: "Unable to login.",
+      this.$bvToast.toast("Login Failed", {
+        title: "Unable to login. Please try again.",
         variant: "danger",
         solid: true
       });

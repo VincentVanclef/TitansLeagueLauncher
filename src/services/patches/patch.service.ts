@@ -6,8 +6,6 @@ import { ApplicationConfig, IPatchConfig } from "@/core/constants";
 import { ConfigModule } from "@/store/modules/config/config.store";
 import LogService from "../logs/log.service";
 
-const patchURL = "https://titans-league.org/static/downloads/";
-
 class PatchService {
   private getPatchLocation(patchName: string) {
     return (
@@ -24,8 +22,8 @@ class PatchService {
     return result;
   }
 
-  async GetPatchesThatNeedsToBeUpdated(): Promise<string[]> {
-    const requiresUpdate: string[] = [];
+  async GetPatchesThatNeedsToBeUpdated(): Promise<IPatchConfig[]> {
+    const requiresUpdate: IPatchConfig[] = [];
     const patchConfigs = await this.GetPatchConfig();
     if (!patchConfigs || patchConfigs.length === 0) return requiresUpdate;
 
@@ -40,14 +38,14 @@ class PatchService {
           this.getPatchLocation(config.patch)
         );
         if (!patch) {
-          requiresUpdate.push(config.patch);
+          requiresUpdate.push(config);
           continue;
         }
 
         const pTime = new Date(patch.mtime);
         const sTime = new Date(config.modified);
         if (pTime < sTime) {
-          requiresUpdate.push(config.patch);
+          requiresUpdate.push(config);
         }
       } catch (e) {
         LogService.Log("GetPatchesThatNeedsToBeUpdated", e);
@@ -64,12 +62,13 @@ class PatchService {
     if (patchesThatNeedsToBeUpdated.length === 0) return;
 
     for (const patch of patchesThatNeedsToBeUpdated) {
+      console.log(patch);
       try {
         await DownloadService.downloadFileAsync(
-          patchURL + patch,
-          this.getPatchLocation(patch),
+          patch.downloadLink,
+          this.getPatchLocation(patch.patch),
           (pct: number) => {
-            callback(patch, pct);
+            callback(patch.patch, pct);
           }
         );
       } catch (e) {

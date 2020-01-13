@@ -4,12 +4,12 @@
     <Logo />
 
     <div class="main">
-      <!-- <div class="content_toggle" @click="ToggleContent">
+      <div class="content_toggle" @click="ToggleContent">
         <img src="@/assets/images/gear_white.png" />
-      </div> -->
+      </div> 
 
       <div id="main_content">
-        <Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;"/>
+        <Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;" />
         <router-view :IsLoggedIn="IsLoggedIn"></router-view>
       </div>
     </div>
@@ -31,6 +31,7 @@ import Footer from "@/components/Footer.vue";
 import Settings from "@/components/Settings.vue";
 import Navigation from "@/components/Navigation.vue";
 import { UserModule } from "./store/modules/user/user.store";
+import { ipcRenderer } from "electron";
 
 @Component({
   components: { TitleBar, Logo, Footer, Settings, Navigation }
@@ -63,10 +64,22 @@ export default class App extends Vue {
   async ToggleContent() {
     // const mainContent = document.getElementById("main_content") as HTMLElement;
     // mainContent.classList.toggle("hidden");
-
+    ipcRenderer.send('restart_app');
   }
 
-  created() {}
+  created() {
+    ipcRenderer.on("update_available", () => {
+      ipcRenderer.removeAllListeners("update_available");
+      console.log("A new update is available. Downloading now...");
+    });
+    ipcRenderer.on("update_downloaded", () => {
+      ipcRenderer.removeAllListeners("update_downloaded");
+      console.log(
+        "Update Downloaded. It will be installed on restart. Restart now?"
+      );
+      ipcRenderer.send("restart_app");
+    });
+  }
 }
 </script>
 

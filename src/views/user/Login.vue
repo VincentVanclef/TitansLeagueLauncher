@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <form class="login-form" @submit="Login">
+    <form class="login-form" @submit.prevent="Login">
       <div class="flex-row">
         <label class="lf--label" for="username">
           <i class="fa fa-envelope"></i>
@@ -11,6 +11,7 @@
           placeholder="Email"
           type="text"
           v-model="email"
+          :disabled="loading"
         />
       </div>
       <div class="flex-row">
@@ -23,9 +24,14 @@
           placeholder="Password"
           type="password"
           v-model="password"
+          :disabled="loading"
         />
       </div>
-      <button type="submit" class="button button-orange lf--submit">
+      <button
+        type="submit"
+        class="button button-orange lf--submit"
+        :disabled="loading"
+      >
         LOGIN
       </button>
       <a class="lf--forgot" href="#">Forgot password?</a>
@@ -38,6 +44,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { UserModule } from "@/store/modules/user/user.store";
 import { IUserLoginRequest } from "@/models/user/requests/UserLoginRequest";
 import { Route } from "vue-router";
+import LogService from "@/services/logs/log.service";
 
 @Component({
   components: {}
@@ -45,21 +52,30 @@ import { Route } from "vue-router";
 export default class Login extends Vue {
   email: string = "";
   password: string = "";
+  loading: boolean = false;
 
   async Login() {
     const request: IUserLoginRequest = {
       email: this.email,
       password: this.password
     };
-    await UserModule.Login(request);
+
+    try {
+      this.loading = true;
+      await UserModule.Login(request);
+    } finally {
+      this.loading = false;
+    }
 
     if (UserModule.IsLoggedIn) {
       try {
         await this.$router.push("/user/profile");
-      } catch (e) {}
+      } catch (e) {
+        LogService.Log("LoginRoute", e);
+      }
     } else {
-      this.$bvToast.toast("Error", {
-        title: "Unable to login.",
+      this.$bvToast.toast("Login Failed", {
+        title: "Unable to login. Please try again.",
         variant: "danger",
         solid: true
       });
