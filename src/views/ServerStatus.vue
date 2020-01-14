@@ -17,7 +17,10 @@
         >
           <div id="header">Online Players</div>
           <div id="sub-header">
-            <small>Total Online <font color="magneto">{{ TotalOnline(realm.id) }}</font></small>
+            <small
+              >Total Online
+              <font color="magneto">{{ TotalOnline(realm.id) }}</font></small
+            >
             <small
               >Alliance Online
               <font color="teal">{{ AllianceOnline(realm.id) }}</font></small
@@ -189,6 +192,8 @@ export default class ServerStatus extends Vue {
     letter-spacing: 0.1em;
     user-select: none;
     cursor: pointer;
+    margin-right: 7px;
+    margin-left: 7px;
 
     &.online {
       filter: drop-shadow(0 0 1mm green);
@@ -199,6 +204,8 @@ export default class ServerStatus extends Vue {
     }
   }
 }
+
+$gridColumns: 20% repeat(4, 15%) auto;
 
 .realm-data {
   margin-top: 0.5em;
@@ -231,7 +238,7 @@ export default class ServerStatus extends Vue {
 
     #title {
       display: grid;
-      grid-template-columns: 20% repeat(4, 15%) auto;
+      grid-template-columns: $gridColumns;
       text-align: center;
       font-size: 0.85em;
       border-top: 1px solid #333;
@@ -248,7 +255,7 @@ export default class ServerStatus extends Vue {
 
     #data {
       display: grid;
-      grid-template-columns: 20% repeat(4, 15%) auto;
+      grid-template-columns: $gridColumns;
       text-align: center;
       font-size: 0.7em;
       border-bottom: 1px solid #333;

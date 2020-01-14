@@ -1,6 +1,6 @@
 {
   "name": "titansleaguelauncher",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "private": true,
   "description": "A Launcher used to automatically download patches required to play on the titans-league server.",
   "author": "VincentVanclef",
