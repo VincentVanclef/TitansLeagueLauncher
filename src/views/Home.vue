@@ -60,7 +60,7 @@ export default class HomeView extends Vue {
 
 .news {
   position: relative;
-  max-height: $maxPageHeight;
+  max-height: calc(#{$maxPageHeight} - 42px);
   overflow: auto;
 }
 
