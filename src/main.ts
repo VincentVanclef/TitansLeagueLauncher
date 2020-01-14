@@ -12,10 +12,13 @@ import {
   dateFormat
 } from "@/plugins/filters/filters.plugin";
 
+import { PasswordToggleDirective } from "@/plugins/directives/directives.plugin";
+
 Vue.use(Bootstrap);
 Vue.use(capitalize);
 Vue.use(dateFormat);
 Vue.use(secsToTimeString);
+Vue.use(PasswordToggleDirective);
 
 Vue.config.productionTip = false;
 

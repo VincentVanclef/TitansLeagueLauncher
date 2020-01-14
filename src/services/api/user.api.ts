@@ -6,6 +6,7 @@ import { IVoteSite } from "@/models/user/vote/VoteSite";
 import { IVoteTimer } from "@/models/user/vote/VoteTimer";
 import { IVoteResponse } from "@/models/user/vote/VoteResponse";
 import { IUpdateAccountRequest } from "@/models/user/requests/UpdateAccountRequest";
+import { IChangePasswordRequest } from "@/models/user/requests/ChangePasswordRequest";
 
 export class UserApi {
   public static async Login(
@@ -48,6 +49,12 @@ export class UserApi {
   public static async UpdateAccount(
     request: IUpdateAccountRequest
   ): Promise<void> {
-    const result = await HttpService.Post("/auth/UpdateAccount/", request);
+    await HttpService.Post("/auth/UpdateAccount/", request);
+  }
+
+  public static async ChangeWebsitePassword(
+    request: IChangePasswordRequest
+  ): Promise<void> {
+    await HttpService.Post("/auth/ChangePassword", request);
   }
 }

@@ -25,6 +25,7 @@
           type="password"
           v-model="password"
           :disabled="loading"
+          v-pwt="{ color: '#000', top: 13 }"
         />
       </div>
       <button
@@ -123,6 +124,7 @@ $gray-light: #f5f6f8;
 
 .flex-row {
   display: flex;
+  flex-direction: row;
   margin-bottom: 1em;
 }
 

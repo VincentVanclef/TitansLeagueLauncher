@@ -140,6 +140,7 @@ export default class Vote extends Vue {
   @include pageBackground;
   display: flex;
   flex-direction: column;
+  user-select: none;
 }
 
 .vote-site-header {

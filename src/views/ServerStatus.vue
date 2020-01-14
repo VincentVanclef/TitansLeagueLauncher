@@ -164,6 +164,7 @@ export default class ServerStatus extends Vue {
   @include pageBackground;
   display: flex;
   flex-direction: column;
+  user-select: none;
 }
 
 .server-header {

@@ -28,11 +28,60 @@
         </div>
         <div class="profile-buttons">
           <button
-            class="button button-green float-right"
+            class="button button-orange float-right"
             style="width: 140px; height: 30px; font-size: 0.8em;"
             type="submit"
           >
             Save Changes
+          </button>
+        </div>
+      </form>
+
+      <h5 class="pt-5 pl-1">Website Password</h5>
+      <form @submit.prevent="UpdatePassword">
+        <div class="profile-content-password">
+          <div class="profile-entry" id="password">
+            <div class="mb-2">
+              <label for="password">Current Password</label>
+              <input
+                name="password"
+                type="password"
+                v-model="password"
+                v-pwt="{ color: '#fff', top: -21 }"
+              />
+            </div>
+          </div>
+          <div class="profile-entry" id="new-password">
+            <div class="mb-2">
+              <label for="new-password">New Password</label>
+              <input
+                name="new-password"
+                type="password"
+                v-model="newPassword"
+                v-pwt="{ color: '#fff', top: -21 }"
+              />
+            </div>
+          </div>
+          <div class="profile-entry" id="confirm-new-password">
+            <div class="mb-2">
+              <label for="new-password-confirm">Confirm New Password</label>
+              <input
+                id="password-field"
+                name="new-password-confirm"
+                type="password"
+                v-model="newPasswordConfirm"
+                v-pwt="{ color: '#fff', top: -21 }"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="profile-buttons pb-4">
+          <button
+            class="button button-orange float-right"
+            style="width: 140px; height: 30px; font-size: 0.8em;"
+            type="submit"
+          >
+            Save Password
           </button>
         </div>
       </form>
@@ -84,6 +133,7 @@ import { IApplicationUser } from "@/models/user/user.model";
 import { UserModule } from "@/store/modules/user/user.store";
 
 import { IUpdateAccountRequest } from "@/models/user/requests/UpdateAccountRequest";
+import { IChangePasswordRequest } from "@/models/user/requests/ChangePasswordRequest";
 import { UserApi } from "@/services/api/user.api";
 import { IRealmModel } from "@/models/realms/RealmModel";
 
@@ -100,6 +150,10 @@ export default class UserProfile extends Vue {
   lastname: string = "";
   username: string = "";
   location: string = "";
+
+  password: string = "";
+  newPassword: string = "";
+  newPasswordConfirm: string = "";
 
   get User(): IApplicationUser | null {
     return UserModule.user;
@@ -125,7 +179,26 @@ export default class UserProfile extends Vue {
     this.User!.location = this.location;
 
     this.$bvToast.toast(
-      `Your profile informations have been successfully updated.`,
+      `Your profile informations has been successfully updated.`,
+      {
+        title: "Success",
+        variant: "success",
+        solid: true
+      }
+    );
+  }
+
+  async UpdatePassword() {
+    const request: IChangePasswordRequest = {
+      currentPassword: this.password,
+      newPassword: this.newPassword,
+      newPasswordAgain: this.newPasswordConfirm
+    };
+
+    await UserApi.ChangeWebsitePassword(request);
+
+    this.$bvToast.toast(
+      `Your website password has been successfully updated.`,
       {
         title: "Success",
         variant: "success",
@@ -179,6 +252,7 @@ export default class UserProfile extends Vue {
   font-size: 1.4em;
   padding-bottom: 10px;
   box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.95);
+  user-select: none;
 }
 
 .profile-container {
@@ -192,21 +266,43 @@ export default class UserProfile extends Vue {
   justify-content: center;
   margin-top: 1em;
   padding-right: 1em;
+}
 
-  label {
-    margin: 0;
-    text-indent: 5px;
-    display: block;
-  }
+label {
+  margin: 0;
+  text-indent: 5px;
+  display: block;
+}
 
-  input {
-    display: block;
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(0, 0, 0, 0.95);
-    text-indent: 5px;
-    color: #fff;
-  }
+input {
+  display: block;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.95);
+  text-indent: 5px;
+  color: #fff;
+}
+
+.profile-content-password {
+  width: 100%;
+  padding-right: 1em;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-areas:
+    "p ."
+    "n c";
+}
+
+#password {
+  grid-area: p;
+}
+
+#new-password {
+  grid-area: n;
+}
+
+#confirm-new-password {
+  grid-area: c;
 }
 
 .list-unstyled {

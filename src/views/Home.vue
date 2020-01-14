@@ -10,7 +10,7 @@
           </div>
           <div class="news-section-date">{{ GetDate(news.date) }}</div>
         </div>
-        <div class="news-section-content" v-html="news.content"></div>
+        <article class="news-section-content" v-html="news.content"></article>
       </div>
     </div>
   </div>
@@ -56,6 +56,7 @@ export default class HomeView extends Vue {
   font-size: 1.4em;
   padding-bottom: 10px;
   box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.95);
+  user-select: none;
 }
 
 .news {
