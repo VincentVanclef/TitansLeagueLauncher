@@ -5,6 +5,7 @@ import {
   GetClassName,
   GetClassColor
 } from "@/models/game/WoWClasses";
+import { Zones, Maps } from "@/models/game/WoWZones";
 
 export class HelperMethods {
   static GetRoleColor(role: WebsiteRoles): string {
@@ -96,5 +97,13 @@ export class HelperMethods {
     }
 
     return false;
+  }
+
+  static GetZone(ZoneId: number) {
+    return Zones.get(ZoneId);
+  }
+
+  static GetMap(mapId: number) {
+    return Maps.get(mapId);
   }
 }

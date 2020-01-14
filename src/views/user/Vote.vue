@@ -47,7 +47,7 @@ export default class Vote extends Vue {
 
   async Vote(site: IVoteSite) {
     const result = await UserApi.Vote(site);
-    
+
     window.open(site.link, "_blank");
 
     this.voteTimers.push({
@@ -56,6 +56,7 @@ export default class Vote extends Vue {
     });
 
     UserModule.user!.vp = result.vp;
+    UserModule.user!.totalVotes += 1;
 
     this.$bvToast.toast(
       `Succesfully voted for ${site.name}! You have been rewarded ${site.value} VP!`,

@@ -16,7 +16,7 @@ const PageNotFoundRoute: RouteConfig = {
 const router = new VueRouter({
   mode: process.env.IS_ELECTRON ? "hash" : "history",
   base: process.env.BASE_URL,
-  routes: [PageNotFoundRoute, HomeRoutes, UserRoutes]
+  routes: [PageNotFoundRoute, ...HomeRoutes, UserRoutes]
 });
 
 router.beforeEach((to, from, next) => {

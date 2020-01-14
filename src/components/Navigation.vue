@@ -10,6 +10,13 @@
       </div>
       <div
         class="navigation_link"
+        @click="Navigate('/status')"
+        :class="{ active: IsActive('Status') }"
+      >
+        <div class="text">Server Status</div>
+      </div>
+      <div
+        class="navigation_link"
         @click="Navigate('/user/profile')"
         v-if="IsLoggedIn"
         :class="{ active: IsActive('Profile') }"

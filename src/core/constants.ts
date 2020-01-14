@@ -67,7 +67,8 @@ export const ApplicationConfig = {
   SettingsFileName: "settings.json",
   UserFileName: "user.json",
   WebsiteURL: "https://titans-league.org",
-  PatchPath: "Data"
+  PatchPath: "Data",
+  SeverStatusUpdateInterval: 300000
 };
 
 export const RealmlistConfig = {

@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <div class="home-header">News</div>
     <div class="news" v-if="serverNews">
       <div class="news-section" v-for="news in serverNews" :key="news.id">
         <div class="news-section-title">
@@ -20,7 +21,6 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import { NewsApi } from "@/services/api/api.news";
 import { INews } from "@/models/news/news.model";
 import moment from "moment";
-import LogService from "../services/logs/log.service";
 
 @Component({
   components: {}
@@ -48,6 +48,14 @@ export default class HomeView extends Vue {
 
 .home {
   @include pageBackground;
+}
+
+.home-header {
+  display: flex;
+  justify-content: center;
+  font-size: 1.4em;
+  padding-bottom: 10px;
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.95);
 }
 
 .news {

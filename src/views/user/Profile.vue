@@ -40,8 +40,8 @@
       <div class="profile-general">
         <h5>Account Information</h5>
         <div class="account-information">
-          <div id="title">VP</div>
-          <div id="title">DP</div>
+          <div id="title">Vote Points</div>
+          <div id="title">Donation Points</div>
           <div id="value">{{ User.vp }}</div>
           <div id="value">{{ User.dp }}</div>
           <div id="title">Total Votes</div>
@@ -152,8 +152,8 @@ export default class UserProfile extends Vue {
   }
 
   created() {
-    console.log(this.User);
-    console.log(this.realms);
+    // console.log(this.User);
+    // console.log(this.realms);
 
     this.firstname = this.User!.firstname;
     this.lastname = this.User!.lastname;
