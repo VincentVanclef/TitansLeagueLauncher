@@ -2,6 +2,7 @@
   <div class="profile">
     <div class="profile-header">{{ User.firstname }} {{ User.lastname }}</div>
     <div class="profile-container">
+      <h5 class="pt-3 pl-1">User Information</h5>
       <form @submit.prevent="UpdateProfile">
         <div class="profile-content">
           <div class="profile-entry">
@@ -35,6 +36,21 @@
           </button>
         </div>
       </form>
+
+      <div class="profile-general">
+        <h5>Account Information</h5>
+        <div class="account-information">
+          <div id="title">VP</div>
+          <div id="title">DP</div>
+          <div id="value">{{ User.vp }}</div>
+          <div id="value">{{ User.dp }}</div>
+          <div id="title">Total Votes</div>
+          <div id="title">Joined</div>
+          <div id="value">{{ User.totalVotes }}</div>
+          <div id="value">{{ GetDate(User.joinDate) }}</div>
+        </div>
+      </div>
+
       <div class="profile-stats">
         <div class="profile-stats-roles">
           <div class="profile-stats-title">Website Roles</div>
@@ -46,14 +62,16 @@
         </div>
         <div class="profile-stats-roles">
           <div class="profile-stats-title">Game Roles</div>
-          <ul class="list-unstyled pt-1">
-            <li v-for="role in User.account.accountAccess" :key="role.realmId">
+          <div
+            class="profile-stats-entry"
+            v-for="role in User.account.accountAccess"
+            :key="role.realmId"
+          >
+            <div id="realm" :title="GetRealmNameById(role.realmId)">
               {{ GetRealmNameById(role.realmId) }}
-              <span class="float-right mr-1">
-                {{ GetGameRankName(role.gmlevel) }}
-              </span>
-            </li>
-          </ul>
+            </div>
+            <div id="rank">{{ GetGameRankName(role.gmlevel) }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -70,6 +88,7 @@ import { UserApi } from "@/services/api/user.api";
 import { IRealmModel } from "@/models/realms/RealmModel";
 
 import { HelperMethods } from "@/core/HelperMethods";
+import moment from "moment";
 
 @Component({
   components: {}
@@ -86,6 +105,10 @@ export default class UserProfile extends Vue {
     return UserModule.user;
   }
 
+  GetDate(date: Date) {
+    return moment(date).format("MMMM Do YYYY, HH:mm:ss");
+  }
+
   async UpdateProfile() {
     const request: IUpdateAccountRequest = {
       firstname: this.firstname,
@@ -95,6 +118,11 @@ export default class UserProfile extends Vue {
     };
 
     await UserApi.UpdateAccount(request);
+
+    this.User!.firstname = this.firstname;
+    this.User!.lastname = this.lastname;
+    this.User!.username = this.username;
+    this.User!.location = this.location;
 
     this.$bvToast.toast(
       `Your profile informations have been successfully updated.`,
@@ -197,6 +225,28 @@ export default class UserProfile extends Vue {
   width: 100%;
 }
 
+.profile-general {
+  width: 100%;
+  padding-top: 3em;
+  padding-right: 1em;
+  text-indent: 7px;
+}
+
+.account-information {
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+
+  & #title {
+    font-size: 1.05em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    margin-top: 15px;
+  }
+
+  & #value {
+    font-size: 0.9em;
+  }
+}
+
 .profile-stats {
   width: 100%;
   padding-top: 3em;
@@ -213,5 +263,24 @@ export default class UserProfile extends Vue {
 .profile-stats-title {
   font-size: 1.25em;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.profile-stats-entry {
+  display: flex;
+  flex-direction: row;
+
+  & #realm {
+    width: 50%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  & #rank {
+    width: 50%;
+    padding-right: 5px;
+    text-align: right;
+  }
 }
 </style>
