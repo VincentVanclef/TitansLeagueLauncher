@@ -15,7 +15,7 @@ export default class PasswordToggle extends Vue {
   Top: number = 0;
 
   get style() {
-    const eye = this.$el.childNodes[0] as HTMLElement;
+    //const eye = this.$el.childNodes[0] as HTMLElement;
     // const node = this.Node as HTMLElement;
     // this.Top = eye.offsetHeight / 2;
     return {

@@ -69,6 +69,7 @@
             type="password"
             v-model="password"
             :disabled="loading"
+            v-pwt="{ color: '#000', top: 10 }"
           />
         </div>
         <div class="col-6 login-input">
@@ -82,6 +83,7 @@
             type="password"
             v-model="passwordConfirm"
             :disabled="loading"
+            v-pwt="{ color: '#000', top: 10 }"
           />
         </div>
       </div>

@@ -58,7 +58,7 @@ $backgroundColor: linear-gradient(#06213c, #1e5898);
   width: 100%;
 }
 
-$pageBackgroundHeight: 350px;
+$pageBackgroundHeight: 370px;
 $maxPageHeight: calc(#{$pageBackgroundHeight} - 25px);
 
 @mixin pageBackground {

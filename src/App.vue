@@ -97,11 +97,8 @@ export default class App extends Vue {
 }
 
 #main_content {
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 6px;
   width: 100%;
   height: 100%;
-  padding: 10px 15px 10px 15px;
   color: #fff;
 
   display: grid;

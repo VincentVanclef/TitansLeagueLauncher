@@ -1,5 +1,5 @@
 <template>
-  <div class="profile">
+  <div class="profile" v-if="User">
     <div class="profile-header">{{ User.firstname }} {{ User.lastname }}</div>
     <div class="profile-container">
       <h5 class="pt-3 pl-1">User Information</h5>
