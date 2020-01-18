@@ -28,7 +28,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { IApplicationUser } from "@/models/user/user.model";
 import { UserModule } from "@/store/modules/user/user.store";
-import { UserApi } from "@/services/api/user.api";
+import { UserApi } from "@/services/api/api.user";
 import { IVoteSite } from "@/models/user/vote/VoteSite";
 import { IVoteTimer } from "@/models/user/vote/VoteTimer";
 import moment from "moment";
@@ -55,7 +55,7 @@ export default class Vote extends Vue {
       unsetTimer: result.unsetTime
     });
 
-    UserModule.user!.vp = result.vp;
+    UserModule.accountData!.vp = result.vp;
     UserModule.user!.totalVotes += 1;
 
     this.$bvToast.toast(

@@ -37,6 +37,11 @@ class RealmsState extends VuexModule implements IRealmsState {
       this.GetRealmInformations();
     }, ApplicationConfig.SeverStatusUpdateInterval);
   }
+
+  @Action
+  async Clear() {
+    this.realms = [];
+  }
 }
 
 const RealmsModule = getModule(RealmsState);

@@ -15,12 +15,19 @@ interface IAccountBanned {
   active: number;
 }
 
-interface AccountMuted {
+interface IAccountMuted {
   accountId: number;
   muteDate: number;
   muteTime: number;
   mutedBy: string;
   muteReason: string;
+}
+
+interface IAccountData {
+  id: number;
+  vp: number;
+  dp: number;
+  extraMask: number;
 }
 
 interface IAccount {
@@ -41,69 +48,45 @@ interface IAccount {
   username: string;
   accountAccess: IAccountAccess[];
   accountBanned: IAccountBanned[];
-  accountMuted: AccountMuted[];
+  accountMuted: IAccountMuted[];
 }
 
 interface IApplicationUser {
-  accountId: number;
-  account: IAccount;
-  email: string;
-  firstname: string;
   id: string;
+  accountId: number;
+  email: string;
+  userName: string;
+  firstname: string;
   joinDate: Date;
   lastname: string;
   location: string;
   roles: WebsiteRoles[];
+  claims: string[];
   totalVotes: number;
-  username: string;
-  vp: number;
-  dp: number;
 }
 
 class ApplicationUser implements IApplicationUser {
-  accountId: number;
-  account: IAccount;
-  email: string;
-  firstname: string;
-  id: string;
-  joinDate: Date;
-  lastname: string;
-  location: string;
-  roles: WebsiteRoles[];
-  totalVotes: number;
-  username: string;
-  vp: number;
-  dp: number;
-
   constructor(
-    accountId: number,
-    account: IAccount,
-    email: string,
-    firstname: string,
-    id: string,
-    joinDate: Date,
-    lastname: string,
-    location: string,
-    roles: WebsiteRoles[],
-    totalVotes: number,
-    username: string,
-    vp: number,
-    dp: number
-  ) {
-    this.id = id;
-    this.account = account;
-    this.accountId = accountId;
-    this.email = email;
-    this.firstname = firstname;
-    this.joinDate = joinDate;
-    this.lastname = lastname;
-    this.location = location;
-    this.roles = roles;
-    this.totalVotes = totalVotes;
-    this.username = username;
-    this.vp = vp;
-    this.dp = dp;
-  }
+    public id: string,
+    public accountId: number,
+    public email: string,
+    public firstname: string,
+    public joinDate: Date,
+    public lastname: string,
+    public location: string,
+    public roles: WebsiteRoles[],
+    public claims: string[],
+    public totalVotes: number,
+    public userName: string,
+  ) {}
 }
 
-export { ApplicationUser, IApplicationUser, IAccount };
+export {
+  ApplicationUser,
+  IApplicationUser,
+  IAccount,
+  IAccountAccess,
+  IAccountBanned,
+  IAccountMuted,
+  IAccountData
+};

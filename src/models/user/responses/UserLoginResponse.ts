@@ -1,6 +1,8 @@
-import { ApplicationUser } from "../user.model";
+import { IAccount, IAccountData, ApplicationUser } from "../user.model";
 
 export interface IUserLoginResponse {
-  userDto: ApplicationUser;
+  account: IAccount;
+  accountData: IAccountData;
+  user: ApplicationUser;
   token: string;
 }

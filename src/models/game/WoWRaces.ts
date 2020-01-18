@@ -1,16 +1,16 @@
 export enum WoWRaces {
-    RACE_HUMAN = 1,
-    RACE_ORC = 2,
-    RACE_DWARF = 3,
-    RACE_NIGHT_ELF = 4,
-    RACE_UNDEAD = 5,
-    RACE_TAUREN = 6,
-    RACE_GNOME = 7,
-    RACE_TROLL = 8,
-    RACE_GOBLIN = 9,
-    RACE_BLOOD_ELF = 10,
-    RACE_DRAENEI = 11,
-    get
+  RACE_HUMAN = 1,
+  RACE_ORC = 2,
+  RACE_DWARF = 3,
+  RACE_NIGHT_ELF = 4,
+  RACE_UNDEAD = 5,
+  RACE_TAUREN = 6,
+  RACE_GNOME = 7,
+  RACE_TROLL = 8,
+  RACE_GOBLIN = 9,
+  RACE_BLOOD_ELF = 10,
+  RACE_DRAENEI = 11,
+  get
 }
 
 export const WoWRacesMap = new Map([

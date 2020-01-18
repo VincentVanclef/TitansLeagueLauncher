@@ -13,7 +13,7 @@ export class UserApi {
     request: IUserLoginRequest
   ): Promise<IUserLoginResponse> {
     const result = await HttpService.Post<IUserLoginResponse>(
-      "/auth/login",
+      "/user/login",
       request
     );
     return result;
@@ -23,7 +23,7 @@ export class UserApi {
     request: IUserRegisterRequest
   ): Promise<IUserLoginResponse> {
     const result = await HttpService.Post<IUserLoginResponse>(
-      "/auth/register",
+      "/user/register",
       request
     );
     return result;
@@ -49,12 +49,12 @@ export class UserApi {
   public static async UpdateAccount(
     request: IUpdateAccountRequest
   ): Promise<void> {
-    await HttpService.Post("/auth/UpdateAccount/", request);
+    await HttpService.Post("/user/UpdateAccount/", request);
   }
 
   public static async ChangeWebsitePassword(
     request: IChangePasswordRequest
   ): Promise<void> {
-    await HttpService.Post("/auth/ChangePassword", request);
+    await HttpService.Post("/user/ChangePassword", request);
   }
 }

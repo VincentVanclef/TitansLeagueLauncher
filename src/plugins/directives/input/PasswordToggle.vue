@@ -54,7 +54,6 @@ top - bottom + (height / 2 - eyeHeight / 2)
   mounted() {
     // setTimeout(() => {
     //   const { top, bottom, height } = this.Node.elm.getBoundingClientRect();
-
     //   const eye = this.$el.childNodes[0] as HTMLElement;
     //   const node = this.Node as HTMLElement;
     //   console.log((top - bottom) + (height / 2 - eye.offsetHeight / 2))

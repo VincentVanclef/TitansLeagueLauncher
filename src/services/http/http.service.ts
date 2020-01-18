@@ -14,7 +14,7 @@ import LogService from "@/services/logs/log.service";
 
 const API_URL =
   process.env.NODE_ENV === "development"
-    ? "https://localhost:44342"
+    ? "https://localhost:44342/api"
     : "https://titans-league.org/api";
 
 export class HttpService {

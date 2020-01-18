@@ -91,8 +91,8 @@
         <div class="account-information">
           <div id="title">Vote Points</div>
           <div id="title">Donation Points</div>
-          <div id="value">{{ User.vp }}</div>
-          <div id="value">{{ User.dp }}</div>
+          <div id="value">{{ AccountData.vp }}</div>
+          <div id="value">{{ AccountData.dp }}</div>
           <div id="title">Total Votes</div>
           <div id="title">Joined</div>
           <div id="value">{{ User.totalVotes }}</div>
@@ -113,7 +113,7 @@
           <div class="profile-stats-title">Game Roles</div>
           <div
             class="profile-stats-entry"
-            v-for="role in User.account.accountAccess"
+            v-for="role in Account.accountAccess"
             :key="role.realmId"
           >
             <div id="realm" :title="GetRealmNameById(role.realmId)">
@@ -129,12 +129,16 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { IApplicationUser } from "@/models/user/user.model";
+import {
+  IApplicationUser,
+  IAccount,
+  IAccountData
+} from "@/models/user/user.model";
 import { UserModule } from "@/store/modules/user/user.store";
 
 import { IUpdateAccountRequest } from "@/models/user/requests/UpdateAccountRequest";
 import { IChangePasswordRequest } from "@/models/user/requests/ChangePasswordRequest";
-import { UserApi } from "@/services/api/user.api";
+import { UserApi } from "@/services/api/api.user";
 import { IRealmModel } from "@/models/realms/RealmModel";
 
 import { HelperMethods } from "@/core/HelperMethods";
@@ -159,6 +163,14 @@ export default class UserProfile extends Vue {
     return UserModule.user;
   }
 
+  get Account(): IAccount | null {
+    return UserModule.account;
+  }
+
+  get AccountData(): IAccountData | null {
+    return UserModule.accountData;
+  }
+
   GetDate(date: Date) {
     return moment(date).format("MMMM Do YYYY, HH:mm:ss");
   }
@@ -175,7 +187,7 @@ export default class UserProfile extends Vue {
 
     this.User!.firstname = this.firstname;
     this.User!.lastname = this.lastname;
-    this.User!.username = this.username;
+    this.User!.userName = this.username;
     this.User!.location = this.location;
 
     this.$bvToast.toast(
@@ -230,7 +242,7 @@ export default class UserProfile extends Vue {
 
     this.firstname = this.User!.firstname;
     this.lastname = this.User!.lastname;
-    this.username = this.User!.username;
+    this.username = this.User!.userName;
     this.location = this.User!.location;
   }
 }
