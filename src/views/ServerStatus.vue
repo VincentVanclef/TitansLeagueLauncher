@@ -94,6 +94,7 @@ import { HelperMethods } from "../core/HelperMethods";
 import { WoWClass } from "../models/game/WoWClasses";
 import { GameRoles } from "../core/Constants";
 import { WoWRaces } from "../models/game/WoWRaces";
+import { RealmsModule } from '../store/modules/realms/realms.store';
 
 @Component({
   components: {}
@@ -153,7 +154,9 @@ export default class ServerStatus extends Vue {
     realm.classList.toggle("hidden");
   }
 
-  created() {}
+  created() {
+    RealmsModule.GetRealmInformations();
+  }
 }
 </script>
 
