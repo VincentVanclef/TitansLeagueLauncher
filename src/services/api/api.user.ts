@@ -7,6 +7,7 @@ import { IVoteTimer } from "@/models/user/vote/VoteTimer";
 import { IVoteResponse } from "@/models/user/vote/VoteResponse";
 import { IUpdateAccountRequest } from "@/models/user/requests/UpdateAccountRequest";
 import { IChangePasswordRequest } from "@/models/user/requests/ChangePasswordRequest";
+import { IUserRefreshTokenResponse } from "@/models/user/responses/UserRefreshTokenResponse";
 
 export class UserApi {
   public static async Login(
@@ -56,5 +57,17 @@ export class UserApi {
     request: IChangePasswordRequest
   ): Promise<void> {
     await HttpService.Post("/user/ChangePassword", request);
+  }
+
+  public static async RefreshToken(
+    token: string
+  ): Promise<IUserRefreshTokenResponse> {
+    const result = await HttpService.Post<IUserRefreshTokenResponse>(
+      "/user/RefreshToken",
+      {
+        expiredToken: token
+      }
+    );
+    return result;
   }
 }

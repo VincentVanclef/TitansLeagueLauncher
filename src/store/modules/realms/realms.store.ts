@@ -35,7 +35,7 @@ class RealmsState extends VuexModule implements IRealmsState {
 
     setInterval(() => {
       this.GetRealmInformations();
-    }, ApplicationConfig.SeverStatusUpdateInterval);
+    }, ApplicationConfig.ServerStatusUpdateInterval);
   }
 
   @Action

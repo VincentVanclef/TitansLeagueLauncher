@@ -77,6 +77,12 @@ class UserState extends VuexModule implements IUserState {
     this.token = token;
   }
 
+  @Mutation
+  UpdateToken(token: string) {
+    const decodedToken = JwtService.DecodeTokenAsJwt(token);
+    this.token = decodedToken;
+  }
+
   @Action
   async Login(request: IUserLoginRequest): Promise<IUserLoginResponse> {
     const result = await UserApi.Login(request);
@@ -104,6 +110,13 @@ class UserState extends VuexModule implements IUserState {
 
   @Action
   async RefreshToken(): Promise<boolean> {
+    const refreshTokenResponse = await UserApi.RefreshToken(this.token!.token);
+    if (!refreshTokenResponse.newToken) {
+      this.Logout();
+      return false;
+    }
+
+    this.UpdateToken(refreshTokenResponse.newToken);
     return true;
   }
 
