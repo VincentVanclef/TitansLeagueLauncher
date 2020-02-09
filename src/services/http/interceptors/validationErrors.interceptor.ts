@@ -12,6 +12,7 @@ export default async (response: AxiosResponse) => {
 
   const isTokenExpired = response.headers["token-expired"];
   if (responseStatus === HttpStatus.UNAUTHORIZED && isTokenExpired) {
+    console.log(response.config);
     const result = await UserModule.RefreshToken();
     if (result) {
       // Token refreshed succesfully, make request again

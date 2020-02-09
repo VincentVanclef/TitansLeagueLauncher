@@ -145,9 +145,7 @@ export default class Footer extends Vue {
     this.gameStarting = false;
 
     try {
-      const closed = await FileService.ExecuteFile(
-        ConfigModule.config!.wowPath + "\\Wow.exe"
-      );
+      FileService.ExecuteFile(ConfigModule.config!.wowPath + "\\Wow.exe");
     } catch (e) {
       LogService.Log("StartGame: ExecuteFile", e);
     }

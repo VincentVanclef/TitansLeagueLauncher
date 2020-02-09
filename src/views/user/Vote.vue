@@ -70,13 +70,11 @@ export default class Vote extends Vue {
 
   async GetVoteSites() {
     const result = await UserApi.GetVoteSites();
-    console.log(result);
     this.voteSites = result;
   }
 
   async GetVoteTimers() {
     const result = await UserApi.GetVoteTimers();
-    console.log(result);
     this.voteTimers = result;
   }
 

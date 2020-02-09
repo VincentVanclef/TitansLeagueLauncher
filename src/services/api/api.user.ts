@@ -5,9 +5,9 @@ import { IUserRegisterRequest } from "@/models/user/requests/UserRegisterRequest
 import { IVoteSite } from "@/models/user/vote/VoteSite";
 import { IVoteTimer } from "@/models/user/vote/VoteTimer";
 import { IVoteResponse } from "@/models/user/vote/VoteResponse";
-import { IUpdateAccountRequest } from "@/models/user/requests/UpdateAccountRequest";
 import { IChangePasswordRequest } from "@/models/user/requests/ChangePasswordRequest";
 import { IUserRefreshTokenResponse } from "@/models/user/responses/UserRefreshTokenResponse";
+import { IUpdateUserRequest } from "@/models/user/requests/UpdateUserRequest";
 
 export class UserApi {
   public static async Login(
@@ -48,7 +48,7 @@ export class UserApi {
   }
 
   public static async UpdateAccount(
-    request: IUpdateAccountRequest
+    request: IUpdateUserRequest
   ): Promise<void> {
     await HttpService.Post("/user/UpdateAccount/", request);
   }

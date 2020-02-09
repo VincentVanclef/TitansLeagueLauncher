@@ -1,4 +1,5 @@
-import { WebsiteRoles } from "@/core/Constants";
+import { UserPermission } from "../security/UserPermission";
+import { Role } from "../security/Role";
 
 interface IAccountAccess {
   accountId: number;
@@ -57,12 +58,12 @@ interface IApplicationUser {
   email: string;
   userName: string;
   firstname: string;
-  joinDate: Date;
   lastname: string;
+  joinDate: Date;
   location: string;
-  roles: WebsiteRoles[];
-  claims: string[];
   totalVotes: number;
+  roles: Role[];
+  permissions: UserPermission[];
 }
 
 class ApplicationUser implements IApplicationUser {
@@ -70,15 +71,30 @@ class ApplicationUser implements IApplicationUser {
     public id: string,
     public accountId: number,
     public email: string,
-    public firstname: string,
-    public joinDate: Date,
-    public lastname: string,
-    public location: string,
-    public roles: WebsiteRoles[],
-    public claims: string[],
-    public totalVotes: number,
     public userName: string,
+    public firstname: string,
+    public lastname: string,
+    public joinDate: Date,
+    public location: string,
+    public totalVotes: number,
+    public roles: Role[],
+    public permissions: UserPermission[]
   ) {}
+
+  get IsSuperAdmin(): boolean {
+    return this.roles.includes(Role.SuperAdmin);
+  }
+
+  public HasRole(roles: Role[]): boolean {
+    return this.IsSuperAdmin || this.roles.some(x => roles.indexOf(x) >= 0);
+  }
+
+  public HasPermission(permissions: string[]): boolean {
+    return (
+      this.IsSuperAdmin ||
+      this.permissions.some(x => permissions.includes(x.permissionId))
+    );
+  }
 }
 
 export {

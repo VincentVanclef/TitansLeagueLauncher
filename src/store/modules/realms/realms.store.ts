@@ -38,6 +38,11 @@ class RealmsState extends VuexModule implements IRealmsState {
     }, ApplicationConfig.ServerStatusUpdateInterval);
   }
 
+  @Mutation
+  Reset() {
+    this.realms = [];
+  }
+
   @Action
   async Clear() {
     this.realms = [];

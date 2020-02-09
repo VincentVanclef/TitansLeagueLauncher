@@ -17,7 +17,7 @@ const appendfile = util.promisify(fs.appendFile);
 const existfolder = util.promisify(fs.exists);
 const createfolder = util.promisify(fs.mkdir);
 const removefolder = util.promisify(fs.rmdir);
-const execFile = util.promisify(require("child_process").execFile);
+const execFile = require("electron").shell;
 
 export const isDirectory = (source: any) => lstatSync(source).isDirectory();
 
@@ -197,10 +197,9 @@ class FileService {
     }
   }
 
-  async ExecuteFile(path: string, params?: string[]): Promise<any> {
+  ExecuteFile(path: string, params?: string[]) {
     try {
-      const { stdout } = await execFile(path, params);
-      return stdout;
+      execFile.openItem(path);
     } catch (e) {
       LogService.Log("ExecuteFile", e);
       throw e;

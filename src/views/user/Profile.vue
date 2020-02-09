@@ -136,13 +136,13 @@ import {
 } from "@/models/user/user.model";
 import { UserModule } from "@/store/modules/user/user.store";
 
-import { IUpdateAccountRequest } from "@/models/user/requests/UpdateAccountRequest";
 import { IChangePasswordRequest } from "@/models/user/requests/ChangePasswordRequest";
 import { UserApi } from "@/services/api/api.user";
 import { IRealmModel } from "@/models/realms/RealmModel";
 
 import { HelperMethods } from "@/core/HelperMethods";
 import moment from "moment";
+import { IUpdateUserRequest } from "../../models/user/requests/UpdateUserRequest";
 
 @Component({
   components: {}
@@ -176,7 +176,9 @@ export default class UserProfile extends Vue {
   }
 
   async UpdateProfile() {
-    const request: IUpdateAccountRequest = {
+    const request: IUpdateUserRequest = {
+      userId: this.User!.id,
+      email: this.User!.email,
       firstname: this.firstname,
       lastname: this.lastname,
       username: this.username,

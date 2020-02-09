@@ -45,9 +45,9 @@
               :key="player.name"
             >
               <div class="player-name">
-                <font :color="GetClassColor(player.class)">{{
-                  player.name
-                }}</font>
+                <font :color="GetClassColor(player.class)">
+                  {{ player.name }}
+                </font>
               </div>
               <div>
                 <img
