@@ -19,7 +19,7 @@ $logoSize: 100px;
   top: 5px;
   left: calc(50% - #{$logoSize} / 2);
   z-index: 1;
-  opacity: 0.8;
+  filter: drop-shadow(0 0.5rem 1rem #06213c);
 
   -webkit-app-region: drag;
 
