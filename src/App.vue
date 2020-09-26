@@ -1,112 +1,112 @@
 <template>
-  <div id="background">
-    <TitleBar />
-    <Logo />
+	<div id="background">
+		<TitleBar />
+		<Logo />
 
-    <div class="main">
-      <div id="main_content" class="open" ref="mainContent">
-        <Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;" />
-        <router-view :IsLoggedIn="IsLoggedIn" :realms="Realms"></router-view>
-      </div>
-    </div>
+		<div class="main">
+			<div id="main_content" class="open" ref="mainContent">
+				<Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;" />
+				<router-view :IsLoggedIn="IsLoggedIn" :realms="Realms"></router-view>
+			</div>
+		</div>
 
-    <Footer />
+		<Footer />
 
-    <!-- modals -->
-    <Settings />
-  </div>
+		<!-- modals -->
+		<Settings />
+	</div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { ConfigModule } from "@/store/modules/config/config.store";
+import { Component, Vue } from 'vue-property-decorator';
+import { ConfigModule } from '@/store/modules/config/config.store';
 
-import TitleBar from "@/components/TitleBar.vue";
-import Logo from "@/components/Logo.vue";
-import Footer from "@/components/Footer.vue";
-import Settings from "@/components/Settings.vue";
-import Navigation from "@/components/Navigation.vue";
-import { UserModule } from "./store/modules/user/user.store";
-import { IRealmModel } from "./models/realms/RealmModel";
-import { RealmsModule } from "./store/modules/realms/realms.store";
+import TitleBar from '@/components/TitleBar.vue';
+import Logo from '@/components/Logo.vue';
+import Footer from '@/components/Footer.vue';
+import Settings from '@/components/Settings.vue';
+import Navigation from '@/components/Navigation.vue';
+import { UserModule } from './store/modules/user/user.store';
+import { IRealmModel } from './models/realms/RealmModel';
+import { RealmsModule } from './store/modules/realms/realms.store';
 
 @Component({
-  components: { TitleBar, Logo, Footer, Settings, Navigation }
+	components: { TitleBar, Logo, Footer, Settings, Navigation }
 })
 export default class App extends Vue {
-  get Realms(): IRealmModel[] {
-    return RealmsModule.realms;
-  }
+	get Realms(): IRealmModel[] {
+		return RealmsModule.realms;
+	}
 
-  get IsLoggedIn() {
-    return UserModule.IsLoggedIn;
-  }
+	get IsLoggedIn() {
+		return UserModule.IsLoggedIn;
+	}
 
-  get SettingsLoading() {
-    return ConfigModule.configSetupInProcess;
-  }
+	get SettingsLoading() {
+		return ConfigModule.configSetupInProcess;
+	}
 
-  get Config() {
-    return ConfigModule.config;
-  }
+	get Config() {
+		return ConfigModule.config;
+	}
 
-  get SettingsPath() {
-    return ConfigModule.settingsPath;
-  }
+	get SettingsPath() {
+		return ConfigModule.settingsPath;
+	}
 
-  async LoadConfig() {
-    await ConfigModule.LoadSettingsConfig();
-  }
+	async LoadConfig() {
+		await ConfigModule.LoadSettingsConfig();
+	}
 
-  async SaveConfig() {
-    await ConfigModule.SaveConfig();
-  }
+	async SaveConfig() {
+		await ConfigModule.SaveConfig();
+	}
 
-  created() {}
+	created() {}
 
-  beforeDestroy() {}
+	beforeDestroy() {}
 }
 </script>
 
 <style lang="scss">
-@import "node_modules/bootstrap/scss/bootstrap.scss";
-@import "node_modules/bootstrap-vue/src/index.scss";
-@import "@/assets/styles/main.scss";
-@import "@/assets/styles/variables.scss";
-@import "@/assets/styles/buttons.scss";
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
+@import 'node_modules/bootstrap-vue/src/index.scss';
+@import '@/assets/styles/main.scss';
+@import '@/assets/styles/variables.scss';
+@import '@/assets/styles/buttons.scss';
 
 #background {
-  background: url("~@/assets/images/background_tirion.png");
-  height: 100%;
-  width: 100%;
-  background-position: top center;
-  background-repeat: no-repeat;
-  background-size: cover;
+	background: url('~@/assets/images/background_tirion.png');
+	height: 100%;
+	width: 100%;
+	background-position: top center;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
 .main {
-  height: calc(100% - #{$footerHeight});
-  width: 100%;
-  padding: 115px 30px 35px 30px;
+	height: calc(100% - #{$footerHeight});
+	width: 100%;
+	padding: 115px 30px 35px 30px;
 }
 
 .open {
-  opacity: 1 !important;
-  max-height: 100% !important;
-  transform: scale(1) !important;
+	opacity: 1 !important;
+	max-height: 100% !important;
+	transform: scale(1) !important;
 }
 
 #main_content {
-  width: 100%;
-  height: 100%;
-  color: #fff;
+	width: 100%;
+	height: 100%;
+	color: #fff;
 
-  display: grid;
-  grid-template-columns: 25% 75%;
+	display: grid;
+	grid-template-columns: 25% 75%;
 
-  opacity: 0;
-  transform: scale(0);
-  transform-origin: top;
-  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+	opacity: 0;
+	transform: scale(0);
+	transform-origin: top;
+	transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 </style>

@@ -1,11 +1,11 @@
 <template>
-  <div id="window-logo">
-    <img src="@/assets/images/logo.png" />
-  </div>
+	<div id="window-logo">
+		<img src="@/assets/images/logo.png" />
+	</div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Logo extends Vue {}
@@ -15,17 +15,17 @@ export default class Logo extends Vue {}
 $logoSize: 100px;
 
 #window-logo {
-  position: fixed;
-  top: 5px;
-  left: calc(50% - #{$logoSize} / 2);
-  z-index: 1;
-  filter: drop-shadow(0 0.5rem 1rem #06213c);
+	position: fixed;
+	top: 5px;
+	left: calc(50% - #{$logoSize} / 2);
+	z-index: 1;
+	filter: drop-shadow(0 0.5rem 1rem #06213c);
 
-  -webkit-app-region: drag;
+	-webkit-app-region: drag;
 
-  img {
-    height: $logoSize;
-    width: $logoSize;
-  }
+	img {
+		height: $logoSize;
+		width: $logoSize;
+	}
 }
 </style>

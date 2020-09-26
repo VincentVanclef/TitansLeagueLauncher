@@ -1,4 +1,4 @@
 export interface IVoteResponse {
-  vp: number;
-  unsetTime: number;
+	vp: number;
+	unsetTime: number;
 }

@@ -1,73 +1,92 @@
-import HttpService from "@/services/http/http.service";
-import { IUserLoginRequest } from "@/models/user/requests/UserLoginRequest";
-import { IUserLoginResponse } from "@/models/user/responses/UserLoginResponse";
-import { IUserRegisterRequest } from "@/models/user/requests/UserRegisterRequest";
-import { IVoteSite } from "@/models/user/vote/VoteSite";
-import { IVoteTimer } from "@/models/user/vote/VoteTimer";
-import { IVoteResponse } from "@/models/user/vote/VoteResponse";
-import { IChangePasswordRequest } from "@/models/user/requests/ChangePasswordRequest";
-import { IUserRefreshTokenResponse } from "@/models/user/responses/UserRefreshTokenResponse";
-import { IUpdateUserRequest } from "@/models/user/requests/UpdateUserRequest";
+import HttpService from '@/services/http/http.service';
+import {
+	UserLoginRequest,
+	UserRegisterRequest,
+	UpdateUserRequest,
+	UpdateUsernameRequest,
+	FindUserRequest,
+	UserLoginViewModel,
+	VoteSitesViewModel,
+	VoteTimersViewModel,
+	VoteSite,
+	VoteViewModel,
+	UserChangePasswordRequest,
+	UserTokenRefreshViewModel,
+	LoginHistoryViewModel,
+	UserDetailsViewModel,
+	UpdatePasswordRequest,
+	GenericViewModel,
+	UserUpdateSettingsRequest
+} from '@/types/apiServerContract';
+import { ApplicationUser } from '@/models/user/user.model';
+
+const API_PATH = 'user/';
+const API_PATH_ACCOUNT = 'account/';
 
 export class UserApi {
-  public static async Login(
-    request: IUserLoginRequest
-  ): Promise<IUserLoginResponse> {
-    const result = await HttpService.Post<IUserLoginResponse>(
-      "/user/login",
-      request
-    );
-    return result;
-  }
+	public static async Login(request: UserLoginRequest): Promise<UserLoginViewModel> {
+		return HttpService.Post<UserLoginViewModel>(API_PATH + 'login', request);
+	}
 
-  public static async Register(
-    request: IUserRegisterRequest
-  ): Promise<IUserLoginResponse> {
-    const result = await HttpService.Post<IUserLoginResponse>(
-      "/user/register",
-      request
-    );
-    return result;
-  }
+	public static async Logout(): Promise<void> {
+		await HttpService.Get(API_PATH + 'logout');
+	}
 
-  public static async GetVoteSites(): Promise<IVoteSite[]> {
-    const result = await HttpService.Get<IVoteSite[]>("/vote/GetVoteSites");
-    return result;
-  }
+	public static async Register(request: UserRegisterRequest): Promise<UserLoginViewModel> {
+		return HttpService.Post<UserLoginViewModel>(API_PATH + 'register', request);
+	}
 
-  public static async GetVoteTimers(): Promise<IVoteTimer[]> {
-    const result = await HttpService.Get<IVoteTimer[]>("/vote/GetVoteTimers");
-    return result;
-  }
+	public static async GetVoteSites(): Promise<VoteSitesViewModel> {
+		return HttpService.Get<VoteSitesViewModel>('/vote/GetVoteSites');
+	}
 
-  public static async Vote(site: IVoteSite): Promise<IVoteResponse> {
-    const result = await HttpService.Post<IVoteResponse>(
-      "/vote/vote/" + site.id
-    );
-    return result;
-  }
+	public static async GetVoteTimers(): Promise<VoteTimersViewModel> {
+		return HttpService.Get<VoteTimersViewModel>('/vote/GetVoteTimers');
+	}
 
-  public static async UpdateAccount(
-    request: IUpdateUserRequest
-  ): Promise<void> {
-    await HttpService.Post("/user/UpdateAccount/", request);
-  }
+	public static async Vote(site: VoteSite): Promise<VoteViewModel> {
+		return HttpService.Get<VoteViewModel>('/vote/vote', {
+			id: site.id
+		});
+	}
 
-  public static async ChangeWebsitePassword(
-    request: IChangePasswordRequest
-  ): Promise<void> {
-    await HttpService.Post("/user/ChangePassword", request);
-  }
+	public static async UpdateUser(request: UpdateUserRequest): Promise<GenericViewModel<boolean>> {
+		return HttpService.Post<GenericViewModel<boolean>>(API_PATH + 'UpdateUser/', request);
+	}
 
-  public static async RefreshToken(
-    token: string
-  ): Promise<IUserRefreshTokenResponse> {
-    const result = await HttpService.Post<IUserRefreshTokenResponse>(
-      "/user/RefreshToken",
-      {
-        expiredToken: token
-      }
-    );
-    return result;
-  }
+	public static async UpdateUserSettings(request: UserUpdateSettingsRequest): Promise<GenericViewModel<boolean>> {
+		return HttpService.Post<GenericViewModel<boolean>>(API_PATH + 'UpdateUserSettings', request);
+	}
+
+	public static async ChangeWebsitePassword(request: UserChangePasswordRequest): Promise<GenericViewModel<boolean>> {
+		return HttpService.Post<GenericViewModel<boolean>>(API_PATH + 'ChangePassword', request);
+	}
+
+	public static GetLoginHistory(page: number): Promise<LoginHistoryViewModel> {
+		return HttpService.Get<LoginHistoryViewModel>(API_PATH + 'GetLoginHistory', {
+			page: page
+		});
+	}
+
+	public static async RefreshToken(token: string): Promise<UserTokenRefreshViewModel> {
+		return HttpService.Post<UserTokenRefreshViewModel>(API_PATH + 'RefreshToken', {
+			expiredToken: token
+		});
+	}
+
+	public static async UpdateIngameAccountUsername(request: UpdateUsernameRequest): Promise<GenericViewModel<boolean>> {
+		return HttpService.Post(API_PATH_ACCOUNT + 'UpdateUsername/', request);
+	}
+
+	public static async UpdateIngameAccountPassword(request: UpdatePasswordRequest): Promise<GenericViewModel<boolean>> {
+		return HttpService.Post(API_PATH_ACCOUNT + 'UpdatePassword/', request);
+	}
+
+	public static async FindUser(request: FindUserRequest): Promise<ApplicationUser> {
+		return HttpService.Post(API_PATH + 'FindUser', request);
+	}
+
+	public static async GetUserDetails(request: FindUserRequest): Promise<UserDetailsViewModel> {
+		return HttpService.Post<UserDetailsViewModel>(API_PATH + 'GetUserDetails', request);
+	}
 }

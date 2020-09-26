@@ -1,4 +1,4 @@
 export interface IVoteTimer {
-  site: number;
-  unsetTimer: number;
+	site: number;
+	unsetTimer: number;
 }

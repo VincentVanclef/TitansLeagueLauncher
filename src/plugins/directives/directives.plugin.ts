@@ -1,3 +1,3 @@
-import PasswordToggleDirective from "./input/password.toggle.directive";
+import PasswordToggleDirective from './input/password.toggle.directive';
 
 export { PasswordToggleDirective };

@@ -1,3 +1,3 @@
 export interface IUserRefreshTokenRequest {
-  expiredToken: string;
+	expiredToken: string;
 }

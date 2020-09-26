@@ -1,16 +1,15 @@
 module.exports = {
-  root: true,
-  env: {
-    node: true
-  },
-  extends: ["plugin:vue/essential", "@vue/prettier", "@vue/typescript"],
-  rules: {
-    "no-console": "off",
-    "no-debugger": "off",
-    "no-empty": "off",
-    "prettier/prettier": ["warn"]
-  },
-  parserOptions: {
-    parser: "@typescript-eslint/parser"
-  }
+	root: true,
+	env: {
+		node: true
+	},
+	extends: ['plugin:vue/essential', '@vue/prettier', '@vue/typescript'],
+	rules: {
+		'no-console': 'off',
+		'no-debugger': 'off',
+		'no-empty': 'off'
+	},
+	parserOptions: {
+		parser: '@typescript-eslint/parser'
+	}
 };
