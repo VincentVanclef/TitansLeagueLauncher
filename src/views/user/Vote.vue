@@ -25,43 +25,43 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { IApplicationUser } from '@/models/user/user.model';
+import { Component, Vue } from 'vue-property-decorator';
 import { UserModule } from '@/store/modules/user/user.store';
 import { UserApi } from '@/services/api/api.user';
 import moment from 'moment';
-import { UserViewObject, VoteSite, VoteTimerViewObject } from '@/types/apiServerContract';
+import { UserViewObject, VoteSiteViewObject, VoteTimerViewObject } from '@/types/apiServerContract';
 
 @Component({
 	components: {}
 })
 export default class Vote extends Vue {
-	voteSites: VoteSite[] = [];
-	voteTimers: VoteTimerViewObject[] = [];
-	updateTimer: any = null;
+	private voteSites: VoteSiteViewObject[] = [];
+	private voteTimers: VoteTimerViewObject[] = [];
+	private updateTimer: any = null;
+	private voting: boolean = false;
 
 	get User(): UserViewObject | null {
 		return UserModule.user;
 	}
 
-	async Vote(site: VoteSite) {
-		const result = await UserApi.Vote(site);
+	async Vote(site: VoteSiteViewObject) {
+	    if (this.voting) return;
 
-		window.open(site.link, '_blank');
+	    try {
+	        this.voting = true;
 
-		this.voteTimers.push({
-			site: site.id,
-			unsetTimer: result.vote.unsetTimer
-		});
+	        await UserModule.Vote(site);
 
-		UserModule.accountData!.vp = result.vote.vp;
-		UserModule.user!.totalVotes += 1;
+	        window.open(site.link, '_blank');
 
-		this.$bvToast.toast(`Succesfully voted for ${site.name}! You have been rewarded ${site.value} VP!`, {
-			title: 'Success',
-			variant: 'success',
-			solid: true
-		});
+	        this.$bvToast.toast(`After successfully voting on ${site.name}, you will be rewarded ${site.value} VP.`, {
+	            title: 'Vote Verification Notice',
+	            variant: 'warning',
+	            solid: true
+	        });
+	    } finally {
+	        this.voting = false;
+	    }
 	}
 
 	async GetVoteSites() {

@@ -1,22 +1,5 @@
 /* eslint-disable */
-export interface VoteTimerViewObject {
-    site: number;
-    unsetTimer: number;
-}
-export interface VoteViewObject {
-    unsetTimer: number;
-    vp: number;
-}
-export interface VoteSitesViewModel {
-    voteSites: VoteSite[];
-}
-export interface VoteTimersViewModel {
-    timers: VoteTimerViewObject[];
-}
-export interface VoteViewModel {
-    vote: VoteViewObject;
-}
-export interface VoteSite {
+export interface VoteSiteViewObject {
     id: number;
     image: string;
     link: string;
@@ -24,13 +7,23 @@ export interface VoteSite {
     unsetTime: number;
     value: number;
 }
-export interface WoWMap {
-    id: number;
-    name: string;
+export interface VoteTimerViewObject {
+    site: number;
+    unsetTimer: number;
 }
-export interface WoWZone {
-    id: number;
-    name: string;
+export interface VoteViewObject {
+    site: VoteSiteViewObject;
+    unsetTimer: number;
+    vp: number;
+}
+export interface VoteSitesViewModel {
+    voteSites: VoteSiteViewObject[];
+}
+export interface VoteTimersViewModel {
+    timers: VoteTimerViewObject[];
+}
+export interface VoteViewModel {
+    vote: VoteViewObject;
 }
 export interface SettingsViewObject<T> extends UserSettingsViewObject {
     entityValue: T;
@@ -42,43 +35,33 @@ export interface UsernameViewObject {
 }
 export interface UserSettingsViewObject {
     entityType: EntityType;
-    settingsType: ApplicationUserSettingsType;
+    settingsType: UserSettingsType;
 }
 export interface UserViewObject {
-    accessFailedCount: number;
     accountId: number;
-    currentLogin: ApplicationUserLogin;
+    currentLogin: UserLogin;
     email: string;
-    emailConfirmed: boolean;
     emailHidden: boolean;
     firstname: string;
+    hasAcceptedDonationTerms: boolean;
     id: string;
     joinDate: Date;
-    lastLogin: ApplicationUserLogin;
+    lastLogin: UserLogin;
     lastname: string;
     location: string;
     lockoutEnabled: boolean;
     lockoutEnd: Date | undefined;
     permissions: UserPermission[];
-    phoneNumber: string;
-    phoneNumberConfirmed: boolean;
-    phoneNumberHidden: boolean;
+    realms: UserRealm[];
     roles: string[];
     settings: UserSettingsViewObject[];
     totalVotes: number;
-    twoFactorEnabled: boolean;
     userName: string;
 }
-export interface ApplicationUserLogin {
+export interface UserLogin {
     date: Date;
     ip: string;
     userId: string;
-}
-export interface ApplicationUserSetting {
-    applicationUserId: string;
-    entityType: EntityType;
-    entityValue: string;
-    settingsType: ApplicationUserSettingsType;
 }
 export interface UserPermission {
     permission: Permission;
@@ -86,6 +69,12 @@ export interface UserPermission {
     realmId: number;
     userId: string;
     withGrant: boolean;
+}
+export interface UserSetting {
+    entityType: EntityType;
+    entityValue: string;
+    settingsType: UserSettingsType;
+    userId: string;
 }
 export interface Permission {
     category: PermissionCategory;
@@ -98,20 +87,28 @@ export interface PermissionCategory {
     id: number;
     name: string;
 }
+export interface UserRealm {
+    realmId: number;
+    userId: string;
+}
+export interface WoWMap {
+    id: number;
+    name: string;
+}
+export interface WoWZone {
+    id: number;
+    name: string;
+}
 export interface LoginHistoryViewModel {
-    history: ApplicationUserLogin[];
+    history: UserLogin[];
 }
 export interface UserDetailsViewModel {
     account: AccountViewObject;
-    lastLogin: ApplicationUserLogin;
-    permissions: UserPermission[];
-    realms: number[];
-    roles: string[];
+    lastLogin: UserLogin;
     user: UserViewObject;
 }
 export interface UserLoginViewModel {
     account: AccountViewObject;
-    accountData: GameAccountData;
     token: string;
     user: UserViewObject;
 }
@@ -124,9 +121,9 @@ export interface UsersViewModel {
 }
 export interface UserTokenRefreshViewModel {
     token: string;
-    user: UserViewObject;
 }
 export interface UserViewModel {
+    account: AccountViewObject;
     user: UserViewObject;
 }
 export interface AccountAccessViewObject {
@@ -152,6 +149,7 @@ export interface AccountMutedViewObject {
 export interface AccountViewObject {
     accountAccess: AccountAccessViewObject[];
     accountBanned: AccountBannedViewObject[];
+    accountData: GameAccountData;
     accountMuted: AccountMutedViewObject[];
     failedLogins: number;
     id: number;
@@ -167,9 +165,9 @@ export interface AccountViewObject {
     username: string;
 }
 export interface GameAccountData {
+    accountId: number;
     dp: number;
     extraMask: number;
-    id: number;
     vp: number;
 }
 export interface Realmlist {
@@ -183,8 +181,10 @@ export interface Realmlist {
     localAddress: string;
     localSubnetMask: string;
     name: string;
+    patchLocation: string;
     population: number;
     port: number;
+    realmLocation: string;
     timezone: RealmTimeZone;
     worldDb: string;
 }
@@ -243,6 +243,11 @@ export interface UserRegisterRequest {
     passwordConfirm: string;
     username: string;
 }
+export interface UserResetPasswordRequest {
+    newPassword: string;
+    newPasswordAgain: string;
+    token: string;
+}
 export interface UserUpdatePermissionsRequest {
     active: boolean;
     permission: UserPermission;
@@ -252,7 +257,7 @@ export interface UserUpdateRolesRequest {
     userId: string;
 }
 export interface UserUpdateSettingsRequest {
-    settings: ApplicationUserSetting[];
+    settings: UserSetting[];
 }
 export interface UserUpdateUserRealmsRequest {
     realms: number[];
@@ -360,13 +365,25 @@ export interface KeyValuePair<TKey, TValue> {
     key: TKey;
     value: TValue;
 }
+export interface ArenaTeamMemberViewModel {
+    arenaTeamMembers: ArenaTeamMemberViewObject[];
+}
 export interface ArenaTeamStatisticsViewModel {
     teams: ArenaTeamStatisticViewObject[];
+}
+export interface CharacterStatisticViewModel {
+    characterStatistics: CharacterStatisticViewObject[];
 }
 export interface GameMastersViewModel {
     admins: AccountViewObject[];
     gameMasters: AccountViewObject[];
     trials: AccountViewObject[];
+}
+export interface TopBattleRoyaleViewModel {
+    statistics: TopBattleRoyaleViewObject[];
+}
+export interface TopHKViewModel {
+    topHKStatistics: TopHKViewObject[];
 }
 export interface TopVotersViewModel {
     topVoter: VoteStatisticViewModel;
@@ -385,29 +402,28 @@ export interface VoteStatisticViewModel {
     total: number;
     username: string;
 }
-export interface ArenaTeamMemberViewModel {
-    arenaTeamMembers: ArenaTeamMemberViewObject[];
-}
 export interface ArenaTeamMemberViewObject {
+    accountId: number;
     arenaTeamId: number;
-    class: number;
+    class: WoWClass;
     games: number;
+    gender: WoWGender;
     guid: number;
     level: number;
     name: string;
+    race: WoWRace;
     rating: number;
     wins: number;
+    zone: number;
 }
 export interface ArenaTeamStatisticViewObject {
     arenaTeamId: number;
     captain: number;
+    members: ArenaTeamMemberViewObject[];
     name: string;
     rank: number;
     rating: number;
     type: ArenaTeamType;
-}
-export interface CharacterStatisticViewModel {
-    characterStatistics: CharacterStatisticViewObject[];
 }
 export interface CharacterStatisticViewObject {
     classDistributions: number[];
@@ -415,26 +431,43 @@ export interface CharacterStatisticViewObject {
     realmId: number;
     totalCharacters: number;
 }
+export interface SelectArenaTeamMembersRequest extends RealmSpecificRequest {
+    teams: number[];
+}
 export interface SelectTopArenaTeamsRequest extends RealmSpecificRequest {
     limit: number;
 }
+export interface TopBattleRoyalePlayerStatistics {
+    accountId: number;
+    class: WoWClass;
+    gender: WoWGender;
+    guid: number;
+    level: number;
+    name: string;
+    race: WoWRace;
+    rank: number;
+    total: number;
+    winPercentage: number;
+    wins: number;
+}
+export interface TopBattleRoyaleViewObject {
+    realmId: number;
+    statistics: TopBattleRoyalePlayerStatistics[];
+}
 export interface TopHKPlayerStatistic {
     accountId: number;
-    class: number;
-    gender: number;
+    class: WoWClass;
+    gender: WoWGender;
     guid: number;
     kills: number;
     level: number;
     name: string;
-    race: number;
+    race: WoWRace;
     rank: number;
 }
 export interface TopHKRequest {
     limit: number;
     realmIds: number[];
-}
-export interface TopHKViewModel {
-    topHKStatistics: TopHKViewObject[];
 }
 export interface TopHKViewObject {
     realmId: number;
@@ -502,11 +535,17 @@ export interface Realm {
 }
 export interface Player {
     accountId: number;
-    class: number;
-    gender: number;
+    class: WoWClass;
+    faction: WoWFaction;
+    gender: WoWGender;
+    health: number;
+    id: number;
     level: number;
     name: string;
-    race: number;
+    online: boolean;
+    power: number;
+    powerType: PowerType;
+    race: WoWRace;
     rank: GameRole;
     realmId: number;
     zone: number;
@@ -521,8 +560,37 @@ export interface AuthorModel {
     authorName: string;
     emailHidden: boolean;
 }
+export interface DonationPriceViewModel {
+    prices: DonationPriceViewObject[];
+}
+export interface DonationPriceViewObject {
+    amount: number;
+    id: number;
+    price: number;
+}
 export interface PayPalDonateRequest {
     id: string;
+}
+export interface PayPalDonateViewModel {
+    redirectUrl: string;
+    success: boolean;
+}
+export interface PayPalLogViewModel {
+    currency: string;
+    date: Date;
+    item: string;
+    payerCity: string;
+    payerEmail: string;
+    payerFirstName: string;
+    payerId: string;
+    payerLastName: string;
+    payerPostalCode: string;
+    paymentId: string;
+    price: number;
+    quantity: number;
+    total: number;
+    totalDp: number;
+    userId: string;
 }
 export interface PayPalSuccessRequest {
     accountId: number;
@@ -534,6 +602,7 @@ export interface PayPalSuccessRequest {
 export interface PatchViewObject {
     details: string;
     downloadLink: string;
+    hash: string;
     keepUpdated: boolean;
     modified: Date;
     patch: string;
@@ -548,6 +617,36 @@ export interface NotificationViewObject extends AuthorModel {
     seen: boolean;
     type: NotificationType;
     userId: string;
+}
+export interface Notification_IssueAssignedViewObject extends NotificationViewObject {
+    issueId: number;
+    issueTitle: string;
+}
+export interface Notification_IssueClosedViewObject extends NotificationViewObject {
+    issueId: number;
+    issueStatus: BugTrackerStatus;
+    issueTitle: string;
+}
+export interface Notification_IssueCommentedViewObject extends NotificationViewObject {
+    comment: string;
+    issueId: number;
+    issueTitle: string;
+}
+export interface Notification_IssueConfirmedViewObject extends NotificationViewObject {
+    issueId: number;
+    issueTitle: string;
+}
+export interface Notification_IssueCreatedViewObject extends NotificationViewObject {
+    issueId: number;
+    issueTitle: string;
+}
+export interface Notification_IssueFixedViewObject extends NotificationViewObject {
+    issueId: number;
+    issueTitle: string;
+}
+export interface Notification_IssueUpdatedViewObject extends NotificationViewObject {
+    issueId: number;
+    issueTitle: string;
 }
 export interface Notification_NewsCommentReactionViewObject extends NotificationViewObject {
     comment: string;
@@ -670,6 +769,138 @@ export interface NewsReactionRequest extends SpecificNewsRequest {
 export interface SpecificNewsRequest {
     newsId: number;
 }
+export interface GuildBankEventLogViewObject {
+    character: CharacterViewObject;
+    destTabId: number;
+    eventType: GuildBankEventLogTypes;
+    guildId: number;
+    item: CharacterInventoryViewObject;
+    itemOrMoney: number;
+    itemStackCount: number;
+    logGuid: number;
+    playerGuid: number;
+    tabId: number;
+    timeStamp: string;
+}
+export interface GuildBankTabViewObject {
+    guildÍd: number;
+    itemLogs: GuildBankEventLogViewObject[];
+    items: CharacterInventoryViewObject[];
+    moneyLogs: GuildBankEventLogViewObject[];
+    tabIcon: string;
+    tabId: number;
+    tabName: string;
+    tabText: string;
+}
+export interface GuildEventLogViewObject {
+    eventType: GuildEventLogTypes;
+    guildId: number;
+    logGuid: number;
+    newRank: number;
+    player1: CharacterViewObject;
+    player2: CharacterViewObject;
+    timeStamp: string;
+}
+export interface GuildMemberViewObject {
+    character: CharacterViewObject;
+    guildId: number;
+    offNote: string;
+    pnote: string;
+    rank: GuildRankViewObject;
+    rankId: number;
+}
+export interface GuildRankViewObject {
+    bankMoneyPerDay: number;
+    guildId: number;
+    id: number;
+    rankName: string;
+    rights: number;
+}
+export interface GuildViewObject {
+    backgroundColor: number;
+    bankMoney: number;
+    borderColor: number;
+    borderStyle: number;
+    createDate: string;
+    emblemColor: number;
+    emblemStyle: number;
+    exp: number;
+    id: number;
+    info: string;
+    leader: GuildMemberViewObject;
+    leaderGuid: number;
+    level: number;
+    members: GuildMemberViewObject[];
+    motd: string;
+    name: string;
+    ranks: GuildRankViewObject[];
+}
+export interface CharacterInventoryViewObject {
+    bagGuid: number;
+    count: number;
+    entry: number;
+    guid: number;
+    isBag: boolean;
+    item: ItemTemplateViewObject;
+    items: CharacterInventoryViewObject[];
+    slot: EquipmentSlots;
+}
+export interface CharacterViewObject extends Player {
+}
+export interface ItemTemplateViewObject {
+    allowableClass: number;
+    allowableRace: number;
+    armor: number;
+    block: number;
+    bonding: string;
+    buyCount: number;
+    buyPrice: number;
+    containerSlots: number;
+    damageInfos: DamageInfo[];
+    delay: string;
+    description: string;
+    displayId: number;
+    dps: string;
+    entry: number;
+    flags: number;
+    flagsExtra: number;
+    icon: string;
+    inventoryType: string;
+    isBag: boolean;
+    isHeroic: boolean;
+    isUnique: boolean;
+    itemLevel: number;
+    itemType: string;
+    maxCount: number;
+    name: string;
+    primaryStats: string[];
+    quality: ItemQualities;
+    qualityColor: string;
+    requiredLevel: number;
+    secondaryStats: string[];
+    sellPrice: number;
+}
+export interface DamageInfo {
+    damageMax: number;
+    damageMin: number;
+    damageType: string;
+}
+export interface GuildBankTabsViewModel {
+    tabs: GuildBankTabViewObject[];
+}
+export interface GuildEventLogViewModel {
+    logs: GuildEventLogViewObject[];
+}
+export interface GuildMemberStatusViewModel {
+    isGuildLeader: boolean;
+    member: GuildMemberViewObject;
+}
+export interface GuildsViewModel {
+    guilds: GuildViewObject[];
+}
+export interface GuildViewModel {
+    guild: GuildViewObject;
+}
 export interface WoWMapViewModel {
     maps: WoWMap[];
 }
@@ -752,7 +983,9 @@ export interface SaveContentPageRequest extends SaveBlocksRequest {
 export interface ChatMemberViewObject extends AuthorModel {
     online: boolean;
 }
-export interface ChatMessageReactionViewObject extends ReactionViewObject {
+export interface ChatMessageReactionViewObject extends AuthorModel {
+    active: boolean;
+    type: ReactionType;
 }
 export interface ChatMessageViewObject extends AuthorModel {
     created: Date;
@@ -823,10 +1056,70 @@ export interface UpdateGroupChatNameRequest {
     groupId: string;
     name: string;
 }
+export interface CharacterDetailsViewModel {
+    account: AccountViewObject;
+    character: CharacterViewObject;
+    guild: GuildViewObject;
+    user: UserViewObject;
+}
+export interface CharacterInventoryViewModel {
+    bagItems: CharacterInventoryViewObject[];
+    currencyItems: CharacterInventoryViewObject[];
+    inventory: CharacterInventoryViewObject[];
+}
+export interface CharacterStatsViewModel {
+    agility: number;
+    armor: number;
+    armorPenetration: number;
+    attackPower: number;
+    blockPct: number;
+    critPct: number;
+    defense: number;
+    dodgePct: number;
+    energy: number;
+    expertise: number;
+    focus: number;
+    guid: number;
+    happiness: number;
+    intellect: number;
+    mana: number;
+    manaRegen: number;
+    maxHealth: number;
+    meleeHaste: number;
+    meleeHit: number;
+    parryPct: number;
+    rage: number;
+    rangedAttackPower: number;
+    rangedCritPct: number;
+    rangedHaste: number;
+    rangedHit: number;
+    resArcane: number;
+    resFire: number;
+    resFrost: number;
+    resHoly: number;
+    resilience: number;
+    resNature: number;
+    resShadow: number;
+    runes: number;
+    runicPower: number;
+    spellCritPct: number;
+    spellHaste: number;
+    spellHit: number;
+    spellPenetration: number;
+    spellPower: number;
+    spirit: number;
+    stamina: number;
+    strength: number;
+}
+export interface CharactersViewModel {
+    characters: CharacterViewObject[];
+}
 export interface BanCharacterRequest extends RealmSpecificRequest {
     guid: number;
     reason: string;
     unbanDate: number;
+}
+export interface CharacterDetailsViewObject {
 }
 export interface SelectCharacterByGuidRequest extends RealmSpecificRequest {
     guid: number;
@@ -840,171 +1133,6 @@ export interface TeleportCharacterRequest extends RealmSpecificRequest {
 }
 export interface UnBanCharacterRequest extends RealmSpecificRequest {
     guid: number;
-}
-export interface GetGuildBankEventLogsRequest extends RealmSpecificRequest {
-    eventTypes: number[];
-    guildId: number;
-    tabId: number;
-}
-export interface GetGuildByIdRequest extends RealmSpecificRequest {
-    guildId: number;
-}
-export interface GetGuildByNameRequest extends RealmSpecificRequest {
-    guildName: string;
-}
-export interface InventoryViewObject {
-    item: ItemTemplate;
-    itemCount: number;
-    itemEntry: number;
-    itemGuid: number;
-    slot: number;
-}
-export interface ItemDisplayIdsRequest {
-    displayIds: number[];
-}
-export interface ItemTemplate {
-    allowableClass: number;
-    allowableRace: number;
-    ammoType: number;
-    arcaneRes: number;
-    area: number;
-    armor: number;
-    armorDamageModifier: number;
-    bagFamily: number;
-    block: number;
-    bonding: number;
-    buyCount: number;
-    buyPrice: number;
-    class: number;
-    cond: number;
-    containerSlots: number;
-    delay: number;
-    description: string;
-    disenchantId: number;
-    displayId: number;
-    dmgMax1: number;
-    dmgMax2: number;
-    dmgMin1: number;
-    dmgMin2: number;
-    dmgType1: number;
-    dmgType2: number;
-    duration: number;
-    entry: number;
-    fireRes: number;
-    flags: number;
-    flagsCustom: number;
-    flagsExtra: number;
-    foodType: number;
-    frostRes: number;
-    gemProperties: number;
-    holidayId: number;
-    holyRes: number;
-    inventoryType: number;
-    itemLevel: number;
-    itemLimitCategory: number;
-    itemSet: number;
-    languageId: number;
-    lockId: number;
-    map: number;
-    material: number;
-    maxCount: number;
-    maxDurability: number;
-    maxMoneyLoot: number;
-    minMoneyLoot: number;
-    name: string;
-    natureRes: number;
-    pageMaterial: number;
-    pageText: number;
-    quality: number;
-    randomProperty: number;
-    randomSuffix: number;
-    rangedModRange: number;
-    requiredCityRank: number;
-    requiredDisenchantSkill: number;
-    requiredHonorRank: number;
-    requiredLevel: number;
-    requiredReputationFaction: number;
-    requiredReputationRank: number;
-    requiredSkill: number;
-    requiredSkillRank: number;
-    requiredSpell: number;
-    scalingStatDistribution: number;
-    scalingStatValue: number;
-    scriptName: string;
-    sellPrice: number;
-    shadowRes: number;
-    sheath: number;
-    socketBonus: number;
-    socketColor1: number;
-    socketColor2: number;
-    socketColor3: number;
-    socketContent1: number;
-    socketContent2: number;
-    socketContent3: number;
-    soundOverrideSubclass: number;
-    spellCategory1: number;
-    spellCategory2: number;
-    spellCategory3: number;
-    spellCategory4: number;
-    spellCategory5: number;
-    spellCategoryCooldown1: number;
-    spellCategoryCooldown2: number;
-    spellCategoryCooldown3: number;
-    spellCategoryCooldown4: number;
-    spellCategoryCooldown5: number;
-    spellCharges1: number;
-    spellCharges2: number;
-    spellCharges3: number;
-    spellCharges4: number;
-    spellCharges5: number;
-    spellCooldown1: number;
-    spellCooldown2: number;
-    spellCooldown3: number;
-    spellCooldown4: number;
-    spellCooldown5: number;
-    spellId1: number;
-    spellId2: number;
-    spellId3: number;
-    spellId4: number;
-    spellId5: number;
-    spellPpmRate1: number;
-    spellPpmRate2: number;
-    spellPpmRate3: number;
-    spellPpmRate4: number;
-    spellPpmRate5: number;
-    spellTrigger1: number;
-    spellTrigger2: number;
-    spellTrigger3: number;
-    spellTrigger4: number;
-    spellTrigger5: number;
-    stackAble: number | undefined;
-    startQuest: number;
-    statsCount: number;
-    statType1: number;
-    statType10: number;
-    statType2: number;
-    statType3: number;
-    statType4: number;
-    statType5: number;
-    statType6: number;
-    statType7: number;
-    statType8: number;
-    statType9: number;
-    statValue1: number;
-    statValue10: number;
-    statValue2: number;
-    statValue3: number;
-    statValue4: number;
-    statValue5: number;
-    statValue6: number;
-    statValue7: number;
-    statValue8: number;
-    statValue9: number;
-    subclass: number;
-    totemCategory: number;
-}
-export interface SelectArenaTeamMembersRequest extends RealmSpecificRequest {
-    teams: number[];
 }
 export interface ChangelogCategoryViewObject {
     color: string;
@@ -1070,6 +1198,106 @@ export interface ChangelogRelease {
     publishedDate: Date | undefined;
     realm: number;
 }
+export interface BugTrackerCategoryViewObject {
+    id: number;
+    name: string;
+}
+export interface BugTrackerIssueCommentReactionViewObject extends ReactionViewObject {
+    commentId: number;
+    issueId: number;
+}
+export interface BugTrackerIssueCommentViewObject extends AuthorModel {
+    comment: string;
+    date: Date;
+    id: number;
+    issueId: number;
+    lastEdited: Date | undefined;
+    reactions: BugTrackerIssueCommentReactionViewObject[];
+}
+export interface BugTrackerIssueDetailsViewObject extends BugTrackerIssueViewObject {
+    createdByUser: UserViewObject;
+}
+export interface BugTrackerIssueViewObject {
+    assignee: string | undefined;
+    categoryId: number;
+    comments: BugTrackerIssueCommentViewObject[];
+    created: Date;
+    createdBy: string;
+    description: string;
+    id: number;
+    priority: BugTrackerPriority;
+    reactions: BugTrackerReactionViewObject[];
+    realmId: number;
+    status: BugTrackerStatus;
+    title: string;
+    updated: number;
+}
+export interface BugTrackerReactionViewObject extends ReactionViewObject {
+    issueId: number;
+}
+export interface BugTrackerCategoriesViewModel {
+    categories: BugTrackerCategoryViewObject[];
+}
+export interface BugTrackerCategoryViewModel {
+    category: BugTrackerCategoryViewObject;
+}
+export interface BugTrackerIssueDetailsViewModel {
+    assignee: UserViewObject;
+    issue: BugTrackerIssueDetailsViewObject;
+}
+export interface BugTrackerIssueSummaryViewModel {
+    confirmedIssues: number;
+    fixedIssues: number;
+    submittedIssues: number;
+    totalIssues: number;
+}
+export interface BugTrackerIssuesViewModel {
+    issues: BugTrackerIssueViewObject[];
+}
+export interface BugTrackerIssueViewModel {
+    issue: BugTrackerIssueViewObject;
+}
+export interface BugTrackerIssueAddCommentRequest {
+    comment: string;
+    issueId: number;
+}
+export interface BugTrackerIssueReactionRequest {
+    active: boolean;
+    issueId: number;
+    type: ReactionType;
+}
+export interface BugTrackerIssueRemoveCommentRequest {
+    commentId: number;
+    issueId: number;
+}
+export interface BugTrackerIssueUpdateCommentRequest {
+    comment: string;
+    commentId: number;
+    issueId: number;
+}
+export interface CreateBugTrackerCategoryRequest {
+    name: string;
+}
+export interface CreateBugTrackerIssueRequest {
+    categoryId: number;
+    description: string;
+    priority: BugTrackerPriority;
+    realmId: number;
+    title: string;
+}
+export interface UpdateBugTrackerIssueRequest extends CreateBugTrackerIssueRequest {
+    assignee: string | undefined;
+    issueId: number;
+    status: BugTrackerStatus;
+    triggerSummariesBroadcast: boolean;
+}
+export interface ItemDisplayInfoViewObject {
+    icon: string;
+    id: number;
+}
+export interface ItemDisplayInfoViewModel {
+    displayInfo: ItemDisplayInfoViewObject[];
+}
 export interface PermissionsViewModel {
     categories: PermissionCategory[];
     permissions: Permission[];
@@ -1096,7 +1324,6 @@ export interface UpdateAccountAccessRequest extends RealmSpecificRequest {
 }
 export interface UpdatePasswordRequest {
     currentPassword: string;
-    currentUsername: string;
     newPassword: string;
 }
 export interface UpdateUsernameRequest {
@@ -1104,14 +1331,33 @@ export interface UpdateUsernameRequest {
     newUsername: string;
     password: string;
 }
-export enum ApplicationUserSettingsType {
+export enum UserSettingsType {
     HideEmail = 1,
-    HidePhoneNumber = 2
+    HidePhoneNumber = 2,
+    HideFirstname = 3,
+    HideLastname = 4
 }
 export enum ArenaTeamType {
+    ArenaTeamType1v1 = 1,
     ArenaTeamType2v2 = 2,
     ArenaTeamType3v3 = 3,
     ArenaTeamType5v5 = 5
+}
+export enum BugTrackerPriority {
+    None = 0,
+    Low = 1,
+    Medium = 2,
+    High = 3
+}
+export enum BugTrackerStatus {
+    Pending = 0,
+    Invalid = 1,
+    Confirmed = 2,
+    Duplicate = 3,
+    InProgress = 4,
+    WontFix = 5,
+    Fixed = 6,
+    CantReproduce = 7
 }
 export enum EntityType {
     Integer = 1,
@@ -1120,11 +1366,59 @@ export enum EntityType {
     String = 4,
     Boolean = 5
 }
+export enum EquipmentSlots {
+    EQUIPMENT_SLOT_START = 0,
+    EQUIPMENT_SLOT_HEAD = 0,
+    EQUIPMENT_SLOT_NECK = 1,
+    EQUIPMENT_SLOT_SHOULDERS = 2,
+    EQUIPMENT_SLOT_BODY = 3,
+    EQUIPMENT_SLOT_CHEST = 4,
+    EQUIPMENT_SLOT_WAIST = 5,
+    EQUIPMENT_SLOT_LEGS = 6,
+    EQUIPMENT_SLOT_FEET = 7,
+    EQUIPMENT_SLOT_WRISTS = 8,
+    EQUIPMENT_SLOT_HANDS = 9,
+    EQUIPMENT_SLOT_FINGER1 = 10,
+    EQUIPMENT_SLOT_FINGER2 = 11,
+    EQUIPMENT_SLOT_TRINKET1 = 12,
+    EQUIPMENT_SLOT_TRINKET2 = 13,
+    EQUIPMENT_SLOT_BACK = 14,
+    EQUIPMENT_SLOT_MAINHAND = 15,
+    EQUIPMENT_SLOT_OFFHAND = 16,
+    EQUIPMENT_SLOT_RANGED = 17,
+    EQUIPMENT_SLOT_TABARD = 18,
+    EQUIPMENT_SLOT_END = 19
+}
 export enum GameRole {
     Player = 0,
     Trial = 1,
     GameMaster = 2,
     Admin = 3
+}
+export enum GuildBankEventLogTypes {
+    GUILD_BANK_LOG_DEPOSIT_ITEM = 1,
+    GUILD_BANK_LOG_WITHDRAW_ITEM = 2,
+    GUILD_BANK_LOG_MOVE_ITEM = 3,
+    GUILD_BANK_LOG_DEPOSIT_MONEY = 4,
+    GUILD_BANK_LOG_WITHDRAW_MONEY = 5,
+    GUILD_BANK_LOG_REPAIR_MONEY = 6,
+    GUILD_BANK_LOG_MOVE_ITEM2 = 7,
+    GUILD_BANK_LOG_UNK1 = 8,
+    GUILD_BANK_LOG_BUY_SLOT = 9
+}
+export enum GuildEventLogTypes {
+    GUILD_EVENT_LOG_INVITE_PLAYER = 1,
+    GUILD_EVENT_LOG_JOIN_GUILD = 2,
+    GUILD_EVENT_LOG_PROMOTE_PLAYER = 3,
+    GUILD_EVENT_LOG_DEMOTE_PLAYER = 4,
+    GUILD_EVENT_LOG_UNINVITE_PLAYER = 5,
+    GUILD_EVENT_LOG_LEAVE_GUILD = 6
+}
+export enum PowerType {
+    MANA = 0,
+    RAGE = 1,
+    ENERGY = 2,
+    RUNIC = 3
 }
 export enum RealmIcon {
     Normal = 0,
@@ -1158,6 +1452,14 @@ export enum WoWClass {
     CLASS_DRUID = 11,
     CLASS_MAX = 12
 }
+export enum WoWFaction {
+    Alliance = 0,
+    Horde = 1
+}
+export enum WoWGender {
+    MALE = 0,
+    FEMALE = 1
+}
 export enum WoWRace {
     RACE_NONE = 0,
     RACE_HUMAN = 1,
@@ -1185,7 +1487,25 @@ export enum NotificationType {
     NewsReaction = 3,
     NewsComment = 4,
     NewsCommentReaction = 5,
-    PrivateMessageReaction = 6
+    PrivateMessageReaction = 6,
+    IssueCreated = 7,
+    IssueUpdated = 8,
+    IssueFixed = 9,
+    IssueCommented = 10,
+    IssueAssigned = 11,
+    IssueClosed = 12,
+    IssueConfirmed = 13
+}
+export enum ItemQualities {
+    ITEM_QUALITY_POOR = 0,
+    ITEM_QUALITY_NORMAL = 1,
+    ITEM_QUALITY_UNCOMMON = 2,
+    ITEM_QUALITY_RARE = 3,
+    ITEM_QUALITY_EPIC = 4,
+    ITEM_QUALITY_LEGENDARY = 5,
+    ITEM_QUALITY_ARTIFACT = 6,
+    ITEM_QUALITY_HEIRLOOM = 7,
+    MAX_ITEM_QUALITY = 8
 }
 export enum BlockType {
     HeroBanner = 1,

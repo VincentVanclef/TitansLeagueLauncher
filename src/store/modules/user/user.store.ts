@@ -1,15 +1,12 @@
-import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators';
+import { VuexModule, Module, Mutation, Action, getModule, MutationAction } from 'vuex-module-decorators';
 import store from '@/store';
 import { Jwt } from '@/models/jwt/jwt.model';
-import { ApplicationUser, IAccount, IAccountData } from '@/models/user/user.model';
 import { UserApi } from '@/services/api/api.user';
-import { IUserLoginRequest } from '@/models/user/requests/UserLoginRequest';
-import { IUserLoginResponse } from '@/models/user/responses/UserLoginResponse';
-import { IUserRegisterRequest } from '@/models/user/requests/UserRegisterRequest';
+import { User } from '@/models/user/user.model';
 
 import JwtService from '@/services/jwt/jwt.service';
 
-import FileService, { FileFlags, FileEncodings } from '@/services/fileService/file.service';
+import FileService, { FileFlags } from '@/services/fileService/file.service';
 
 import Bus from '@/core/bus';
 import { BusConstants, ApplicationConfig } from '@/core/constants';
@@ -19,55 +16,72 @@ import {
 	UserLoginRequest,
 	UserLoginViewModel,
 	UserRegisterRequest,
-	UserViewObject
+	UserViewObject,
+	VoteSiteViewObject,
+	VoteTimerViewObject
 } from '@/types/apiServerContract';
+import { Role } from '@/models/security/Role';
 
 const app = require('electron').remote.app;
 
 interface IUserState {
 	user?: UserViewObject | null;
 	account?: AccountViewObject | null;
-	accountData?: GameAccountData | null;
 	token?: Jwt | null;
 }
 
 @Module({ namespaced: true, dynamic: true, store, name: 'UserModule' })
-class UserState extends VuexModule implements IUserState {
+class UserState extends VuexModule {
 	account: AccountViewObject | null = null;
-	accountData: GameAccountData | null = null;
-	user: UserViewObject | null = null;
+	user: User | null = null;
 	token: Jwt | null = null;
 
 	get IsLoggedIn(): boolean {
-		return this.user != null && this.token != null && !this.token.IsTokenExpired();
+		return this.user != null && this.token != null;
 	}
 
 	@Mutation
-	HandleLoginResponse(result: UserLoginViewModel) {
-		this.user = result.user;
-		this.account = result.account;
-		this.accountData = result.accountData;
-		this.token = JwtService.DecodeTokenAsJwt(result.token);
+	SaveUser(user: UserViewObject | null = null) {
+		this.user = user
+			? new User(
+				user.id,
+				user.userName,
+				user.accountId,
+				user.currentLogin,
+				user.email,
+				user.emailHidden,
+				user.firstname,
+				new Date(user.joinDate),
+				user.lastLogin,
+				user.lastname,
+				user.location,
+				user.lockoutEnd ? new Date(user.lockoutEnd) : null as any,
+				user.lockoutEnabled,
+				user.permissions,
+				user.realms,
+				user.roles as Role[],
+				user.settings,
+				user.totalVotes,
+				user.hasAcceptedDonationTerms
+			)
+			: null;
 	}
 
 	@Mutation
-	SetUser(user: UserViewObject | null = null) {
-		this.user = user;
-	}
-
-	@Mutation
-	SetAccount(account: AccountViewObject | null = null) {
+	SaveAccount(account: AccountViewObject | null = null) {
 		this.account = account;
 	}
 
 	@Mutation
-	SetAccountData(accountData: GameAccountData | null = null) {
-		this.accountData = accountData;
+	SaveAccountData(accountData: GameAccountData) {
+		if (!this.account) return;
+
+		this.account.accountData = accountData;
 	}
 
 	@Mutation
-	SetToken(token: Jwt | null = null) {
-		this.token = token;
+	SaveToken(token: Jwt | null = null) {
+		this.token = Object.freeze(token);
 	}
 
 	@Mutation
@@ -76,10 +90,19 @@ class UserState extends VuexModule implements IUserState {
 		this.token = decodedToken;
 	}
 
+	@Action({ rawError: true })
+	async GetUserData() {
+		const result = await UserApi.GetUserData();
+		this.SaveUser(result.user);
+		this.SaveAccount(result.account);
+	}
+
 	@Action
 	async Login(request: UserLoginRequest): Promise<UserLoginViewModel> {
 		const result = await UserApi.Login(request);
-		this.HandleLoginResponse(result);
+		this.SaveUser(result.user);
+		this.SaveAccount(result.account);
+		this.SaveToken(JwtService.DecodeTokenAsJwt(result.token));
 		await this.SaveUserData();
 		Bus.emit(BusConstants.OnLogin, result);
 		return result;
@@ -88,7 +111,9 @@ class UserState extends VuexModule implements IUserState {
 	@Action
 	async Register(request: UserRegisterRequest): Promise<UserLoginViewModel> {
 		const result = await UserApi.Register(request);
-		this.HandleLoginResponse(result);
+		this.SaveUser(result.user);
+		this.SaveAccount(result.account);
+		this.SaveToken(JwtService.DecodeTokenAsJwt(result.token));
 		await this.SaveUserData();
 		Bus.emit(BusConstants.OnLogin, result);
 		return result;
@@ -101,21 +126,16 @@ class UserState extends VuexModule implements IUserState {
 		Bus.emit(BusConstants.OnLogout);
 	}
 
-	@Action
-	async RefreshToken(): Promise<boolean> {
-		if (!this.token) {
-			return false;
-		}
-
-		const refreshTokenResponse = await UserApi.RefreshToken(this.token.token);
-		if (!refreshTokenResponse.token) {
-			this.Logout();
-			return false;
-		}
-
-		this.SetUser(refreshTokenResponse.user);
-		this.UpdateToken(refreshTokenResponse.token);
+	@Action({ rawError: true })
+	async RefreshToken(token: string): Promise<boolean> {
+		this.SaveToken(JwtService.DecodeTokenAsJwt(token));
+		Bus.emit(BusConstants.OnLogin); // Trigger an on-login hook as we got a new token so basically a new login state
 		return true;
+	}
+
+	@Action({ rawError: true })
+	async Vote(site: VoteSiteViewObject) {
+		await UserApi.Vote(site);
 	}
 
 	@Action
@@ -131,7 +151,6 @@ class UserState extends VuexModule implements IUserState {
 
 		const data: IUserState = {
 			account: this.account,
-			accountData: this.accountData,
 			user: this.user,
 			token: this.token
 		};
@@ -160,10 +179,10 @@ class UserState extends VuexModule implements IUserState {
 		try {
 			const settings = await FileService.ReadFileAs<IUserState>(userFilePath);
 			if (settings.user && settings.token) {
-				this.SetUser(settings.user);
-				this.SetAccount(settings.account);
-				this.SetAccountData(settings.accountData);
-				this.SetToken(JwtService.DecodeTokenAsJwt(settings.token!.token));
+				this.SaveUser(settings.user);
+				this.SaveToken(settings.token);
+
+				await this.GetUserData();
 			}
 		} catch (e) {
 			console.log(e);
@@ -175,7 +194,6 @@ class UserState extends VuexModule implements IUserState {
 		this.user = null;
 		this.token = null;
 		this.account = null;
-		this.accountData = null;
 	}
 
 	@Action

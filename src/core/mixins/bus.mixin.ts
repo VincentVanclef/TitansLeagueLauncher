@@ -4,12 +4,11 @@ import { BusConstants } from '@/core/constants';
 import HttpStatus from 'http-status-codes';
 import { IValidationErrorData } from '@/services/http/interceptors/validationErrors.interceptor';
 import dispatchActionForAllModules from '@/store/initialize.stores';
-import { IUserLoginResponse } from '@/models/user/responses/UserLoginResponse';
+import { ClientMessage, ClientMessageType } from '../messages/messages.store';
+import { VoteSiteViewObject } from '@/types/apiServerContract';
 
 @Component
 export default class BusHandler extends Vue {
-	private OnLogin(data: IUserLoginResponse) {}
-
 	private OnLogout() {
 		dispatchActionForAllModules('Clear');
 
@@ -40,23 +39,35 @@ export default class BusHandler extends Vue {
 		});
 	}
 
+	private HandleErrorMessages(newMessages: ClientMessage[]): void {
+		newMessages.forEach(msg => {
+			this.$bvToast.toast(msg.message || 'Error', {
+				variant: 'danger',
+				solid: true,
+				title: ClientMessageType[msg.messageType] ?? 'Error'
+			});
+		});
+	}
+
+	private handleVoteSuccess(site: VoteSiteViewObject) {
+		this.$bvToast.toast(`Succesfully voted for ${site.name}! You have been rewarded ${site.value} VP!`, {
+			title: 'Success',
+			variant: 'success',
+			solid: true
+		});
+	}
+
 	created() {
-		Bus.on(BusConstants.OnLogin, this.OnLogin);
-
 		Bus.on(BusConstants.OnLogout, this.OnLogout);
-
-		Bus.on(BusConstants.ValidationError, this.OnValidationErrors);
-
+		Bus.on(BusConstants.GeneralErrorEventKey, this.HandleErrorMessages);
+		Bus.on(BusConstants.VoteSuccess, this.handleVoteSuccess);
 		Bus.on(BusConstants.UpdateAvailable, this.OnUpdateAvailable);
 	}
 
 	destroyed() {
-		Bus.off(BusConstants.OnLogin, this.OnLogin);
-
 		Bus.off(BusConstants.OnLogout, this.OnLogout);
-
-		Bus.off(BusConstants.ValidationError, this.OnValidationErrors);
-
+		Bus.off(BusConstants.GeneralErrorEventKey, this.HandleErrorMessages);
+		Bus.off(BusConstants.VoteSuccess, this.handleVoteSuccess);
 		Bus.off(BusConstants.UpdateAvailable, this.OnUpdateAvailable);
 	}
 }

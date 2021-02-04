@@ -107,7 +107,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { IApplicationUser, IAccount, IAccountData } from '@/models/user/user.model';
 import { UserModule } from '@/store/modules/user/user.store';
 
 import { IChangePasswordRequest } from '@/models/user/requests/ChangePasswordRequest';
@@ -117,7 +116,7 @@ import { IRealmModel } from '@/models/realms/RealmModel';
 import { HelperMethods } from '@/core/HelperMethods';
 import moment from 'moment';
 import { IUpdateUserRequest } from '../../models/user/requests/UpdateUserRequest';
-import { AccountViewObject, UpdateUserRequest, UserViewObject } from '@/types/apiServerContract';
+import { AccountViewObject, GameAccountData, UpdateUserRequest, UserViewObject } from '@/types/apiServerContract';
 
 @Component({
 	components: {}
@@ -142,8 +141,8 @@ export default class UserProfile extends Vue {
 		return UserModule.account;
 	}
 
-	get AccountData(): IAccountData | null {
-		return UserModule.accountData;
+	get AccountData(): GameAccountData | null {
+		return UserModule.account?.accountData ?? null;
 	}
 
 	GetDate(date: Date) {

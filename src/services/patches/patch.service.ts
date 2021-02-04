@@ -29,15 +29,13 @@ class PatchService {
 			if (!setting || !setting.keepUpdated) continue;
 
 			try {
-				const patch = await FileService.GetFileStats(this.getPatchLocation(config.patch));
-				if (!patch) {
+				const patchMD5 = await FileService.GetFileMD5(this.getPatchLocation(config.patch));
+				if (!patchMD5) {
 					requiresUpdate.push(config);
 					continue;
 				}
 
-				const pTime = new Date(patch.mtime);
-				const sTime = new Date(config.modified);
-				if (pTime < sTime) {
+				if (patchMD5 !== config.hash) {
 					requiresUpdate.push(config);
 				}
 			} catch (e) {

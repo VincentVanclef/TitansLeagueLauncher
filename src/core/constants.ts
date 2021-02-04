@@ -1,11 +1,23 @@
 import { PatchViewObject } from '@/types/apiServerContract';
 
-export const BusConstants = {
-	OnLogin: 'OnLogin',
-	OnLogout: 'OnLogout',
-	ValidationError: 'ValidationError',
-	UpdateAvailable: 'UpdateAvailable'
-};
+export enum BusConstants {
+	OnLogin = 'OnLogin',
+	OnLogout = 'OnLogout',
+	UpdateAvailable = 'UpdateAvailable',
+	LoginRequired = 'LoginRequired',
+	Register = 'Register',
+	RealmRequired = 'RealmRequired',
+	SelectedRealmChanged = 'SelectedRealmChanged',
+	ShowProfileMenu = 'ShowProfileMenu',
+	SelectedUserChanged = 'SelectedUserChanged',
+	ReloadWebsite = 'ReloadWebsite',
+	UpdateUserSessions = 'UpdateUserSessions',
+	NotificationReceived = 'NotificationReceived',
+	GroupChatDisbanded = 'GroupChatDisbanded',
+	GeneralErrorEventKey = 'GeneralErrorEventKey',
+	ValidationErrorEventKey = 'ValidationErrorEventKey',
+	VoteSuccess = 'VoteSuccess'
+}
 
 export enum WebsiteRoles {
 	SuperAdmin = 'Super Admin',
@@ -19,6 +31,11 @@ export enum GameRoles {
 	GameMaster = 2,
 	Trial = 1,
 	Player = 0
+}
+
+export enum CustomHeaders {
+	Token = 'x-titan-token',
+	TokenExpired = 'x-token-expired'
 }
 
 export const MapGameRole = (role: GameRoles): string => {

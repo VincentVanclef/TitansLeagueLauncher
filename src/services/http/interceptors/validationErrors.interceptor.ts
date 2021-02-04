@@ -1,52 +1,48 @@
 import bus from '@/core/bus';
-import axios, { AxiosResponse } from 'axios';
 import { BusConstants } from '@/core/constants';
+import { ClientMessage, ClientMessageType } from '@/core/messages/messages.store';
+import { ValidationErrorEvent } from '@/core/messages/types';
+import { AxiosResponse } from 'axios';
 
 import HttpStatus from 'http-status-codes';
-import { UserModule } from '@/store/modules/user/user.store';
-import LogService from '@/services/logs/log.service';
+import { AxiosRequestConfigExtended } from '../http.service';
 
 export default async (response: AxiosResponse) => {
-	const responseStatus = response.status;
-	if (responseStatus === HttpStatus.OK) return response;
+    const messages = response.data?.validationMessages as ClientMessage[];
+    if (messages) {
+        // Validation-messages received. If a messagesId is included (from a post) forward messages to local handler
+        // If no messagesId or no one wanted to handle, show globally.
+        const messagesId: string | undefined = (response.config as AxiosRequestConfigExtended)?.messageId;
+        let isHandled = false;
+        if (messagesId) {
+            bus.emit(BusConstants.ValidationErrorEventKey, {
+                messagesId,
+                messages,
+                handled: () => (isHandled = true)
+            } as ValidationErrorEvent);
+        }
 
-	const isTokenExpired = response.headers['token-expired'];
-	if (responseStatus === HttpStatus.UNAUTHORIZED && isTokenExpired) {
-		console.log(response.config);
-		const result = await UserModule.RefreshToken();
-		if (result) {
-			// Token refreshed succesfully, make request again
-			const retryResponse = await axios.request(response.config);
-			return retryResponse;
-		}
-	}
+        if (!isHandled) {
+            bus.emit(BusConstants.GeneralErrorEventKey, messages);
+        }
+    } else if (isErrorStatusCode(response.status)) {
+        // Got raw error without messages in the "normal" validationMessages prop - handle that as well. Translate if label.
+        const rawTxt = response.data;
+        const message = rawTxt;
+        bus.emit(BusConstants.GeneralErrorEventKey, [{
+            message,
+            messageType: ClientMessageType.Error
+        }]);
+    }
+    return response;
 
-	const httpStatusText = response.data.title || response.statusText || 'Error';
-	const data = response.data;
-
-	let message = data.message || data.title;
-
-	if (data.errors) {
-		message = '';
-		for (const error in data.errors) {
-			message = message + data.errors[error][0] + ' ';
-		}
-	}
-
-	const validationErrorData: IValidationErrorData = {
-		httpStatus: responseStatus,
-		httpStatusText,
-		message: message
-	};
-
-	LogService.Log('ValidationErrorInterceptor', message);
-
-	bus.emit(BusConstants.ValidationError, validationErrorData);
-	return response;
+    function isErrorStatusCode(statusCode: number): boolean {
+        return [HttpStatus.BAD_REQUEST, HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus.BAD_GATEWAY].includes(statusCode);
+    }
 };
 
 export interface IValidationErrorData {
-	httpStatus: number;
-	httpStatusText: string;
-	message: string;
+    httpStatus: number;
+    httpStatusText: string;
+    message: string;
 }

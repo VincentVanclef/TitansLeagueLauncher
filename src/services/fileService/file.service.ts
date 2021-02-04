@@ -3,6 +3,8 @@ import util from 'util';
 import path from 'path';
 import LogService from '@/services/logs/log.service';
 import { lstatSync } from 'original-fs';
+import crypto from "crypto";
+
 /*
   flags: https://nodejs.org/api/fs.html#fs_file_system_flags
 
@@ -126,6 +128,22 @@ class FileService {
 			return stats;
 		} catch (err) {
 			LogService.Log('GetFileStats', err);
+			throw err;
+		}
+	}
+
+	async GetFileMD5(path: string): Promise<string | null> {
+		const exists = await this.CheckFile(path);
+		if (!exists) return null;
+
+		try {
+			const file = await readfile(path);
+			const sum = crypto.createHash('md5');
+			sum.update(file);
+			const hex = sum.digest('hex');
+			return hex;
+		} catch (err) {
+			LogService.Log('GetFileMD5', err);
 			throw err;
 		}
 	}

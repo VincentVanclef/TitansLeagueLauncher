@@ -1,18 +1,21 @@
 import axios, { AxiosRequestConfig, AxiosResponse, CancelTokenSource } from 'axios';
 import HttpStatus from 'http-status-codes';
-import authorizationIntercptor from './interceptors/authorization.interceptor';
-import validationErrrorsInterceptor, { IValidationErrorData } from './interceptors/validationErrors.interceptor';
-import { BusConstants } from '@/core/constants';
-import bus from '@/core/bus';
+import { requestHandler as oAuthRequestInterceptor, responseHandler as oAuthResponseInterceptor } from './interceptors/authorization.interceptor';
+import validationErrrorsInterceptor from './interceptors/validationErrors.interceptor';
+import { HttpCancelError } from '../api/HttpCancelError';
+
+export interface AxiosRequestConfigExtended extends AxiosRequestConfig {
+	messageId?: string;
+}
 
 const API_URL = process.env.NODE_ENV === 'development' ? 'https://localhost:44342/api' : 'https://titans-league.org/api';
 
 export class HttpService {
 	private responseInterceptors: Array<(value: AxiosResponse<any>) => AxiosResponse<any> | Promise<AxiosResponse<any>>> = [
-		validationErrrorsInterceptor
+		validationErrrorsInterceptor, oAuthResponseInterceptor
 	];
 
-	private requestInterceptors: Array<(value: AxiosRequestConfig) => AxiosRequestConfig | Promise<AxiosRequestConfig>> = [authorizationIntercptor];
+	private requestInterceptors: Array<(value: AxiosRequestConfig) => AxiosRequestConfig | Promise<AxiosRequestConfig>> = [oAuthRequestInterceptor];
 
 	private get defaultGetHeaders(): any {
 		return {
@@ -53,45 +56,16 @@ export class HttpService {
 		return res.data;
 	}
 
-	private handleErrorResponse(error: any, url?: string): void {
-		if (axios.isCancel(error) || error.code === 'ECONNABORTED') {
-			throw new Error('Request cancelled: ' + url);
-		}
-
-		const errors = JSON.parse(JSON.stringify(error));
-		let status = errors && errors.response ? errors.response.status : errors.status;
-
-		if (!status && errors && errors.message && errors.message.length > 1) {
-			const match = errors.message.match(/[0-9]+/g);
-			if (match) {
-				status = parseInt(match[0]);
+	private handleErrorResponse(error: any): void {
+		if (error) {
+			if (error instanceof HttpCancelError) {
+				return;
 			}
 		}
-
-		const validationErrorData: IValidationErrorData = {
-			httpStatus: status,
-			httpStatusText: '',
-			message: ''
-		};
-
-		switch (status) {
-			case HttpStatus.UNAUTHORIZED:
-			case HttpStatus.FORBIDDEN:
-				validationErrorData.httpStatusText = 'Unauthorized';
-				validationErrorData.message = 'You are not authorized to perform this action';
-				break;
-			default:
-				throw error;
-		}
-
-		if (!validationErrorData.message) throw error;
-
-		bus.emit(BusConstants.ValidationError, validationErrorData);
 		throw error;
 	}
 
-	private ensureClientContract(data: any) {
-		if (!('model' in data)) throw new Error('Result does not include a model property - backend must wrap response in ClientResponse');
+	private unwrapResponse(data: any) {
 		return data.model;
 	}
 
@@ -135,8 +109,8 @@ export class HttpService {
 			.get(absoluteUrl, { ...config, cancelToken: cancelTokenSrc!.token })
 			.then(res => this.requestSucceded(res))
 			.then(res => this.handlePotentialErrorResponse(res))
-			.then(res => this.ensureClientContract(res))
-			.catch(e => this.handleErrorResponse(e, absoluteUrl));
+			.then(res => this.unwrapResponse(res))
+			.catch(e => this.handleErrorResponse(e));
 	}
 
 	public async Post<T>(url: string, payload: any, config?: AxiosRequestConfig, allowMultipleRequests?: boolean): Promise<T> {
@@ -150,14 +124,11 @@ export class HttpService {
 		const cancelTokenSrc = allowMultipleRequests ? undefined : this.ensureCancellationToken(url);
 
 		return axios
-			.post(absoluteUrl, payload, {
-				...config,
-				cancelToken: cancelTokenSrc?.token
-			})
+			.post(absoluteUrl, payload, { ...config, cancelToken: cancelTokenSrc?.token })
 			.then(res => this.requestSucceded(res))
 			.then(res => this.handlePotentialErrorResponse(res))
-			.then(res => this.ensureClientContract(res))
-			.catch(e => this.handleErrorResponse(e, absoluteUrl));
+			.then(res => this.unwrapResponse(res))
+			.catch(e => this.handleErrorResponse(e));
 	}
 
 	public Delete<T>(url: string, params?: any): Promise<T> {
@@ -165,7 +136,7 @@ export class HttpService {
 			.delete(this.getUrl(url), params)
 			.then(res => this.requestSucceded(res))
 			.then(res => this.handlePotentialErrorResponse(res))
-			.then(res => this.ensureClientContract(res))
+			.then(res => this.unwrapResponse(res))
 			.catch(e => this.handleErrorResponse(e));
 	}
 
@@ -174,7 +145,7 @@ export class HttpService {
 			.put(this.getUrl(url), params, config)
 			.then(res => this.requestSucceded(res))
 			.then(res => this.handlePotentialErrorResponse(res))
-			.then(res => this.ensureClientContract(res))
+			.then(res => this.unwrapResponse(res))
 			.catch(e => this.handleErrorResponse(e));
 	}
 }

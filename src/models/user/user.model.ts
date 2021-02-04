@@ -1,85 +1,32 @@
-import { UserPermission } from '../security/UserPermission';
+import { UserViewObject, UserLogin, UserPermission, UserSettingsViewObject, UserRealm } from '@/types/apiServerContract';
 import { Role } from '../security/Role';
 
-interface IAccountAccess {
-	accountId: number;
-	gmlevel: number;
-	realmId: number;
-}
-
-interface IAccountBanned {
-	accountId: number;
-	banDate: number;
-	unbanDate: number;
-	bannedBy: string;
-	banReason: string;
-	active: number;
-}
-
-interface IAccountMuted {
-	accountId: number;
-	muteDate: number;
-	muteTime: number;
-	mutedBy: string;
-	muteReason: string;
-}
-
-interface IAccountData {
-	id: number;
-	vp: number;
-	dp: number;
-	extraMask: number;
-}
-
-interface IAccount {
-	id: number;
-	email: string;
-	failedLogins: number;
-	joinDate: string;
-	lastAttemptIp: string;
-	lastIp: string;
-	lastLogin: string;
-	locked: number;
-	muteBy: string;
-	muteReason: string;
-	muteTime: number;
-	online: number;
-	os: string;
-	recruiter: number;
-	username: string;
-	accountAccess: IAccountAccess[];
-	accountBanned: IAccountBanned[];
-	accountMuted: IAccountMuted[];
-}
-
-interface IApplicationUser {
-	id: string;
-	accountId: number;
-	email: string;
-	userName: string;
-	firstname: string;
-	lastname: string;
-	joinDate: Date;
-	location: string;
-	totalVotes: number;
-	roles: Role[];
-	permissions: UserPermission[];
-}
-
-class ApplicationUser implements IApplicationUser {
+class User implements UserViewObject {
 	constructor(
 		public id: string,
-		public accountId: number,
-		public email: string,
 		public userName: string,
+		public accountId: number,
+		public currentLogin: UserLogin,
+		public email: string,
+		public emailHidden: boolean,
 		public firstname: string,
-		public lastname: string,
 		public joinDate: Date,
+		public lastLogin: UserLogin,
+		public lastname: string,
 		public location: string,
-		public totalVotes: number,
+		public lockoutEnd: Date,
+		public lockoutEnabled: boolean,
+		public permissions: UserPermission[],
+		public realms: UserRealm[],
 		public roles: Role[],
-		public permissions: UserPermission[]
-	) {}
+		public settings: UserSettingsViewObject[],
+		public totalVotes: number,
+		public hasAcceptedDonationTerms: boolean
+	) { }
+
+	get IsAdmin(): boolean {
+		return this.IsSuperAdmin || this.roles.includes(Role.Administrator);
+	}
 
 	get IsSuperAdmin(): boolean {
 		return this.roles.includes(Role.SuperAdmin);
@@ -88,10 +35,6 @@ class ApplicationUser implements IApplicationUser {
 	public HasRole(roles: Role[]): boolean {
 		return this.IsSuperAdmin || this.roles.some(x => roles.indexOf(x) >= 0);
 	}
-
-	public HasPermission(permissions: string[]): boolean {
-		return this.IsSuperAdmin || this.permissions.some(x => permissions.includes(x.permissionId));
-	}
 }
 
-export { ApplicationUser, IApplicationUser, IAccount, IAccountAccess, IAccountBanned, IAccountMuted, IAccountData };
+export { User };
