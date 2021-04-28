@@ -12,24 +12,24 @@ export enum WoWClass {
 }
 
 export const WoWClassesMap = new Map([
-	[WoWClass.CLASS_WARRIOR, { name: 'WARRIOR', color: '#C79C6E' }],
-	[WoWClass.CLASS_PALADIN, { name: 'PALADIN', color: '#F58CBA' }],
-	[WoWClass.CLASS_HUNTER, { name: 'HUNTER', color: '#ABD473' }],
-	[WoWClass.CLASS_ROGUE, { name: 'ROGUE', color: '#F8C621' }],
-	[WoWClass.CLASS_PRIEST, { name: 'PRIEST', color: '#A330C9' }],
-	[WoWClass.CLASS_DEATH_KNIGHT, { name: 'DEATH KNIGHT', color: '#C41F3B' }],
-	[WoWClass.CLASS_SHAMAN, { name: 'SHAMAN', color: '#0070DE' }],
-	[WoWClass.CLASS_MAGE, { name: 'MAGE', color: '#40C7EB' }],
-	[WoWClass.CLASS_WARLOCK, { name: 'WARLOCK', color: '#8787ED' }],
-	[WoWClass.CLASS_DRUID, { name: 'DRUID', color: '#FF7D0A' }]
+    [WoWClass.CLASS_WARRIOR, { name: 'WARRIOR', color: '#C79C6E' }],
+    [WoWClass.CLASS_PALADIN, { name: 'PALADIN', color: '#F58CBA' }],
+    [WoWClass.CLASS_HUNTER, { name: 'HUNTER', color: '#ABD473' }],
+    [WoWClass.CLASS_ROGUE, { name: 'ROGUE', color: '#F8C621' }],
+    [WoWClass.CLASS_PRIEST, { name: 'PRIEST', color: '#A330C9' }],
+    [WoWClass.CLASS_DEATH_KNIGHT, { name: 'DEATH KNIGHT', color: '#C41F3B' }],
+    [WoWClass.CLASS_SHAMAN, { name: 'SHAMAN', color: '#0070DE' }],
+    [WoWClass.CLASS_MAGE, { name: 'MAGE', color: '#40C7EB' }],
+    [WoWClass.CLASS_WARLOCK, { name: 'WARLOCK', color: '#8787ED' }],
+    [WoWClass.CLASS_DRUID, { name: 'DRUID', color: '#FF7D0A' }]
 ]);
 
 export const GetClassColor = (classId: WoWClass) => {
-	const _class = WoWClassesMap.get(classId);
-	return _class ? _class.color : '';
+    const _class = WoWClassesMap.get(classId);
+    return _class ? _class.color : '';
 };
 
 export const GetClassName = (classId: WoWClass) => {
-	const _class = WoWClassesMap.get(classId);
-	return _class ? _class.name : '';
+    const _class = WoWClassesMap.get(classId);
+    return _class ? _class.name : '';
 };

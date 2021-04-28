@@ -1,32 +1,32 @@
 <template>
-	<div class="login">
-		<form class="login-form" @submit.prevent="Login">
-			<div class="flex-row">
-				<label class="lf--label" for="username">
-					<i class="fa fa-envelope"></i>
-				</label>
-				<input id="username" class="lf--input" placeholder="Email" type="text" v-model="email" :disabled="loading" />
-			</div>
-			<div class="flex-row">
-				<label class="lf--label" for="password">
-					<i class="fa fa-lock"></i>
-				</label>
-				<input
-					id="password"
-					class="lf--input"
-					placeholder="Password"
-					type="password"
-					v-model="password"
-					:disabled="loading"
-					v-pwt="{ color: '#000', top: 13 }"
-				/>
-			</div>
-			<button type="submit" class="button button-orange lf--submit" :disabled="loading">
-				LOGIN
-			</button>
-			<a class="lf--forgot" href="#">Forgot password?</a>
-		</form>
-	</div>
+    <div class="login">
+        <form class="login-form" @submit.prevent="Login">
+            <div class="flex-row">
+                <label class="lf--label" for="username">
+                    <i class="fa fa-envelope"></i>
+                </label>
+                <input id="username" v-model="email" class="lf--input" placeholder="Email"
+                       type="text" :disabled="loading">
+            </div>
+            <div class="flex-row">
+                <label class="lf--label" for="password">
+                    <i class="fa fa-lock"></i>
+                </label>
+                <input
+                    id="password"
+                    v-model="password"
+                    v-pwt="{ color: '#000', top: 13 }"
+                    class="lf--input"
+                    placeholder="Password"
+                    type="password"
+                    :disabled="loading">
+            </div>
+            <button type="submit" class="button button-orange lf--submit" :disabled="loading">
+                LOGIN
+            </button>
+            <a class="lf--forgot" href="#">Forgot password?</a>
+        </form>
+    </div>
 </template>
 
 <script lang="ts">
@@ -37,7 +37,7 @@ import { Route } from 'vue-router';
 import LogService from '@/services/logs/log.service';
 
 @Component({
-	components: {}
+    components: {}
 })
 export default class Login extends Vue {
 	email: string = '';
@@ -45,31 +45,31 @@ export default class Login extends Vue {
 	loading: boolean = false;
 
 	async Login() {
-		const request: IUserLoginRequest = {
-			email: this.email,
-			password: this.password
-		};
+	    const request: IUserLoginRequest = {
+	        email: this.email,
+	        password: this.password
+	    };
 
-		try {
-			this.loading = true;
-			await UserModule.Login(request);
-		} finally {
-			this.loading = false;
-		}
+	    try {
+	        this.loading = true;
+	        await UserModule.Login(request);
+	    } finally {
+	        this.loading = false;
+	    }
 
-		if (UserModule.IsLoggedIn) {
-			try {
-				await this.$router.push('/user/profile');
-			} catch (e) {
-				LogService.Log('LoginRoute', e);
-			}
-		} else {
-			this.$bvToast.toast('Login Failed', {
-				title: 'Unable to login. Please try again.',
-				variant: 'danger',
-				solid: true
-			});
-		}
+	    if (UserModule.IsLoggedIn) {
+	        try {
+	            await this.$router.push('/user/profile');
+	        } catch (e) {
+	            LogService.Log('LoginRoute', e);
+	        }
+	    } else {
+	        this.$bvToast.toast('Login Failed', {
+	            title: 'Unable to login. Please try again.',
+	            variant: 'danger',
+	            solid: true
+	        });
+	    }
 	}
 }
 </script>

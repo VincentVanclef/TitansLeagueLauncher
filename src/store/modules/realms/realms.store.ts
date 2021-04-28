@@ -14,32 +14,32 @@ class RealmsState extends VuexModule implements IRealmsState {
 
 	@Mutation
 	HandleRealmsResponse(realms: IRealmModel[]) {
-		this.realms = realms;
+	    this.realms = realms;
 	}
 
 	@Action
 	async GetRealmInformations() {
-		const realms = await RealmApi.GetRealmInformations();
-		this.HandleRealmsResponse(realms.realms);
+	    const realms = await RealmApi.GetRealmInformations();
+	    this.HandleRealmsResponse(realms.realms);
 	}
 
 	@Action
 	async Init() {
-		await this.GetRealmInformations();
+	    await this.GetRealmInformations();
 
-		setInterval(() => {
-			this.GetRealmInformations();
-		}, ApplicationConfig.ServerStatusUpdateInterval);
+	    setInterval(() => {
+	        this.GetRealmInformations();
+	    }, ApplicationConfig.ServerStatusUpdateInterval);
 	}
 
 	@Mutation
 	Reset() {
-		this.realms = [];
+	    this.realms = [];
 	}
 
 	@Action
 	async Clear() {
-		this.realms = [];
+	    this.realms = [];
 	}
 }
 

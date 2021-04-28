@@ -3,20 +3,20 @@ import Home from '@/views/Home.vue';
 import ServerStatus from '@/views/ServerStatus.vue';
 
 export const HomeRoutes: RouteConfig[] = [
-	{
-		path: '/',
-		name: 'Home',
-		component: Home,
-		meta: {
-			requiresAuth: false
-		}
-	},
-	{
-		path: '/status',
-		name: 'Server Status',
-		component: ServerStatus,
-		meta: {
-			requiresAuth: false
-		}
-	}
+    {
+        path: '/',
+        name: 'Home',
+        component: Home,
+        meta: {
+            requiresAuth: false
+        }
+    },
+    {
+        path: '/status',
+        name: 'Server Status',
+        component: ServerStatus,
+        meta: {
+            requiresAuth: false
+        }
+    }
 ];

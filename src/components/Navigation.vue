@@ -1,29 +1,43 @@
 <template>
-	<div class="navigation">
-		<div class="navigation_container">
-			<div class="navigation_link" @click="Navigate('/')" :class="{ active: IsActive('Home') }">
-				<div class="text">News</div>
-			</div>
-			<div class="navigation_link" @click="Navigate('/status')" :class="{ active: IsActive('Status') }">
-				<div class="text">Server Status</div>
-			</div>
-			<div class="navigation_link" @click="Navigate('/user/profile')" v-if="IsLoggedIn" :class="{ active: IsActive('Profile') }">
-				<div class="text">Profile</div>
-			</div>
-			<div class="navigation_link" @click="Navigate('/user/vote')" v-if="IsLoggedIn" :class="{ active: IsActive('Vote') }">
-				<div class="text">Vote</div>
-			</div>
-			<div class="navigation_link" @click="Navigate('/user/login')" v-if="!IsLoggedIn" :class="{ active: IsActive('Login') }">
-				<div class="text">Login</div>
-			</div>
-			<div class="navigation_link" @click="Navigate('/user/register')" v-if="!IsLoggedIn" :class="{ active: IsActive('Register') }">
-				<div class="text">Register</div>
-			</div>
-			<div class="navigation_link" @click="Logout()" v-if="IsLoggedIn">
-				<div class="text">Logout</div>
-			</div>
-		</div>
-	</div>
+    <div class="navigation">
+        <div class="navigation_container">
+            <div class="navigation_link" :class="{ active: IsActive('Home') }" @click="Navigate('/')">
+                <div class="text">
+                    News
+                </div>
+            </div>
+            <div class="navigation_link" :class="{ active: IsActive('Status') }" @click="Navigate('/status')">
+                <div class="text">
+                    Server Status
+                </div>
+            </div>
+            <div v-if="IsLoggedIn" class="navigation_link" :class="{ active: IsActive('Profile') }" @click="Navigate('/user/profile')">
+                <div class="text">
+                    Profile
+                </div>
+            </div>
+            <div v-if="IsLoggedIn" class="navigation_link" :class="{ active: IsActive('Vote') }" @click="Navigate('/user/vote')">
+                <div class="text">
+                    Vote
+                </div>
+            </div>
+            <div v-if="!IsLoggedIn" class="navigation_link" :class="{ active: IsActive('Login') }" @click="Navigate('/user/login')">
+                <div class="text">
+                    Login
+                </div>
+            </div>
+            <div v-if="!IsLoggedIn" class="navigation_link" :class="{ active: IsActive('Register') }" @click="Navigate('/user/register')">
+                <div class="text">
+                    Register
+                </div>
+            </div>
+            <div v-if="IsLoggedIn" class="navigation_link" @click="Logout()">
+                <div class="text">
+                    Logout
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -31,30 +45,30 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { UserModule } from '../store/modules/user/user.store';
 
 @Component({
-	components: {}
+    components: {}
 })
 export default class Navigation extends Vue {
 	@Prop() IsLoggedIn!: boolean;
 
 	async Navigate(to: string) {
-		try {
-			await this.$router.push(to);
-		} catch (e) {}
+	    try {
+	        await this.$router.push(to);
+	    } catch (e) {}
 	}
 
 	IsActive(path: string) {
-		return this.$route.name === path;
+	    return this.$route.name === path;
 	}
 
 	async Logout() {
-		const result = await this.$bvModal.msgBoxConfirm('Are you sure you wish to logout?', {
-			centered: true,
-			noCloseOnBackdrop: true,
-			noCloseOnEsc: true
-		});
-		if (!result) return;
+	    const result = await this.$bvModal.msgBoxConfirm('Are you sure you wish to logout?', {
+	        centered: true,
+	        noCloseOnBackdrop: true,
+	        noCloseOnEsc: true
+	    });
+	    if (!result) return;
 
-		await UserModule.Logout();
+	    await UserModule.Logout();
 	}
 }
 </script>

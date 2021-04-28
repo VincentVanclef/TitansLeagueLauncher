@@ -1,21 +1,19 @@
 <template>
-	<div class="progress">
-		<div
-			class="progress-bar"
-			:class="{
-				'progress-five': percentage < 25,
-				'progress-twenty-five': percentage >= 25 && percentage < 50,
-				'progress-fifty': percentage >= 50 && percentage < 75,
-				'progress-seventy-five': percentage >= 75 && percentage < 100,
-				'progress-hundred': percentage >= 100
-			}"
-			:style="{ width: percentage + '%' }"
-		></div>
-		<span class="progress-bar-percent">
-			{{ name.length > 0 ? '(' + name + ')' : '' }}
-			{{ percentage > 0 ? parseInt(percentage) + '%' : '' }}</span
-		>
-	</div>
+    <div class="progress">
+        <div
+            class="progress-bar"
+            :class="{
+                'progress-five': percentage < 25,
+                'progress-twenty-five': percentage >= 25 && percentage < 50,
+                'progress-fifty': percentage >= 50 && percentage < 75,
+                'progress-seventy-five': percentage >= 75 && percentage < 100,
+                'progress-hundred': percentage >= 100
+            }"
+            :style="{ width: percentage + '%' }"></div>
+        <span class="progress-bar-percent">
+            {{ name.length > 0 ? '(' + name + ')' : '' }}
+            {{ percentage > 0 ? parseInt(percentage) + '%' : '' }}</span>
+    </div>
 </template>
 
 <script lang="ts">

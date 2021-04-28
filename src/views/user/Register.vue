@@ -1,70 +1,72 @@
 <template>
-	<div class="register">
-		<form class="login-form" @submit.prevent="Register">
-			<div class="row">
-				<div class="col-6 login-input">
-					<label class="lf--label" for="firstname">
-						<i class="fa fa-user"></i>
-					</label>
-					<input id="firstname" class="lf--input" placeholder="First name" type="text" v-model="firstname" :disabled="loading" />
-				</div>
-				<div class="col-6 login-input">
-					<label class="lf--label" for="lastname">
-						<i class="fa fa-user"></i>
-					</label>
-					<input id="lastname" class="lf--input" placeholder="Last name" type="text" v-model="lastname" :disabled="loading" />
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-6 login-input">
-					<label class="lf--label" for="email">
-						<i class="fa fa-envelope"></i>
-					</label>
-					<input id="email" class="lf--input" placeholder="Email" type="text" v-model="email" :disabled="loading" />
-				</div>
-				<div class="col-6 login-input">
-					<label class="lf--label" for="username">
-						<i class="fa fa-user"></i>
-					</label>
-					<input id="username" class="lf--input" placeholder="Username" type="text" v-model="username" :disabled="loading" />
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-6 login-input">
-					<label class="lf--label" for="password">
-						<i class="fa fa-lock"></i>
-					</label>
-					<input
-						id="password"
-						class="lf--input"
-						placeholder="Password"
-						type="password"
-						v-model="password"
-						:disabled="loading"
-						v-pwt="{ color: '#000', top: 10 }"
-					/>
-				</div>
-				<div class="col-6 login-input">
-					<label class="lf--label" for="passwordConfirm">
-						<i class="fa fa-lock"></i>
-					</label>
-					<input
-						id="passwordConfirm"
-						class="lf--input"
-						placeholder="Confirm password"
-						type="password"
-						v-model="passwordConfirm"
-						:disabled="loading"
-						v-pwt="{ color: '#000', top: 10 }"
-					/>
-				</div>
-			</div>
+    <div class="register">
+        <form class="login-form" @submit.prevent="Register">
+            <div class="row">
+                <div class="col-6 login-input">
+                    <label class="lf--label" for="firstname">
+                        <i class="fa fa-user"></i>
+                    </label>
+                    <input id="firstname" v-model="firstname" class="lf--input" placeholder="First name"
+                           type="text" :disabled="loading">
+                </div>
+                <div class="col-6 login-input">
+                    <label class="lf--label" for="lastname">
+                        <i class="fa fa-user"></i>
+                    </label>
+                    <input id="lastname" v-model="lastname" class="lf--input" placeholder="Last name"
+                           type="text" :disabled="loading">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 login-input">
+                    <label class="lf--label" for="email">
+                        <i class="fa fa-envelope"></i>
+                    </label>
+                    <input id="email" v-model="email" class="lf--input" placeholder="Email"
+                           type="text" :disabled="loading">
+                </div>
+                <div class="col-6 login-input">
+                    <label class="lf--label" for="username">
+                        <i class="fa fa-user"></i>
+                    </label>
+                    <input id="username" v-model="username" class="lf--input" placeholder="Username"
+                           type="text" :disabled="loading">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6 login-input">
+                    <label class="lf--label" for="password">
+                        <i class="fa fa-lock"></i>
+                    </label>
+                    <input
+                        id="password"
+                        v-model="password"
+                        v-pwt="{ color: '#000', top: 10 }"
+                        class="lf--input"
+                        placeholder="Password"
+                        type="password"
+                        :disabled="loading">
+                </div>
+                <div class="col-6 login-input">
+                    <label class="lf--label" for="passwordConfirm">
+                        <i class="fa fa-lock"></i>
+                    </label>
+                    <input
+                        id="passwordConfirm"
+                        v-model="passwordConfirm"
+                        v-pwt="{ color: '#000', top: 10 }"
+                        class="lf--input"
+                        placeholder="Confirm password"
+                        type="password"
+                        :disabled="loading">
+                </div>
+            </div>
 
-			<button type="submit" class="button button-orange lf--submit" :disabled="loading">
-				REGISTER
-			</button>
-		</form>
-	</div>
+            <button type="submit" class="button button-orange lf--submit" :disabled="loading">
+                REGISTER
+            </button>
+        </form>
+    </div>
 </template>
 
 <script lang="ts">
@@ -77,7 +79,7 @@ import LogService from '@/services/logs/log.service';
 import { UserRegisterRequest } from '@/types/apiServerContract';
 
 @Component({
-	components: {}
+    components: {}
 })
 export default class Register extends Vue {
 	firstname: string = '';
@@ -89,35 +91,35 @@ export default class Register extends Vue {
 	loading: boolean = false;
 
 	async Register() {
-		const request: UserRegisterRequest = {
-			firstname: this.firstname,
-			lastname: this.lastname,
-			username: this.username,
-			email: this.email,
-			password: this.password,
-			passwordConfirm: this.passwordConfirm
-		};
+	    const request: UserRegisterRequest = {
+	        firstname: this.firstname,
+	        lastname: this.lastname,
+	        username: this.username,
+	        email: this.email,
+	        password: this.password,
+	        passwordConfirm: this.passwordConfirm
+	    };
 
-		try {
-			this.loading = true;
-			await UserModule.Register(request);
-		} finally {
-			this.loading = false;
-		}
+	    try {
+	        this.loading = true;
+	        await UserModule.Register(request);
+	    } finally {
+	        this.loading = false;
+	    }
 
-		if (UserModule.IsLoggedIn) {
-			try {
-				await this.$router.push('/user/profile');
-			} catch (e) {
-				LogService.Log('RegisterRoute', e);
-			}
-		} else {
-			this.$bvToast.toast('Login Failed', {
-				title: 'Unable to login. Please try again.',
-				variant: 'danger',
-				solid: true
-			});
-		}
+	    if (UserModule.IsLoggedIn) {
+	        try {
+	            await this.$router.push('/user/profile');
+	        } catch (e) {
+	            LogService.Log('RegisterRoute', e);
+	        }
+	    } else {
+	        this.$bvToast.toast('Login Failed', {
+	            title: 'Unable to login. Please try again.',
+	            variant: 'danger',
+	            solid: true
+	        });
+	    }
 	}
 }
 </script>

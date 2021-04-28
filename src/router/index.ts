@@ -8,29 +8,29 @@ import { UserModule } from '@/store/modules/user/user.store';
 Vue.use(VueRouter);
 
 const PageNotFoundRoute: RouteConfig = {
-	path: '*',
-	name: 'Page Not found',
-	redirect: '/'
+    path: '*',
+    name: 'Page Not found',
+    redirect: '/'
 };
 
 const router = new VueRouter({
-	mode: process.env.IS_ELECTRON ? 'hash' : 'history',
-	base: process.env.BASE_URL,
-	routes: [PageNotFoundRoute, ...HomeRoutes, UserRoutes]
+    mode: process.env.IS_ELECTRON ? 'hash' : 'history',
+    base: process.env.BASE_URL,
+    routes: [PageNotFoundRoute, ...HomeRoutes, UserRoutes]
 });
 
 router.beforeEach((to, from, next) => {
-	const requiresAuth: boolean = to.meta.requiresAuth;
+    const requiresAuth: boolean = to.meta.requiresAuth;
 
-	// check for authentication
-	if (requiresAuth && !UserModule.IsLoggedIn) {
-		console.log('test');
-		next('/user/login');
-		UserModule.Logout();
-		return;
-	}
+    // check for authentication
+    if (requiresAuth && !UserModule.IsLoggedIn) {
+        console.log('test');
+        next('/user/login');
+        UserModule.Logout();
+        return;
+    }
 
-	next();
+    next();
 });
 
 export default router;

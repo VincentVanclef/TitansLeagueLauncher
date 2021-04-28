@@ -1,52 +1,56 @@
 <template>
-	<div class="footer">
-		<div class="footer_item" @click="Website">
-			<div class="button button-blue select_folder_button">
-				Website
-			</div>
-		</div>
-		<div class="footer_item">
-			<div @click="Settings" class="button button-dark select_folder_button">
-				Settings
-			</div>
-		</div>
-		<div class="footer_item">
-			<ProgressBar :percentage="percentage" :name="patchName" v-if="AutoCheckUpdates" />
-		</div>
-		<div class="footer_item">
-			<div v-if="!IsWoWDirectoryValid" class="button button-orange play_button" @click="SelectFolder">
-				Select Folder
-			</div>
-			<div v-else class="button button-orange play_button" :class="{ disabled: gameStarting }" @click="StartGame">
-				Start Game
-			</div>
-		</div>
+    <div class="footer">
+        <div class="footer_item" @click="Website">
+            <button class="button button-blue select_folder_button">
+                Website
+            </button>
+        </div>
+        <div class="footer_item">
+            <button class="button button-dark select_folder_button" @click="Settings">
+                Settings
+            </button>
+        </div>
+        <div class="footer_item">
+            <ProgressBar v-if="AutoCheckUpdates" :percentage="percentage" :name="patchName"/>
+        </div>
+        <div class="footer_item">
+			<button v-if="!selectedRealm" class="button button-orange play_button" @click="selectRealm">
+                Select Realm
+            </button>
+            <button v-else-if="!IsWoWDirectoryValid" class="button button-orange play_button" @click="SelectFolder">
+                Select Folder
+            </button>
+            <button v-else class="button button-orange play_button" :class="{ disabled: gameStarting }" @click="StartGame">
+                Start Game
+            </button>
+        </div>
 
-		<div class="menu open" @click="ToggleContent" ref="menu">
-			<span class="menu-circle"></span>
-			<a href="#" class="menu-link">
-				<span class="menu-icon">
-					<span class="menu-line menu-line-1"></span>
-					<span class="menu-line menu-line-2"></span>
-					<span class="menu-line menu-line-3"></span>
-				</span>
-			</a>
-		</div>
-	</div>
+        <div ref="menu" class="menu open" @click="ToggleContent">
+            <span class="menu-circle"></span>
+            <a href="#" class="menu-link">
+                <span class="menu-icon">
+                    <span class="menu-line menu-line-1"></span>
+                    <span class="menu-line menu-line-2"></span>
+                    <span class="menu-line menu-line-3"></span>
+                </span>
+            </a>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { ApplicationConfig, RealmlistConfig } from '@/core/constants';
+import { Component, Vue } from 'vue-property-decorator';
+import { ApplicationConfig } from '@/core/constants';
 import { ConfigModule } from '@/store/modules/config/config.store';
 import FileService from '@/services/fileService/file.service';
 import PatchService from '@/services/patches/patch.service';
 
 import ProgressBar from '@/components/ProgressBar.vue';
 import LogService from '../services/logs/log.service';
+import { RealmsModule } from '@/store/modules/realms/realms.store';
 
 @Component({
-	components: { ProgressBar }
+    components: { ProgressBar }
 })
 export default class Footer extends Vue {
 	patchName: string = '';
@@ -54,84 +58,100 @@ export default class Footer extends Vue {
 
 	gameStarting: boolean = false;
 
+	get selectedRealm() {
+        return RealmsModule.realms.find(x => x.id === ConfigModule.config!.selectedRealm);
+    }
+	
 	ToggleContent(e: Event) {
-		const content = document.getElementById('main_content') as HTMLElement;
-		content.classList.toggle('open');
+	    const content = document.getElementById('main_content') as HTMLElement;
+	    content.classList.toggle('open');
 
-		const menu = this.$refs.menu as HTMLElement;
-		menu.classList.toggle('open');
+	    const menu = this.$refs.menu as HTMLElement;
+	    menu.classList.toggle('open');
 	}
 
 	async SelectFolder(e: Event) {
-		e.preventDefault();
-		const result = await ConfigModule.SelectWoWPath();
-		if (!result) {
-			this.$bvModal.msgBoxOk('Please select your World of Warcraft directory.', {
-				centered: true,
-				noCloseOnBackdrop: true,
-				noCloseOnEsc: true
-			});
-		}
+	    e.preventDefault();
+	    const result = await ConfigModule.SelectWoWPath();
+	    if (!result) {
+	        this.$bvModal.msgBoxOk('Please select your World of Warcraft directory.', {
+	            centered: true,
+	            noCloseOnBackdrop: true,
+	            noCloseOnEsc: true
+	        });
+	    }
+	}
+
+	selectRealm() {
+		this.$bvModal.show('select-realm');
 	}
 
 	Website(e: Event) {
-		e.preventDefault();
-		require('electron').shell.openExternal(ApplicationConfig.WebsiteURL);
+	    e.preventDefault();
+	    require('electron').shell.openExternal(ApplicationConfig.WebsiteURL);
 	}
 
 	Settings(e: Event) {
-		e.preventDefault();
-		this.$bvModal.show('settings-component');
+	    e.preventDefault();
+	    this.$bvModal.show('settings-component');
 	}
 
 	get IsWoWDirectoryValid(): boolean {
-		return ConfigModule.isWoWDirectoryValid;
+	    return ConfigModule.isWoWDirectoryValid;
 	}
 
 	get AutoCheckUpdates(): boolean {
-		return ConfigModule.config != null && ConfigModule.config.autoCheckForUpdates;
+	    return ConfigModule.config != null && ConfigModule.config.autoCheckForUpdates;
 	}
 
-	async StartGame() {
-		if (this.gameStarting) return;
-		this.gameStarting = true;
+	async StartGame(e: Event) {
+	    e.preventDefault();
 
-		if (this.AutoCheckUpdates) {
-			try {
-				await PatchService.UpdatePatches((fileName: string, percentage: number) => {
-					this.patchName = fileName;
-					this.percentage = percentage;
-				});
-			} catch (e) {
-				LogService.Log('StartGame: UpdatePatches', e);
-			}
+		if (!this.selectedRealm) {
+	    	this.$bvModal.show('select-realm');
+			return;
 		}
 
-		if (ConfigModule.config!.autoResetRealmlist) {
-			try {
-				await ConfigModule.ResetRealmlist();
-			} catch (e) {
-				LogService.Log('StartGame: ResetRealmlist', e);
-			}
-		}
-		if (ConfigModule.config!.autoClearCache) {
-			try {
-				await ConfigModule.ClearCache();
-			} catch (e) {
-				LogService.Log('StartGame: ClearCache', e);
-			}
-		}
+	    if (this.gameStarting) return;
+	    this.gameStarting = true;
 
-		this.gameStarting = false;
+	    if (this.AutoCheckUpdates) {
+	        try {
+	            await PatchService.UpdatePatches((fileName: string, percentage: number) => {
+	                this.patchName = fileName;
+	                this.percentage = percentage;
+	            });
+	        } catch (e) {
+	            LogService.Log('StartGame: UpdatePatches', e);
+	        }
+	    }
 
-		try {
-			FileService.ExecuteFile(ConfigModule.config!.wowPath + '\\Wow.exe');
-		} catch (e) {
-			LogService.Log('StartGame: ExecuteFile', e);
-		}
+	    if (ConfigModule.config!.autoResetRealmlist) {
+	        try {
+	            await ConfigModule.ResetRealmlist();
+	        } catch (e) {
+	            LogService.Log('StartGame: ResetRealmlist', e);
+	        }
+	    }
+		
+	    if (ConfigModule.config!.autoClearCache) {
+	        try {
+	            await ConfigModule.ClearCache();
+	        } catch (e) {
+	            LogService.Log('StartGame: ClearCache', e);
+	        }
+	    }
 
-		this.percentage = 0;
-		this.patchName = '';
+	    this.gameStarting = false;
+
+	    try {
+	        FileService.ExecuteFile(ConfigModule.config!.wowPath + '\\Wow.exe');
+	    } catch (e) {
+	        LogService.Log('StartGame: ExecuteFile', e);
+	    }
+
+	    this.percentage = 0;
+	    this.patchName = '';
 	}
 }
 </script>

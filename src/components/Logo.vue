@@ -1,7 +1,7 @@
 <template>
-	<div id="window-logo">
-		<img src="@/assets/images/logo.png" />
-	</div>
+    <div id="window-logo">
+        <img src="@/assets/images/logo.png">
+    </div>
 </template>
 
 <script lang="ts">

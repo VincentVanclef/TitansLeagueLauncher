@@ -39,18 +39,18 @@ export enum CustomHeaders {
 }
 
 export const MapGameRole = (role: GameRoles): string => {
-	switch (role) {
-		case GameRoles.Admin:
-			return GameRoles[GameRoles.Admin];
-		case GameRoles.GameMaster:
-			return GameRoles[GameRoles.GameMaster];
-		case GameRoles.Trial:
-			return GameRoles[GameRoles.Trial];
-		case GameRoles.Player:
-			return GameRoles[GameRoles.Player];
-		default:
-			throw new Error(`Unsupported game role type: ${role}`);
-	}
+    switch (role) {
+    case GameRoles.Admin:
+        return GameRoles[GameRoles.Admin];
+    case GameRoles.GameMaster:
+        return GameRoles[GameRoles.GameMaster];
+    case GameRoles.Trial:
+        return GameRoles[GameRoles.Trial];
+    case GameRoles.Player:
+        return GameRoles[GameRoles.Player];
+    default:
+        throw new Error(`Unsupported game role type: ${role}`);
+    }
 };
 
 export interface IPatchConfig {
@@ -66,34 +66,39 @@ export interface IConfiguration {
 	realmlistPath: string;
 	autoClearCache: boolean;
 	autoCheckForUpdates: boolean;
+	removeUnusedPatches: boolean;
 	autoResetRealmlist: boolean;
 	enableLogs: boolean;
 	patchConfig: PatchViewObject[];
+	selectedRealm: number;
 }
 
 export const Baseconfig: IConfiguration = {
-	wowPath: '',
-	realmlistPath: '',
-	autoCheckForUpdates: true,
-	autoClearCache: true,
+    wowPath: '',
+    realmlistPath: '',
+    autoCheckForUpdates: true,
+    autoClearCache: true,
 	autoResetRealmlist: true,
-	enableLogs: false,
-	patchConfig: []
+	removeUnusedPatches: true,
+    enableLogs: false,
+	patchConfig: [],
+	selectedRealm: 0
 };
 
 export const ApplicationConfig = {
-	SettingsPath: 'Settings',
-	SettingsFileName: 'settings.json',
-	UserFileName: 'user.json',
-	WebsiteURL: 'https://titans-league.org',
+    SettingsPath: 'Settings',
+    SettingsFileName: 'settings.json',
+    UserFileName: 'user.json',
+    WebsiteURL: 'https://titans-league.org',
 	PatchPath: 'Data',
-	ServerStatusUpdateInterval: 300000
+	AddonsPath: 'Interface/AddOns',
+    ServerStatusUpdateInterval: 300000
 };
 
 export const RealmlistConfig = {
-	Realmlist: 'logon.Titans-League.org',
-	RealmlistFileName: 'realmlist.wtf',
-	RealmlistFileLocation: 'data'
+    Realmlist: 'logon.Titans-League.org',
+    RealmlistFileName: 'realmlist.wtf',
+    RealmlistFileLocation: 'data'
 };
 
 export enum WowLocales {
@@ -112,5 +117,5 @@ export enum WowLocales {
 }
 
 export const WoWLocalesArray = () => {
-	return Object.keys(WowLocales);
+    return Object.keys(WowLocales);
 };

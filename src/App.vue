@@ -1,20 +1,21 @@
 <template>
-	<div id="background">
-		<TitleBar />
-		<Logo />
+    <div id="background">
+        <TitleBar/>
+        <Logo/>
 
-		<div class="main">
-			<div id="main_content" class="open" ref="mainContent">
-				<Navigation :IsLoggedIn="IsLoggedIn" style="margin-right: 10px;" />
-				<router-view :IsLoggedIn="IsLoggedIn" :realms="Realms"></router-view>
-			</div>
-		</div>
+        <div class="main">
+            <div id="main_content" ref="mainContent" class="open">
+                <Navigation :is-logged-in="IsLoggedIn" style="margin-right: 10px;"/>
+                <router-view :is-logged-in="IsLoggedIn" :realms="Realms"/>
+            </div>
+        </div>
 
-		<Footer />
+        <Footer/>
 
-		<!-- modals -->
-		<Settings />
-	</div>
+        <!-- modals -->
+        <Settings/>
+        <SelectRealm/>
+    </div>
 </template>
 
 <script lang="ts">
@@ -25,46 +26,52 @@ import TitleBar from '@/components/TitleBar.vue';
 import Logo from '@/components/Logo.vue';
 import Footer from '@/components/Footer.vue';
 import Settings from '@/components/Settings.vue';
+import SelectRealm from '@/components/SelectRealm.vue';
 import Navigation from '@/components/Navigation.vue';
 import { UserModule } from './store/modules/user/user.store';
 import { IRealmModel } from './models/realms/RealmModel';
 import { RealmsModule } from './store/modules/realms/realms.store';
+import patchService from './services/patches/patch.service';
 
 @Component({
-	components: { TitleBar, Logo, Footer, Settings, Navigation }
+    components: { TitleBar, Logo, Footer, Settings, Navigation, SelectRealm }
 })
 export default class App extends Vue {
-	get Realms(): IRealmModel[] {
-		return RealmsModule.realms;
-	}
+    get Realms(): IRealmModel[] {
+        return RealmsModule.realms;
+    }
 
-	get IsLoggedIn() {
-		return UserModule.IsLoggedIn;
-	}
+    get IsLoggedIn() {
+        return UserModule.IsLoggedIn;
+    }
 
-	get SettingsLoading() {
-		return ConfigModule.configSetupInProcess;
-	}
+    get SettingsLoading() {
+        return ConfigModule.configSetupInProcess;
+    }
 
-	get Config() {
-		return ConfigModule.config;
-	}
+    get Config() {
+        return ConfigModule.config;
+    }
 
-	get SettingsPath() {
-		return ConfigModule.settingsPath;
-	}
+    get SettingsPath() {
+        return ConfigModule.settingsPath;
+    }
 
-	async LoadConfig() {
-		await ConfigModule.LoadSettingsConfig();
-	}
+    async LoadConfig() {
+        await ConfigModule.LoadSettingsConfig();
+    }
 
-	async SaveConfig() {
-		await ConfigModule.SaveConfig();
-	}
+    async SaveConfig() {
+        await ConfigModule.SaveConfig();
+    }
 
-	created() {}
+    get selectedRealm() {
+        return RealmsModule.realms.find(x => x.id === ConfigModule.config!.selectedRealm);
+    }
 
-	beforeDestroy() {}
+    created() {
+        patchService.EnsureAIOIsInstalled();
+    }
 }
 </script>
 

@@ -1,17 +1,23 @@
 <template>
-	<div class="home">
-		<div class="home-header">News</div>
-		<div class="news" v-if="serverNews">
-			<div class="news-section" v-for="news in serverNews" :key="news.id">
-				<div class="news-section-title">
-					<h5 v-html="news.title"></h5>
-					<div class="news-section-author"><i class="fa fa-user"></i> {{ news.authorName }}</div>
-					<div class="news-section-date">{{ GetDate(news.date) }}</div>
-				</div>
-				<article class="news-section-content" v-html="news.content"></article>
-			</div>
-		</div>
-	</div>
+    <div class="home">
+        <div class="home-header">
+            News
+        </div>
+        <div v-if="serverNews" class="news">
+            <div v-for="news in serverNews" :key="news.id" class="news-section">
+                <div class="news-section-title">
+                    <h5 v-html="news.title"></h5>
+                    <div class="news-section-author">
+                        <i class="fa fa-user"></i> {{ news.authorName }}
+                    </div>
+                    <div class="news-section-date">
+                        {{ GetDate(news.date) }}
+                    </div>
+                </div>
+                <article class="news-section-content" v-html="news.content"></article>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -21,22 +27,22 @@ import moment from 'moment';
 import { NewsViewObject } from '@/types/apiServerContract';
 
 @Component({
-	components: {}
+    components: {}
 })
 export default class HomeView extends Vue {
 	serverNews: NewsViewObject[] = [];
 
 	async GetNews() {
-		const news = await NewsApi.GetNews();
-		this.serverNews = news;
+	    const news = await NewsApi.GetNews();
+	    this.serverNews = news;
 	}
 
 	GetDate(date: Date) {
-		return moment(date).format('MMMM Do YYYY, HH:mm:ss');
+	    return moment(date).format('MMMM Do YYYY, HH:mm:ss');
 	}
 
 	created() {
-		this.GetNews();
+	    this.GetNews();
 	}
 }
 </script>

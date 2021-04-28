@@ -2,7 +2,7 @@ import { UserViewObject, UserLogin, UserPermission, UserSettingsViewObject, User
 import { Role } from '../security/Role';
 
 class User implements UserViewObject {
-	constructor(
+    constructor(
 		public id: string,
 		public userName: string,
 		public accountId: number,
@@ -22,19 +22,19 @@ class User implements UserViewObject {
 		public settings: UserSettingsViewObject[],
 		public totalVotes: number,
 		public hasAcceptedDonationTerms: boolean
-	) { }
+    ) { }
 
-	get IsAdmin(): boolean {
-		return this.IsSuperAdmin || this.roles.includes(Role.Administrator);
-	}
+    get IsAdmin(): boolean {
+        return this.IsSuperAdmin || this.roles.includes(Role.Administrator);
+    }
 
-	get IsSuperAdmin(): boolean {
-		return this.roles.includes(Role.SuperAdmin);
-	}
+    get IsSuperAdmin(): boolean {
+        return this.roles.includes(Role.SuperAdmin);
+    }
 
-	public HasRole(roles: Role[]): boolean {
-		return this.IsSuperAdmin || this.roles.some(x => roles.indexOf(x) >= 0);
-	}
+    public HasRole(roles: Role[]): boolean {
+        return this.IsSuperAdmin || this.roles.some(x => roles.indexOf(x) >= 0);
+    }
 }
 
 export { User };

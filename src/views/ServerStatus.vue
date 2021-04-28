@@ -1,58 +1,58 @@
 <template>
-	<div class="server-status">
-		<div class="server-header">Server Status</div>
-		<div class="server-status-container">
-			<div class="realm pt-2" v-for="realm in realms" :key="realm.id">
-				<div id="name" :class="{ online: realm.online, offline: !realm.online }" @click="ToggleRealm(realm.id)">
-					{{ realm.name }}
-				</div>
-				<div class="realm-data hidden" v-if="realm.online" :id="`realm-${realm.id}`">
-					<div id="header">Online Players</div>
-					<div id="sub-header">
-						<small
-							>Total Online <font color="magneto">{{ TotalOnline(realm.id) }}</font></small
-						>
-						<small
-							>Alliance Online <font color="teal">{{ AllianceOnline(realm.id) }}</font></small
-						>
-						<small
-							>Horde Online <font color="red">{{ HordeOnline(realm.id) }}</font></small
-						>
-					</div>
-					<div class="realm-data-players">
-						<div id="title">
-							<div @click="SortBy('name')">Name</div>
-							<div>Class</div>
-							<div>Race</div>
-							<div>Faction</div>
-							<div>Level</div>
-							<div>Map</div>
-						</div>
-						<div id="data" v-for="player in realm.onlinePlayers" :key="player.name">
-							<div class="player-name">
-								<font :color="GetClassColor(player.class)">
-									{{ player.name }}
-								</font>
-							</div>
-							<div>
-								<img class="online-image" :src="require('@/assets/images/class/' + player.class + '.gif')" />
-							</div>
-							<div>
-								<img class="online-image" :src="require('@/assets/images/race/' + player.race + '-' + player.gender + '.gif')" />
-							</div>
-							<div>
-								<img class="online-image" :src="require('@/assets/images/' + GetFaction(player.race))" />
-							</div>
-							<div>{{ player.level }}</div>
-							<div class="player-zone" :title="GetZoneName(player.zone)">
-								{{ GetZoneName(player.zone) }}
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="server-status">
+        <div class="server-header">
+            Server Status
+        </div>
+        <div class="server-status-container">
+            <div v-for="realm in realms" :key="realm.id" class="realm pt-2">
+                <div id="name" :class="{ online: realm.online, offline: !realm.online }" @click="ToggleRealm(realm.id)">
+                    {{ realm.name }}
+                </div>
+                <div v-if="realm.online" :id="`realm-${realm.id}`" class="realm-data hidden">
+                    <div id="header">
+                        Online Players
+                    </div>
+                    <div id="sub-header">
+                        <small>Total Online <font color="magneto">{{ TotalOnline(realm.id) }}</font></small>
+                        <small>Alliance Online <font color="teal">{{ AllianceOnline(realm.id) }}</font></small>
+                        <small>Horde Online <font color="red">{{ HordeOnline(realm.id) }}</font></small>
+                    </div>
+                    <div class="realm-data-players">
+                        <div id="title">
+                            <div @click="SortBy('name')">
+                                Name
+                            </div>
+                            <div>Class</div>
+                            <div>Race</div>
+                            <div>Faction</div>
+                            <div>Level</div>
+                            <div>Map</div>
+                        </div>
+                        <div v-for="player in realm.onlinePlayers" id="data" :key="player.name">
+                            <div class="player-name">
+                                <font :color="GetClassColor(player.class)">
+                                    {{ player.name }}
+                                </font>
+                            </div>
+                            <div>
+                                <img class="online-image" :src="require('@/assets/images/class/' + player.class + '.gif')">
+                            </div>
+                            <div>
+                                <img class="online-image" :src="require('@/assets/images/race/' + player.race + '-' + player.gender + '.gif')">
+                            </div>
+                            <div>
+                                <img class="online-image" :src="require('@/assets/images/' + GetFaction(player.race))">
+                            </div>
+                            <div>{{ player.level }}</div>
+                            <div class="player-zone" :title="GetZoneName(player.zone)">
+                                {{ GetZoneName(player.zone) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -65,7 +65,7 @@ import { WoWRaces } from '../models/game/WoWRaces';
 import { RealmsModule } from '../store/modules/realms/realms.store';
 
 @Component({
-	components: {}
+    components: {}
 })
 export default class ServerStatus extends Vue {
 	@Prop() realms!: IRealmModel[];
@@ -73,55 +73,55 @@ export default class ServerStatus extends Vue {
 	GetDate(date: Date) {}
 
 	TotalOnline(id: number) {
-		const realm = this.realms.find(r => r.id == id);
-		if (!realm) return 0;
-		return realm.online ? realm.onlinePlayers.length : 0;
+	    const realm = this.realms.find(r => r.id == id);
+	    if (!realm) return 0;
+	    return realm.online ? realm.onlinePlayers.length : 0;
 	}
 
 	AllianceOnline(id: number) {
-		const realm = this.realms.find(r => r.id == id);
-		if (!realm) return 0;
-		const data = realm.onlinePlayers.filter(x => HelperMethods.IsAlliance(x.race));
-		return realm.online ? data.length : 0;
+	    const realm = this.realms.find(r => r.id == id);
+	    if (!realm) return 0;
+	    const data = realm.onlinePlayers.filter(x => HelperMethods.IsAlliance(x.race));
+	    return realm.online ? data.length : 0;
 	}
 
 	HordeOnline(id: number) {
-		const realm = this.realms.find(r => r.id == id);
-		if (!realm) return 0;
-		const data = realm.onlinePlayers.filter(x => HelperMethods.IsHorde(x.race));
-		return realm.online ? data.length : 0;
+	    const realm = this.realms.find(r => r.id == id);
+	    if (!realm) return 0;
+	    const data = realm.onlinePlayers.filter(x => HelperMethods.IsHorde(x.race));
+	    return realm.online ? data.length : 0;
 	}
 
 	GetZoneName(zoneId: number) {
-		return HelperMethods.GetZone(zoneId);
+	    return HelperMethods.GetZone(zoneId);
 	}
 
 	GetFaction(race: WoWRaces) {
-		if (HelperMethods.IsHorde(race)) {
-			return 'horde_min.png';
-		}
-		return 'alliance_min.png';
+	    if (HelperMethods.IsHorde(race)) {
+	        return 'horde_min.png';
+	    }
+	    return 'alliance_min.png';
 	}
 
 	GetClassColor(classId: WoWClass) {
-		return HelperMethods.GetClassColor(classId);
+	    return HelperMethods.GetClassColor(classId);
 	}
 
 	GetGameRankColor(rank: GameRoles) {
-		return HelperMethods.GetGameRankColor(rank);
+	    return HelperMethods.GetGameRankColor(rank);
 	}
 
 	GetGameRankName(rank: GameRoles) {
-		return HelperMethods.GetGameRankName(rank, true);
+	    return HelperMethods.GetGameRankName(rank, true);
 	}
 
 	ToggleRealm(id: number) {
-		const realm = document.getElementById(`realm-${id}`) as HTMLElement;
-		realm.classList.toggle('hidden');
+	    const realm = document.getElementById(`realm-${id}`) as HTMLElement;
+	    realm.classList.toggle('hidden');
 	}
 
 	created() {
-		RealmsModule.GetRealmInformations();
+	    RealmsModule.GetRealmInformations();
 	}
 }
 </script>

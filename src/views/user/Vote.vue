@@ -1,27 +1,35 @@
 <template>
-	<div class="vote">
-		<div class="vote-site-header">
-			<div class="vote-site-entry value">Site</div>
-			<div class="vote-site-entry title">Value</div>
-			<div class="vote-site-entry action">Time Left</div>
-		</div>
-		<div class="vote-site-content">
-			<div class="vote-site" v-for="site in voteSites" :key="site.id">
-				<div class="vote-site-entry image">
-					<img :src="require('@/assets/images/vote-sites/' + site.image)" />
-				</div>
-				<div class="vote-site-entry title">{{ site.value }}</div>
-				<div class="vote-site-entry action">
-					<button class="button button-blue" v-if="GetSiteTimer(site.id)">
-						{{ GetTimer(site.id) }}
-					</button>
-					<button class="button button-blue" v-else @click="Vote(site)">
-						Vote Now
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="vote">
+        <div class="vote-site-header">
+            <div class="vote-site-entry value">
+                Site
+            </div>
+            <div class="vote-site-entry title">
+                Value
+            </div>
+            <div class="vote-site-entry action">
+                Time Left
+            </div>
+        </div>
+        <div class="vote-site-content">
+            <div v-for="site in voteSites" :key="site.id" class="vote-site">
+                <div class="vote-site-entry image">
+                    <img :src="require('@/assets/images/vote-sites/' + site.image)">
+                </div>
+                <div class="vote-site-entry title">
+                    {{ site.value }}
+                </div>
+                <div class="vote-site-entry action">
+                    <button v-if="GetSiteTimer(site.id)" class="button button-blue">
+                        {{ GetTimer(site.id) }}
+                    </button>
+                    <button v-else class="button button-blue" @click="Vote(site)">
+                        Vote Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -32,7 +40,7 @@ import moment from 'moment';
 import { UserViewObject, VoteSiteViewObject, VoteTimerViewObject } from '@/types/apiServerContract';
 
 @Component({
-	components: {}
+    components: {}
 })
 export default class Vote extends Vue {
 	private voteSites: VoteSiteViewObject[] = [];
@@ -41,7 +49,7 @@ export default class Vote extends Vue {
 	private voting: boolean = false;
 
 	get User(): UserViewObject | null {
-		return UserModule.user;
+	    return UserModule.user;
 	}
 
 	async Vote(site: VoteSiteViewObject) {
@@ -65,64 +73,64 @@ export default class Vote extends Vue {
 	}
 
 	async GetVoteSites() {
-		const result = await UserApi.GetVoteSites();
-		this.voteSites = result.voteSites;
+	    const result = await UserApi.GetVoteSites();
+	    this.voteSites = result.voteSites;
 	}
 
 	async GetVoteTimers() {
-		const result = await UserApi.GetVoteTimers();
-		this.voteTimers = result.timers;
+	    const result = await UserApi.GetVoteTimers();
+	    this.voteTimers = result.timers;
 	}
 
 	GetTimer(id: number) {
-		let timer = this.GetSiteTimer(id);
-		if (timer == 0) {
-			return 0;
-		}
+	    const timer = this.GetSiteTimer(id);
+	    if (timer == 0) {
+	        return 0;
+	    }
 
-		const then = moment(timer * 1000);
-		const now = moment();
-		return moment.utc(moment(then).diff(moment(now))).format('HH:mm:ss');
+	    const then = moment(timer * 1000);
+	    const now = moment();
+	    return moment.utc(moment(then).diff(moment(now))).format('HH:mm:ss');
 	}
 
 	GetSiteTimer(id: number) {
-		const site = this.voteTimers.find(timer => timer.site == id);
-		return site ? site.unsetTimer : 0;
+	    const site = this.voteTimers.find(timer => timer.site == id);
+	    return site ? site.unsetTimer : 0;
 	}
 
 	GetTimeLeft(id: number) {
-		const timer = this.GetSiteTimer(id);
-		if (timer == 0) {
-			return 0;
-		}
-		const now = Math.floor(Date.now() / 1000);
-		const diff = timer - now;
-		return diff > 0 ? diff : 0;
+	    const timer = this.GetSiteTimer(id);
+	    if (timer == 0) {
+	        return 0;
+	    }
+	    const now = Math.floor(Date.now() / 1000);
+	    const diff = timer - now;
+	    return diff > 0 ? diff : 0;
 	}
 
 	GetTime(id: number) {
-		const timeLeft = this.GetTimeLeft(id);
-		const hours = Math.floor(timeLeft / 3600) % 24;
-		const minutes = Math.floor(timeLeft / 60) % 60;
-		const seconds = timeLeft % 60;
-		return [hours, minutes, seconds]
-			.map(v => (v < 10 ? '0' + v : v))
-			.filter((v, i) => v !== '00' || i > 0)
-			.join(':');
+	    const timeLeft = this.GetTimeLeft(id);
+	    const hours = Math.floor(timeLeft / 3600) % 24;
+	    const minutes = Math.floor(timeLeft / 60) % 60;
+	    const seconds = timeLeft % 60;
+	    return [hours, minutes, seconds]
+	        .map(v => (v < 10 ? '0' + v : v))
+	        .filter((v, i) => v !== '00' || i > 0)
+	        .join(':');
 	}
 
 	created() {
-		this.GetVoteSites();
-		this.GetVoteTimers();
+	    this.GetVoteSites();
+	    this.GetVoteTimers();
 
-		this.updateTimer = setInterval(() => {
-			this.$forceUpdate();
-		}, 1000);
+	    this.updateTimer = setInterval(() => {
+	        this.$forceUpdate();
+	    }, 1000);
 	}
 
 	beforeDestroy() {
-		// Prevent memory leaks
-		clearInterval(this.updateTimer);
+	    // Prevent memory leaks
+	    clearInterval(this.updateTimer);
 	}
 }
 </script>

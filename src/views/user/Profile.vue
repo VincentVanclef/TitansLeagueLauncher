@@ -1,108 +1,135 @@
 <template>
-	<div class="profile" v-if="User">
-		<div class="profile-header">{{ User.firstname }} {{ User.lastname }}</div>
-		<div class="profile-container">
-			<h5 class="pt-3 pl-1">User Information</h5>
-			<form @submit.prevent="UpdateProfile">
-				<div class="profile-content">
-					<div class="profile-entry">
-						<div class="mb-2">
-							<label for="firstname">First name</label>
-							<input name="firstname" type="text" v-model="firstname" />
-						</div>
-						<div class="mb-2">
-							<label for="lastname">Nickname</label>
-							<input name="lastname" type="text" v-model="username" />
-						</div>
-					</div>
-					<div class="profile-entry">
-						<div class="mb-2">
-							<label for="lastname">Last name</label>
-							<input name="lastname" type="text" v-model="lastname" />
-						</div>
-						<div class="mb-2">
-							<label for="lastname">Location</label>
-							<input name="lastname" type="text" v-model="location" />
-						</div>
-					</div>
-				</div>
-				<div class="profile-buttons">
-					<button class="button button-orange float-right" style="width: 140px; height: 30px; font-size: 0.8em;" type="submit">
-						Save Changes
-					</button>
-				</div>
-			</form>
+    <div v-if="User" class="profile">
+        <div class="profile-header">
+            {{ User.firstname }} {{ User.lastname }}
+        </div>
+        <div class="profile-container">
+            <h5 class="pt-3 pl-1">
+                User Information
+            </h5>
+            <form @submit.prevent="UpdateProfile">
+                <div class="profile-content">
+                    <div class="profile-entry">
+                        <div class="mb-2">
+                            <label for="firstname">First name</label>
+                            <input v-model="firstname" name="firstname" type="text">
+                        </div>
+                        <div class="mb-2">
+                            <label for="lastname">Nickname</label>
+                            <input v-model="username" name="lastname" type="text">
+                        </div>
+                    </div>
+                    <div class="profile-entry">
+                        <div class="mb-2">
+                            <label for="lastname">Last name</label>
+                            <input v-model="lastname" name="lastname" type="text">
+                        </div>
+                        <div class="mb-2">
+                            <label for="lastname">Location</label>
+                            <input v-model="location" name="lastname" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-buttons">
+                    <button class="button button-orange float-right" style="width: 140px; height: 30px; font-size: 0.8em;" type="submit">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
 
-			<h5 class="pt-5 pl-1">Website Password</h5>
-			<form @submit.prevent="UpdatePassword">
-				<div class="profile-content-password">
-					<div class="profile-entry" id="password">
-						<div class="mb-2">
-							<label for="password">Current Password</label>
-							<input name="password" type="password" v-model="password" v-pwt="{ color: '#fff', top: -21 }" />
-						</div>
-					</div>
-					<div class="profile-entry" id="new-password">
-						<div class="mb-2">
-							<label for="new-password">New Password</label>
-							<input name="new-password" type="password" v-model="newPassword" v-pwt="{ color: '#fff', top: -21 }" />
-						</div>
-					</div>
-					<div class="profile-entry" id="confirm-new-password">
-						<div class="mb-2">
-							<label for="new-password-confirm">Confirm New Password</label>
-							<input
-								id="password-field"
-								name="new-password-confirm"
-								type="password"
-								v-model="newPasswordConfirm"
-								v-pwt="{ color: '#fff', top: -21 }"
-							/>
-						</div>
-					</div>
-				</div>
-				<div class="profile-buttons pb-4">
-					<button class="button button-orange float-right" style="width: 140px; height: 30px; font-size: 0.8em;" type="submit">
-						Save Password
-					</button>
-				</div>
-			</form>
+            <h5 class="pt-5 pl-1">
+                Website Password
+            </h5>
+            <form @submit.prevent="UpdatePassword">
+                <div class="profile-content-password">
+                    <div id="password" class="profile-entry">
+                        <div class="mb-2">
+                            <label for="password">Current Password</label>
+                            <input v-model="password" v-pwt="{ color: '#fff', top: -21 }" name="password" type="password">
+                        </div>
+                    </div>
+                    <div id="new-password" class="profile-entry">
+                        <div class="mb-2">
+                            <label for="new-password">New Password</label>
+                            <input v-model="newPassword" v-pwt="{ color: '#fff', top: -21 }" name="new-password" type="password">
+                        </div>
+                    </div>
+                    <div id="confirm-new-password" class="profile-entry">
+                        <div class="mb-2">
+                            <label for="new-password-confirm">Confirm New Password</label>
+                            <input
+                                id="password-field"
+                                v-model="newPasswordConfirm"
+                                v-pwt="{ color: '#fff', top: -21 }"
+                                name="new-password-confirm"
+                                type="password">
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-buttons pb-4">
+                    <button class="button button-orange float-right" style="width: 140px; height: 30px; font-size: 0.8em;" type="submit">
+                        Save Password
+                    </button>
+                </div>
+            </form>
 
-			<div class="profile-general">
-				<h5>Account Information</h5>
-				<div class="account-information">
-					<div id="title">Vote Points</div>
-					<div id="title">Donation Points</div>
-					<div id="value">{{ AccountData.vp }}</div>
-					<div id="value">{{ AccountData.dp }}</div>
-					<div id="title">Total Votes</div>
-					<div id="title">Joined</div>
-					<div id="value">{{ User.totalVotes }}</div>
-					<div id="value">{{ GetDate(User.joinDate) }}</div>
-				</div>
-			</div>
+            <div class="profile-general">
+                <h5>Account Information</h5>
+                <div class="account-information">
+                    <div id="title">
+                        Vote Points
+                    </div>
+                    <div id="title">
+                        Donation Points
+                    </div>
+                    <div id="value">
+                        {{ AccountData.vp }}
+                    </div>
+                    <div id="value">
+                        {{ AccountData.dp }}
+                    </div>
+                    <div id="title">
+                        Total Votes
+                    </div>
+                    <div id="title">
+                        Joined
+                    </div>
+                    <div id="value">
+                        {{ User.totalVotes }}
+                    </div>
+                    <div id="value">
+                        {{ GetDate(User.joinDate) }}
+                    </div>
+                </div>
+            </div>
 
-			<div class="profile-stats">
-				<div class="profile-stats-roles">
-					<div class="profile-stats-title">Website Roles</div>
-					<ul class="list-unstyled pt-1">
-						<li v-for="role in User.roles" :key="role">
-							{{ role }}
-						</li>
-					</ul>
-				</div>
-				<div class="profile-stats-roles">
-					<div class="profile-stats-title">Game Roles</div>
-					<div class="profile-stats-entry" v-for="role in Account.accountAccess" :key="role.realmId">
-						<div id="realm" :title="GetRealmNameById(role.realmId)">
-							{{ GetRealmNameById(role.realmId) }}
-						</div>
-						<div id="rank">{{ GetGameRankName(role.gmlevel) }}</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+            <div class="profile-stats">
+                <div class="profile-stats-roles">
+                    <div class="profile-stats-title">
+                        Website Roles
+                    </div>
+                    <ul class="list-unstyled pt-1">
+                        <li v-for="role in User.roles" :key="role">
+                            {{ role }}
+                        </li>
+                    </ul>
+                </div>
+                <div class="profile-stats-roles">
+                    <div class="profile-stats-title">
+                        Game Roles
+                    </div>
+                    <div v-for="role in Account.accountAccess" :key="role.realmId" class="profile-stats-entry">
+                        <div id="realm" :title="GetRealmNameById(role.realmId)">
+                            {{ GetRealmNameById(role.realmId) }}
+                        </div>
+                        <div id="rank">
+                            {{ GetGameRankName(role.gmlevel) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -119,7 +146,7 @@ import { IUpdateUserRequest } from '../../models/user/requests/UpdateUserRequest
 import { AccountViewObject, GameAccountData, UpdateUserRequest, UserViewObject } from '@/types/apiServerContract';
 
 @Component({
-	components: {}
+    components: {}
 })
 export default class UserProfile extends Vue {
 	@Prop() realms!: IRealmModel[];
@@ -134,86 +161,86 @@ export default class UserProfile extends Vue {
 	newPasswordConfirm: string = '';
 
 	get User(): UserViewObject | null {
-		return UserModule.user;
+	    return UserModule.user;
 	}
 
 	get Account(): AccountViewObject | null {
-		return UserModule.account;
+	    return UserModule.account;
 	}
 
 	get AccountData(): GameAccountData | null {
-		return UserModule.account?.accountData ?? null;
+	    return UserModule.account?.accountData ?? null;
 	}
 
 	GetDate(date: Date) {
-		return moment(date).format('MMMM Do YYYY, HH:mm:ss');
+	    return moment(date).format('MMMM Do YYYY, HH:mm:ss');
 	}
 
 	async UpdateProfile() {
-		const request: UpdateUserRequest = {
-			userId: this.User!.id,
-			email: this.User!.email,
-			firstname: this.firstname,
-			lastname: this.lastname,
-			username: this.username,
-			location: this.location
-		};
+	    const request: UpdateUserRequest = {
+	        userId: this.User!.id,
+	        email: this.User!.email,
+	        firstname: this.firstname,
+	        lastname: this.lastname,
+	        username: this.username,
+	        location: this.location
+	    };
 
-		await UserApi.UpdateUser(request);
+	    await UserApi.UpdateUser(request);
 
 		this.User!.firstname = this.firstname;
 		this.User!.lastname = this.lastname;
 		this.User!.userName = this.username;
 		this.User!.location = this.location;
 
-		this.$bvToast.toast(`Your profile informations has been successfully updated.`, {
-			title: 'Success',
-			variant: 'success',
-			solid: true
+		this.$bvToast.toast('Your profile informations has been successfully updated.', {
+		    title: 'Success',
+		    variant: 'success',
+		    solid: true
 		});
 	}
 
 	async UpdatePassword() {
-		const request: IChangePasswordRequest = {
-			currentPassword: this.password,
-			newPassword: this.newPassword,
-			newPasswordAgain: this.newPasswordConfirm
-		};
+	    const request: IChangePasswordRequest = {
+	        currentPassword: this.password,
+	        newPassword: this.newPassword,
+	        newPasswordAgain: this.newPasswordConfirm
+	    };
 
-		await UserApi.ChangeWebsitePassword(request);
+	    await UserApi.ChangeWebsitePassword(request);
 
-		this.$bvToast.toast(`Your website password has been successfully updated.`, {
-			title: 'Success',
-			variant: 'success',
-			solid: true
-		});
+	    this.$bvToast.toast('Your website password has been successfully updated.', {
+	        title: 'Success',
+	        variant: 'success',
+	        solid: true
+	    });
 	}
 
 	GetRealmById(id: number) {
-		return this.realms.find(x => x.id == id);
+	    return this.realms.find(x => x.id == id);
 	}
 
 	GetRealmNameById(id: number) {
-		const realm = this.GetRealmById(id);
-		return realm ? realm.name : 'Unknown';
+	    const realm = this.GetRealmById(id);
+	    return realm ? realm.name : 'Unknown';
 	}
 
 	GetGameRankColor(rank: number) {
-		return HelperMethods.GetGameRankColor(rank);
+	    return HelperMethods.GetGameRankColor(rank);
 	}
 
 	GetGameRankName(rank: number) {
-		return HelperMethods.GetGameRankName(rank);
+	    return HelperMethods.GetGameRankName(rank);
 	}
 
 	created() {
-		// console.log(this.User);
-		// console.log(this.realms);
+	    // console.log(this.User);
+	    // console.log(this.realms);
 
-		this.firstname = this.User!.firstname;
-		this.lastname = this.User!.lastname;
-		this.username = this.User!.userName;
-		this.location = this.User!.location;
+	    this.firstname = this.User!.firstname;
+	    this.lastname = this.User!.lastname;
+	    this.username = this.User!.userName;
+	    this.location = this.User!.location;
 	}
 }
 </script>

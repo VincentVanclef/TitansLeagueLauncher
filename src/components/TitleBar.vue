@@ -1,40 +1,71 @@
 <template>
-	<div class="titlebar">
-		<div id="drag-region">
-			<div id="window-title">
-				<span>Titans-League Launcher</span>
-			</div>
-			<div id="window-controls">
-				<div class="title_button" id="min-button" @click="Minimize()">
-					<span>&#xE921;</span>
+    <div class="titlebar">
+        <div id="drag-region">
+            <div id="window-title">
+                <span>Titans-League Launcher</span>
+            </div>
+			<div></div>
+            <div id="window-controls">
+				<div class="selected-realm">
+					<p v-if="selectedRealm">
+						{{ selectedRealm.name }}
+					</p>
 				</div>
-				<div class="title_button" id="close-button" @click="Close()">
-					<span>&#xE8BB;</span>
+				<div class="app-controls">
+					<div id="min-button" class="title_button" @click="Minimize()">
+						<span>&#xE921;</span>
+					</div>
+					<div id="close-button" class="title_button" @click="Close()">
+						<span>&#xE8BB;</span>
+					</div>
 				</div>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
+import { ConfigModule } from '@/store/modules/config/config.store';
+import { RealmsModule } from '@/store/modules/realms/realms.store';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 const remote = require('electron').remote;
 const window = remote.getCurrentWindow();
 
 @Component
 export default class TitleBar extends Vue {
-	Minimize() {
-		window.minimize();
-	}
+    Minimize() {
+        window.minimize();
+    }
 
-	Close() {
-		window.close();
-	}
+	get selectedRealm() {
+        return RealmsModule.realms.find(x => x.id === ConfigModule.config!.selectedRealm);
+    }
+
+    Close() {
+        window.close();
+    }
 }
 </script>
 
 <style scoped lang="scss">
 @import '@/assets/styles/variables.scss';
+
+.selected-realm {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+
+	font-size: 15px;
+	font-weight: bold;
+	user-select: none;
+	margin-left: 30px;
+	font-size: 17px;
+
+	user-select: none;
+
+	flex: 1;
+}
 
 .titlebar::before {
 	content: '';
@@ -62,7 +93,7 @@ export default class TitleBar extends Vue {
 	height: 100%;
 
 	display: grid;
-	grid-template-columns: 30% 40% 30%;
+	grid-template-columns: 1fr 110px 1fr;
 
 	-webkit-app-region: drag;
 }
@@ -85,28 +116,32 @@ export default class TitleBar extends Vue {
 }
 
 #window-controls {
-	display: grid;
-	grid-template-columns: repeat(2, 46px);
-	position: absolute;
-	top: 0;
-	right: 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	height: 100%;
-	font-family: 'Segoe MDL2 Assets';
 	font-size: 10px;
 
-	-webkit-app-region: no-drag;
+	.app-controls {
+		display: flex;
+		align-items: center;
+		font-family: 'Segoe MDL2 Assets';
+
+		height: 100%;
+
+		-webkit-app-region: no-drag;
+	}
 }
 
 #window-controls .title_button {
-	grid-row: 1 / span 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 100%;
 	height: 100%;
+	width: 50px;
 
 	user-select: none;
-	cursor: default;
+	cursor: pointer;
 }
 
 #window-controls .title_button:hover {
@@ -114,13 +149,5 @@ export default class TitleBar extends Vue {
 }
 #window-controls .title_button:active {
 	background: rgba(255, 255, 255, 0.2);
-}
-
-#window-controls #min-button {
-	grid-column: 1;
-}
-
-#window-controls #close-button {
-	grid-column: 2;
 }
 </style>

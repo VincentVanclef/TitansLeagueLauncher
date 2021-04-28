@@ -7,7 +7,7 @@ import { AxiosResponse } from 'axios';
 import HttpStatus from 'http-status-codes';
 import { AxiosRequestConfigExtended } from '../http.service';
 
-export default async (response: AxiosResponse) => {
+export default async(response: AxiosResponse) => {
     const messages = response.data?.validationMessages as ClientMessage[];
     if (messages) {
         // Validation-messages received. If a messagesId is included (from a post) forward messages to local handler

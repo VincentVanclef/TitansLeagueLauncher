@@ -606,6 +606,8 @@ export interface PatchViewObject {
     keepUpdated: boolean;
     modified: Date;
     patch: string;
+    size: string;
+    realmId: number;
 }
 export interface PatchViewModel {
     patches: PatchViewObject[];

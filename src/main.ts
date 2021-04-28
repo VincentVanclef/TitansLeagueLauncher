@@ -21,10 +21,10 @@ Vue.config.productionTip = false;
 // Automatically run the `init` action for every module,
 // if one exists.
 dispatchActionForAllModules('Init').finally(() => {
-	new Vue({
-		router,
-		store,
-		mixins: [BusHandler],
-		render: h => h(App)
-	}).$mount('#app');
+    new Vue({
+        router,
+        store,
+        mixins: [BusHandler],
+        render: h => h(App)
+    }).$mount('#app');
 });
