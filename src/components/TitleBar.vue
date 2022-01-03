@@ -3,6 +3,9 @@
         <div id="drag-region">
             <div id="window-title">
                 <span>Titans-League Launcher</span>
+				<span class="version">
+					- v{{ AppVersion}}
+				</span>
             </div>
 			<div></div>
             <div id="window-controls">
@@ -27,7 +30,8 @@
 <script lang="ts">
 import { ConfigModule } from '@/store/modules/config/config.store';
 import { RealmsModule } from '@/store/modules/realms/realms.store';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
+import electron from 'electron';
 const remote = require('electron').remote;
 const window = remote.getCurrentWindow();
 
@@ -39,6 +43,10 @@ export default class TitleBar extends Vue {
 
 	get selectedRealm() {
         return RealmsModule.realms.find(x => x.id === ConfigModule.config!.selectedRealm);
+    }
+
+	get AppVersion() {
+        return electron.remote.app.getVersion();
     }
 
     Close() {
@@ -107,6 +115,11 @@ export default class TitleBar extends Vue {
 	font-size: 15px;
 	font-weight: bold;
 	user-select: none;
+
+	.version {
+		margin-left: 8px;
+		color: #071d33;
+	}
 }
 
 #window-title span {

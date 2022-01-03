@@ -47,7 +47,7 @@ class PatchService {
         const patchSettings = ConfigModule.config!.patchConfig;
 
         if (ConfigModule.config?.removeUnusedPatches === true) {
-            await this.RemoveObsoletePatches(patchSettings);
+            await this.RemoveObsoletePatches(patchConfigs.patches);
         }
 
         for (const config of patchConfigs.patches) {

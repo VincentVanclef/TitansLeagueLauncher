@@ -71,7 +71,7 @@
         <hr>
         <b-row v-if="settings">
             <p class="pl-3 font-weight-bold mb-2">
-                Patch Update Settings ({{selectedRealm.name}})
+                Patch Update Settings <span v-if="selectedRealm">({{selectedRealm.name}})</span>
             </p>
             <template v-for="config in patchConfig">
                 <b-col :key="config.patch + 1" cols="9">

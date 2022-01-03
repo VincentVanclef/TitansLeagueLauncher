@@ -9,7 +9,10 @@ class DownloadService {
 
         const req = request({
             method: 'GET',
-            uri: file_url
+            uri: file_url,
+            agentOptions: {
+                rejectUnauthorized: false
+            }
         });
 
         const out = fs.createWriteStream(targetPath);
@@ -40,7 +43,10 @@ class DownloadService {
 
             const req = request({
                 method: 'GET',
-                uri: file_url
+                uri: file_url,
+                agentOptions: {
+                    rejectUnauthorized: false
+                }
             });
 
             const out = fs.createWriteStream(targetPath);
